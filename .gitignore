@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+
+# Flask
+instance/
+.pytest_cache/
+
+# Database (optional - include if you want fresh starts)
+*.db
+frames_data.json
+frames_data.json.bak*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

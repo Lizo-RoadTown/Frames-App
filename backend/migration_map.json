@@ -1,0 +1,11 @@
+{
+  "source_file": "frames_data.json",
+  "timestamp": "2025-11-17T23:23:37.911111",
+  "mode": "dry-run",
+  "summary": {
+    "teams": 8,
+    "faculty": 3,
+    "projects": 3,
+    "interfaces": 11
+  }
+}
