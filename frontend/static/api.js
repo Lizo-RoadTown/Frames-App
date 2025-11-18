@@ -3,7 +3,10 @@
  * Handles all communication with Flask REST API
  */
 
-const API_BASE_URL = 'http://localhost:5000/api';
+// Use relative URL so it works both locally and on PythonAnywhere
+const API_BASE_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
+    : '/api';
 
 class FramesAPI {
     static async _handleResponse(res) {
