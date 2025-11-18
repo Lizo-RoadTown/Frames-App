@@ -11,9 +11,9 @@ import json
 
 from models import SystemState, Team, Faculty, Project, Interface
 from analytics import FramesAnalytics
-from flask_sqlalchemy import SQLAlchemy
 from flask import make_response
 import traceback
+from database import db
 
 app = Flask(__name__,
             static_folder='../frontend/static',
@@ -26,7 +26,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 default_sqlite = f"sqlite:///{os.path.join(BASE_DIR, 'frames.db')}"
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', default_sqlite)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # Global system state (in production, use database)
 system_state = SystemState()
@@ -813,8 +813,9 @@ def load_sample_data():
     """Load sample data based on Bronco Space Lab structure"""
     print('DEBUG: /api/sample-data endpoint HIT')
 
-    # Import DB models
+    # Import DB models (imports are fine inside route functions)
     from db_models import TeamModel, FacultyModel, ProjectModel, InterfaceModel
+
     # Clear existing data from DB
     TeamModel.query.delete()
     FacultyModel.query.delete()
