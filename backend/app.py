@@ -108,7 +108,13 @@ except Exception as _e:
 
 @app.route('/')
 def index():
-    """Serve the main application page"""
+    """Serve the landing page"""
+    return send_from_directory('../frontend/templates', 'landing.html')
+
+
+@app.route('/test')
+def test_page():
+    """Serve the developer test page"""
     return send_from_directory('../frontend/templates', 'index.html')
 
 
