@@ -114,6 +114,7 @@ function displayStudents(students) {
                 <div class="item-header">
                     <h3 class="item-title">${student.name}</h3>
                     <div class="item-badges">
+                        ${student.is_lead ? `<span class="badge" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #0a0a0f;">Team Lead</span>` : ''}
                         ${student.status ? `<span class="badge ${student.status}">${formatStatus(student.status)}</span>` : ''}
                         ${student.expertise_area ? `<span class="badge">${student.expertise_area}</span>` : ''}
                     </div>
@@ -153,7 +154,8 @@ document.getElementById('addStudentForm').addEventListener('submit', async (e) =
         name: formData.get('name'),
         team_id: formData.get('team_id'),
         expertise_area: formData.get('expertise_area') || null,
-        terms_remaining: parseInt(formData.get('terms_remaining'))
+        terms_remaining: parseInt(formData.get('terms_remaining')),
+        is_lead: formData.get('is_lead') === 'on'
     };
 
     try {
