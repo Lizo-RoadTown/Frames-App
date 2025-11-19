@@ -10,8 +10,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Space Tech CSS -->
     <link rel="stylesheet" href="/static/space-tech.css">
-    <!-- vis-network for network graph -->
-    <link href="https://unpkg.com/vis-network/styles/vis-network.min.css" rel="stylesheet" />
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
     <div class="dashboard-flex">
@@ -19,12 +20,12 @@
         <aside id="infoPanel" class="dashboard-info-panel">
             <h2 class="dashboard-info-title">Knowledge Transfer Network</h2>
             <div id="nodeDetails" class="dashboard-node-details">
-                <p>Click a node to see details.</p>
+                <p>Loading 3D visualization...</p>
             </div>
         </aside>
     </div>
     <script src="/static/api.js"></script>
-    <script type="module" src="/static/dashboard.js"></script>
+    <script src="/static/dashboard-standalone.js"></script>
     <script>lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });</script>
 </body>
 </html>
