@@ -80,8 +80,8 @@ function initScene() {
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // Controls (using global THREE.OrbitControls from CDN)
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    // Controls (using global OrbitControls from CDN)
+    controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.minDistance = 200;
