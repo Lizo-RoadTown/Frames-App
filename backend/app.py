@@ -184,8 +184,14 @@ def full_index():
 
 @app.route('/comparative')
 def comparative_dashboard():
-    """Serve the multi-university comparative dashboard"""
+    """Serve the multi-university comparative dashboard (table/chart view)"""
     return send_from_directory('../frontend/templates', 'comparative_dashboard.html')
+
+
+@app.route('/multi-university-network')
+def multi_university_network():
+    """Serve the multi-university 3D network visualization"""
+    return send_from_directory('../frontend/templates', 'multi_university_network.html')
 
 
 @app.route('/teams')

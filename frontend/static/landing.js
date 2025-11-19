@@ -62,6 +62,10 @@ function comparePrograms() {
     window.location.href = '/comparative';
 }
 
+function viewMultiUniversityNetwork() {
+    window.location.href = '/multi-university-network';
+}
+
 // Check if university was previously selected
 window.addEventListener('DOMContentLoaded', () => {
     const savedUni = sessionStorage.getItem('selectedUniversity');

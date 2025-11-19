@@ -102,7 +102,10 @@
 
             <div class="university-btn-row">
                 <button class="btn-glow" onclick="viewAllUniversities()">
-                    <span class="lucide" data-lucide="bar-chart-2"></span> View All Programs (Comparison Dashboard)
+                    <span class="lucide" data-lucide="bar-chart-2"></span> View All Programs (Comparison)
+                </button>
+                <button class="btn-glow" onclick="window.location.href='/multi-university-network'" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);">
+                    <span class="lucide" data-lucide="globe"></span> Multi-University Network
                 </button>
                 <button class="btn-glow" onclick="window.location.href='/research'" style="background: linear-gradient(135deg, #7c3aed 0%, #c026d3 100%);">
                     <span class="lucide" data-lucide="flask-conical"></span> Research Dashboard
@@ -153,10 +156,17 @@
                     </div>
                 </div>
                 <div class="option-card" onclick="comparePrograms()">
+                    <div class="option-icon"><span class="lucide" data-lucide="table"></span></div>
+                    <div class="option-content">
+                        <h3>Compare with Others (Table)</h3>
+                        <p>See comparison metrics and statistics across universities</p>
+                    </div>
+                </div>
+                <div class="option-card" onclick="viewMultiUniversityNetwork()">
                     <div class="option-icon"><span class="lucide" data-lucide="globe"></span></div>
                     <div class="option-content">
-                        <h3>Compare with Others</h3>
-                        <p>See how other universities structure their programs</p>
+                        <h3>Multi-University Network (3D)</h3>
+                        <p>Visualize all universities and their collaborations in 3D</p>
                     </div>
                 </div>
             </div>
