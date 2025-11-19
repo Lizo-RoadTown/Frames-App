@@ -30,7 +30,7 @@
         <!-- Add New Project Form -->
         <section class="card">
             <h2>Add a New Project</h2>
-            <p class="hint">Create projects, then assign students to work on them</p>
+            <p class="hint">Create projects first, then add teams to each project</p>
             <form id="addProjectForm" class="form">
                 <div class="form-group">
                     <label for="projectName">Project Name *</label>
@@ -70,6 +70,52 @@
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">Add Project</button>
                     <button type="reset" class="btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Add Teams to Project -->
+        <section class="card" id="teamsSection" style="display: none;">
+            <h2>Add Teams to <span id="selectedProjectName"></span></h2>
+            <p class="hint">Create teams that will work on this project</p>
+
+            <div id="projectTeamsList" class="items-list" style="margin-bottom: 30px;">
+                <p class="empty-state">No teams yet for this project.</p>
+            </div>
+
+            <form id="addTeamForm" class="form">
+                <input type="hidden" id="teamProjectId" name="project_id">
+
+                <div class="form-group">
+                    <label for="teamName">Team Name *</label>
+                    <input type="text" id="teamName" name="name" required
+                           placeholder="e.g., Software Team, Power Systems">
+                    <span class="hint">Give your team a descriptive name</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="discipline">Expertise Area</label>
+                    <select id="discipline" name="discipline">
+                        <option value="">Select area...</option>
+                        <option value="electrical">Electrical Engineering</option>
+                        <option value="software">Software Engineering</option>
+                        <option value="mechanical">Mechanical Engineering</option>
+                        <option value="mission-ops">Mission Operations</option>
+                        <option value="communications">Communications</option>
+                        <option value="systems">Systems Engineering</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="teamDescription">What does this team do?</label>
+                    <textarea id="teamDescription" name="description" rows="3"
+                              placeholder="Brief description of their role and responsibilities..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Add Team to Project</button>
+                    <button type="button" class="btn-secondary" onclick="closeTeamsSection()">Done</button>
                 </div>
             </form>
         </section>

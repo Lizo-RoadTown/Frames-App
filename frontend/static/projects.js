@@ -24,8 +24,13 @@ function getUniversityInfo() {
 // Load existing projects
 async function loadProjects() {
     try {
-        const response = await fetch(`${API_BASE_URL}/projects?university_id=${universityId}`);
-        const projects = await response.json();
+        const [projectsRes, teamsRes] = await Promise.all([
+            fetch(`${API_BASE_URL}/projects?university_id=${universityId}`),
+            fetch(`${API_BASE_URL}/teams?university_id=${universityId}`)
+        ]);
+
+        const projects = await projectsRes.json();
+        const allTeams = await teamsRes.json();
 
         const projectsList = document.getElementById('projectsList');
 
@@ -34,21 +39,33 @@ async function loadProjects() {
             return;
         }
 
-        projectsList.innerHTML = projects.map(project => `
-            <div class="item-card" data-id="${project.id}">
-                <div class="item-header">
-                    <h3 class="item-title">${project.name}</h3>
-                    <div class="item-badges">
-                        ${project.type ? `<span class="badge">${formatType(project.type)}</span>` : ''}
-                        ${project.duration ? `<span class="badge">${project.duration} years</span>` : ''}
+        projectsList.innerHTML = projects.map(project => {
+            const projectTeams = allTeams.filter(t => t.project_id === project.id);
+            const teamCount = projectTeams.length;
+
+            return `
+                <div class="item-card" data-id="${project.id}">
+                    <div class="item-header">
+                        <h3 class="item-title">${project.name}</h3>
+                        <div class="item-badges">
+                            ${project.type ? `<span class="badge">${formatType(project.type)}</span>` : ''}
+                            ${project.duration ? `<span class="badge">${project.duration} years</span>` : ''}
+                            <span class="badge">👥 ${teamCount} team${teamCount !== 1 ? 's' : ''}</span>
+                        </div>
+                    </div>
+                    ${project.description ? `<p class="item-description">${project.description}</p>` : ''}
+                    ${teamCount > 0 ? `
+                        <div class="item-details" style="margin-top: 12px;">
+                            <strong>Teams:</strong> ${projectTeams.map(t => t.name).join(', ')}
+                        </div>
+                    ` : ''}
+                    <div class="item-actions">
+                        <button class="btn-edit" onclick="manageTeams('${project.id}', '${project.name}')">Manage Teams</button>
+                        <button class="btn-delete" onclick="deleteProject('${project.id}', '${project.name}')">Delete</button>
                     </div>
                 </div>
-                ${project.description ? `<p class="item-description">${project.description}</p>` : ''}
-                <div class="item-actions">
-                    <button class="btn-delete" onclick="deleteProject('${project.id}', '${project.name}')">Delete</button>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     } catch (error) {
         console.error('Error loading projects:', error);
         showError('Failed to load projects. Please refresh the page.');
@@ -66,6 +83,70 @@ function formatType(type) {
         'other': 'Other'
     };
     return map[type] || type;
+}
+
+// Manage teams for a project
+async function manageTeams(projectId, projectName) {
+    document.getElementById('selectedProjectName').textContent = projectName;
+    document.getElementById('teamProjectId').value = projectId;
+    document.getElementById('teamsSection').style.display = 'block';
+
+    // Load teams for this project
+    await loadProjectTeams(projectId);
+
+    // Scroll to teams section
+    document.getElementById('teamsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeTeamsSection() {
+    document.getElementById('teamsSection').style.display = 'none';
+    document.getElementById('addTeamForm').reset();
+}
+
+// Load teams for a specific project
+async function loadProjectTeams(projectId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/teams?university_id=${universityId}`);
+        const allTeams = await response.json();
+        const projectTeams = allTeams.filter(t => t.project_id === projectId);
+
+        const teamsList = document.getElementById('projectTeamsList');
+
+        if (projectTeams.length === 0) {
+            teamsList.innerHTML = '<p class="empty-state">No teams yet for this project.</p>';
+            return;
+        }
+
+        teamsList.innerHTML = projectTeams.map(team => `
+            <div class="item-card" data-id="${team.id}">
+                <div class="item-header">
+                    <h3 class="item-title">${team.name}</h3>
+                    <div class="item-badges">
+                        ${team.discipline ? `<span class="badge">${formatDiscipline(team.discipline)}</span>` : ''}
+                    </div>
+                </div>
+                ${team.description ? `<p class="item-description">${team.description}</p>` : ''}
+                <div class="item-actions">
+                    <button class="btn-delete" onclick="deleteTeam('${team.id}', '${team.name}')">Delete</button>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading teams:', error);
+    }
+}
+
+function formatDiscipline(discipline) {
+    const map = {
+        'electrical': 'Electrical',
+        'software': 'Software',
+        'mechanical': 'Mechanical',
+        'mission-ops': 'Mission Ops',
+        'communications': 'Communications',
+        'systems': 'Systems',
+        'other': 'Other'
+    };
+    return map[discipline] || discipline;
 }
 
 // Add new project
@@ -89,9 +170,13 @@ document.getElementById('addProjectForm').addEventListener('submit', async (e) =
         });
 
         if (response.ok) {
-            showSuccess('Project added successfully!');
+            const newProject = await response.json();
+            showSuccess('Project added successfully! Now add teams to it.');
             e.target.reset();
             await loadProjects();
+
+            // Automatically open the teams section for the new project
+            manageTeams(newProject.id, newProject.name);
         } else {
             const error = await response.json();
             showError(error.message || 'Failed to add project');
@@ -101,6 +186,76 @@ document.getElementById('addProjectForm').addEventListener('submit', async (e) =
         showError('Failed to add project. Please try again.');
     }
 });
+
+// Add team to project
+document.getElementById('addTeamForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const projectId = formData.get('project_id');
+
+    if (!projectId) {
+        showError('No project selected');
+        return;
+    }
+
+    const teamData = {
+        university_id: universityId,
+        project_id: projectId,
+        name: formData.get('name'),
+        discipline: formData.get('discipline') || null,
+        description: formData.get('description') || null
+    };
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/teams`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(teamData)
+        });
+
+        if (response.ok) {
+            showSuccess('Team added successfully!');
+            e.target.reset();
+            document.getElementById('teamProjectId').value = projectId; // Keep project selected
+            await loadProjectTeams(projectId);
+            await loadProjects(); // Refresh project list to show updated team count
+        } else {
+            const error = await response.json();
+            showError(error.message || 'Failed to add team');
+        }
+    } catch (error) {
+        console.error('Error adding team:', error);
+        showError('Failed to add team. Please try again.');
+    }
+});
+
+// Delete team
+async function deleteTeam(teamId, teamName) {
+    if (!confirm(`Are you sure you want to delete "${teamName}"?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/teams/${teamId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            showSuccess('Team deleted successfully!');
+            const projectId = document.getElementById('teamProjectId').value;
+            if (projectId) {
+                await loadProjectTeams(projectId);
+            }
+            await loadProjects();
+        } else {
+            showError('Failed to delete team');
+        }
+    } catch (error) {
+        console.error('Error deleting team:', error);
+        showError('Failed to delete team. Please try again.');
+    }
+}
 
 // Delete project
 async function deleteProject(projectId, projectName) {
@@ -115,6 +270,7 @@ async function deleteProject(projectId, projectName) {
 
         if (response.ok) {
             showSuccess('Project deleted successfully!');
+            closeTeamsSection(); // Close teams section if it was open
             await loadProjects();
         } else {
             showError('Failed to delete project');
