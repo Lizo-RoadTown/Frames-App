@@ -55,7 +55,7 @@ function viewConnections() {
 }
 
 function viewAnalytics() {
-    window.location.href = `/analytics?university=${selectedUniversity}`;
+    window.location.href = `/dashboard?university=${selectedUniversity}`;
 }
 
 function comparePrograms() {
