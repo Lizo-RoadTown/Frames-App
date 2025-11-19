@@ -1,14 +1,3 @@
-# Program Health Dashboard
-from flask import render_template
-@app.route('/dashboard')
-def program_health_dashboard():
-    """Serve the Program Health dashboard (dynamic network graph)"""
-    university = request.args.get('university')
-    return render_template('dashboard.html', university=university)
-"""
-Flask application for FRAMES
-Provides REST API endpoints for real-time data manipulation
-"""
 
 from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_cors import CORS
@@ -37,6 +26,13 @@ db.init_app(app)
 
 # Global system state (in production, use database)
 system_state = SystemState()
+
+# Program Health Dashboard
+@app.route('/dashboard')
+def program_health_dashboard():
+    """Serve the Program Health dashboard (dynamic network graph)"""
+    university = request.args.get('university')
+    return render_template('dashboard.html', university=university)
 
 # Data persistence file
 DATA_FILE = 'frames_data.json'
