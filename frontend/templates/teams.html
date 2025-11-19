@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Teams - FRAMES</title>
+    <link rel="stylesheet" href="/static/landing.css">
+    <link rel="stylesheet" href="/static/forms.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="back-link">← Back to Home</a>
+        <h2 id="universityName">Your University</h2>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>👥 Student Teams</h1>
+            <p class="subtitle">Add and manage your student teams</p>
+        </div>
+
+        <!-- Existing Teams List -->
+        <section class="card">
+            <h2>Your Teams</h2>
+            <div id="teamsList" class="items-list">
+                <p class="empty-state">No teams yet. Add your first team below!</p>
+            </div>
+        </section>
+
+        <!-- Add New Team Form -->
+        <section class="card">
+            <h2>Add a New Team</h2>
+            <form id="addTeamForm" class="form">
+                <div class="form-group">
+                    <label for="teamName">Team Name *</label>
+                    <input type="text" id="teamName" name="name" required
+                           placeholder="e.g., Power Systems Team, Flight Software">
+                    <span class="hint">Give your team a descriptive name</span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="discipline">Expertise Area</label>
+                        <select id="discipline" name="discipline">
+                            <option value="">Select area...</option>
+                            <option value="electrical">Electrical Engineering</option>
+                            <option value="software">Software Engineering</option>
+                            <option value="mechanical">Mechanical Engineering</option>
+                            <option value="mission-ops">Mission Operations</option>
+                            <option value="communications">Communications</option>
+                            <option value="systems">Systems Engineering</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lifecycle">Team Status</label>
+                        <select id="lifecycle" name="lifecycle">
+                            <option value="">Select status...</option>
+                            <option value="incoming">Incoming (New students joining)</option>
+                            <option value="established">Established (Experienced, active)</option>
+                            <option value="outgoing">Outgoing (Students graduating soon)</option>
+                        </select>
+                        <span class="hint">Where is this team in their journey?</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="size">Number of Students</label>
+                        <input type="number" id="size" name="size" min="1" max="50"
+                               placeholder="e.g., 4">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience">Experience (months)</label>
+                        <input type="number" id="experience" name="experience" min="0" max="120"
+                               placeholder="e.g., 12">
+                        <span class="hint">How long have they been working on this project?</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">What does this team do?</label>
+                    <textarea id="description" name="description" rows="3"
+                              placeholder="Brief description of their role and responsibilities..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Add Team</button>
+                    <button type="reset" class="btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="/static/api.js"></script>
+    <script src="/static/teams.js"></script>
+</body>
+</html>

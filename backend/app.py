@@ -130,6 +130,24 @@ def comparative_dashboard():
     return send_from_directory('../frontend/templates', 'comparative_dashboard.html')
 
 
+@app.route('/teams')
+def teams_page():
+    """Serve the teams management page"""
+    return send_from_directory('../frontend/templates', 'teams.html')
+
+
+@app.route('/faculty')
+def faculty_page():
+    """Serve the faculty management page"""
+    return send_from_directory('../frontend/templates', 'faculty.html')
+
+
+@app.route('/projects')
+def projects_page():
+    """Serve the projects management page"""
+    return send_from_directory('../frontend/templates', 'projects.html')
+
+
 @app.route('/static/<path:path>')
 def serve_static(path):
     """Serve static files (CSS, JS)"""
