@@ -34,6 +34,9 @@ let animationId = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
     console.log('Dashboard initializing...');
+    console.log('THREE available:', typeof THREE !== 'undefined');
+    console.log('OrbitControls available:', typeof OrbitControls !== 'undefined');
+    console.log('THREE.OrbitControls available:', typeof THREE !== 'undefined' && typeof THREE.OrbitControls !== 'undefined');
 
     // Get university from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -54,6 +57,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         console.log('Event listeners setup complete');
     } catch (error) {
         console.error('Error during initialization:', error);
+        console.error('Error stack:', error.stack);
         document.getElementById('nodeDetails').innerHTML = `
             <p style="color: #ef4444;">Error loading 3D visualization</p>
             <p style="font-size: 0.875rem;">${error.message}</p>
