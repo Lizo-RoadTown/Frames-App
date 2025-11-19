@@ -136,6 +136,12 @@ def teams_page():
     return send_from_directory('../frontend/templates', 'teams.html')
 
 
+@app.route('/students')
+def students_page():
+    """Serve the student roster management page"""
+    return send_from_directory('../frontend/templates', 'students.html')
+
+
 @app.route('/faculty')
 def faculty_page():
     """Serve the faculty management page"""

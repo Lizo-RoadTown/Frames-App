@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Roster - FRAMES</title>
+    <link rel="stylesheet" href="/static/landing.css">
+    <link rel="stylesheet" href="/static/forms.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="back-link">← Back to Home</a>
+        <h2 id="universityName">Your University</h2>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>👥 Student Roster</h1>
+            <p class="subtitle">Manage your student roster - we'll track rotations automatically</p>
+        </div>
+
+        <!-- Student Summary -->
+        <section class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Active Students</h2>
+                <div id="studentSummary" style="display: flex; gap: 20px;">
+                    <div class="stat-badge incoming">
+                        <span class="stat-number" id="incomingCount">0</span>
+                        <span class="stat-label">Incoming</span>
+                    </div>
+                    <div class="stat-badge established">
+                        <span class="stat-number" id="establishedCount">0</span>
+                        <span class="stat-label">Established</span>
+                    </div>
+                    <div class="stat-badge outgoing">
+                        <span class="stat-number" id="outgoingCount">0</span>
+                        <span class="stat-label">Outgoing</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter by team/project -->
+            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                <select id="filterTeam" class="filter-select" onchange="filterStudents()">
+                    <option value="">All Teams</option>
+                </select>
+                <select id="filterProject" class="filter-select" onchange="filterStudents()">
+                    <option value="">All Projects</option>
+                </select>
+            </div>
+
+            <div id="studentsList" class="items-list">
+                <p class="empty-state">No students yet. Add your first student below!</p>
+            </div>
+        </section>
+
+        <!-- Add New Student Form -->
+        <section class="card">
+            <h2>Add a New Student</h2>
+            <form id="addStudentForm" class="form">
+                <div class="form-group">
+                    <label for="studentName">Student Name *</label>
+                    <input type="text" id="studentName" name="name" required
+                           placeholder="e.g., Jane Smith">
+                    <span class="hint">Full name of the student</span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="teamId">Team *</label>
+                        <select id="teamId" name="team_id" required>
+                            <option value="">Select team...</option>
+                        </select>
+                        <span class="hint">Which team are they on?</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="projectId">Project</label>
+                        <select id="projectId" name="project_id">
+                            <option value="">Select project...</option>
+                        </select>
+                        <span class="hint">What mission are they working on?</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expertiseArea">Expertise Area</label>
+                        <select id="expertiseArea" name="expertise_area">
+                            <option value="">Select area...</option>
+                            <option value="Electrical">Electrical Engineering</option>
+                            <option value="Software">Software Engineering</option>
+                            <option value="Mechanical">Mechanical Engineering</option>
+                            <option value="Mission Ops">Mission Operations</option>
+                            <option value="Communications">Communications</option>
+                            <option value="Systems">Systems Engineering</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="graduationTerm">Expected Graduation</label>
+                        <select id="graduationTerm" name="graduation_term">
+                            <option value="">Select term...</option>
+                            <option value="Fall 2024">Fall 2024</option>
+                            <option value="Spring 2025">Spring 2025</option>
+                            <option value="Fall 2025">Fall 2025</option>
+                            <option value="Spring 2026">Spring 2026</option>
+                            <option value="Fall 2026">Fall 2026</option>
+                            <option value="Spring 2027">Spring 2027</option>
+                            <option value="Fall 2027">Fall 2027</option>
+                            <option value="Spring 2028">Spring 2028</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="termsRemaining">Terms Until Graduation *</label>
+                    <input type="number" id="termsRemaining" name="terms_remaining" min="0" max="20" value="4" required>
+                    <span class="hint">How many semesters/quarters until they graduate? (Default: 4)</span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Add Student</button>
+                    <button type="reset" class="btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="/static/api.js"></script>
+    <script src="/static/students.js"></script>
+</body>
+</html>

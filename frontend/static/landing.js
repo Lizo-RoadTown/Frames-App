@@ -39,7 +39,7 @@ function viewAllUniversities() {
 }
 
 function manageTeams() {
-    window.location.href = `/teams?university=${selectedUniversity}`;
+    window.location.href = `/students?university=${selectedUniversity}`;
 }
 
 function manageFaculty() {
