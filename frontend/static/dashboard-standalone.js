@@ -23,10 +23,16 @@ let edges = new Map();
 let particles = [];
 let selectedNode = null;
 let isDragging = false;
+let draggedNode = null;
 let universityId = null;
 
 // Animation
 let animationId = null;
+
+// Drag state
+let dragPlane = null;
+let dragOffset = new THREE.Vector3();
+let dragIntersection = new THREE.Vector3();
 
 // ============================================================================
 // Initialization
@@ -236,6 +242,11 @@ function buildMolecularStructure(data) {
         createFacultyNodes(data.faculty);
     }
 
+    // Create student nodes (micro-modules within teams)
+    if (data.students) {
+        createStudentNodes(data.students);
+    }
+
     // Create energy bonds
     if (data.interfaces) {
         createEnergyBonds(data.interfaces);
@@ -390,6 +401,65 @@ function createFacultyNodes(faculty) {
     });
 }
 
+function createStudentNodes(students) {
+    students.forEach((student, index) => {
+        const parentTeam = nodes.get(student.team_id);
+        if (!parentTeam) {
+            console.warn(`Parent team ${student.team_id} not found for student ${student.id}`);
+            return;
+        }
+
+        // Students orbit within their team sphere (like electrons)
+        // Position them in a small orbit around the team
+        const teamOrbitRadius = 20; // Small radius around team
+        const angle = (Math.PI * 2 / 10) * (Math.random() * 10); // Random angle
+
+        const offset = new THREE.Vector3(
+            Math.cos(angle) * teamOrbitRadius,
+            (Math.random() - 0.5) * 15, // Slight vertical variation
+            Math.sin(angle) * teamOrbitRadius
+        );
+        const position = parentTeam.position.clone().add(offset);
+
+        // Color code by status: incoming (orange), established (green), outgoing (red)
+        let color, emissiveColor;
+        if (student.status === 'incoming') {
+            color = 0xf59e0b; // Orange
+            emissiveColor = 0xf59e0b;
+        } else if (student.status === 'outgoing') {
+            color = 0xef4444; // Red
+            emissiveColor = 0xef4444;
+        } else {
+            color = 0x10b981; // Green (established)
+            emissiveColor = 0x10b981;
+        }
+
+        const geometry = new THREE.SphereGeometry(5, 12, 12);
+        const material = new THREE.MeshPhongMaterial({
+            color: color,
+            emissive: emissiveColor,
+            emissiveIntensity: 0.4,
+            transparent: true,
+            opacity: 0.9
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.copy(position);
+        scene.add(mesh);
+
+        nodes.set(student.id, {
+            id: student.id,
+            type: 'student',
+            data: student,
+            mesh: mesh,
+            position: position,
+            orbitAngle: angle,
+            orbitRadius: teamOrbitRadius,
+            orbitCenter: parentTeam.position.clone() // Store the team center for orbiting
+        });
+    });
+}
+
 // ============================================================================
 // Energy Bonds & Particle Flows
 // ============================================================================
@@ -411,17 +481,21 @@ function createEnergyBonds(interfaces) {
             toNode.position
         );
 
-        const points = curve.getPoints(50);
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const material = new THREE.LineBasicMaterial({
+        // Bond thickness based on strength (inverse of energy loss)
+        // Strong bonds (low energy loss) = thick, Weak bonds (high energy loss) = thin
+        const bondStrength = 1 - bond.energy_loss;
+        const tubeRadius = 0.5 + (bondStrength * 2.5); // Range: 0.5 to 3.0
+
+        // Create tube geometry for visible thickness
+        const tubeGeometry = new THREE.TubeGeometry(curve, 20, tubeRadius, 8, false);
+        const tubeMaterial = new THREE.MeshBasicMaterial({
             color: color,
             transparent: true,
-            opacity: 0.6,
-            linewidth: 2
+            opacity: 0.4
         });
 
-        const line = new THREE.Line(geometry, material);
-        scene.add(line);
+        const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+        scene.add(tube);
 
         // Create particles flowing along bond
         const bondParticles = createParticleFlow(curve, color, bond.energy_loss);
@@ -429,10 +503,11 @@ function createEnergyBonds(interfaces) {
         edges.set(`${bond.from}-${bond.to}`, {
             from: bond.from,
             to: bond.to,
-            line: line,
+            line: tube,
             curve: curve,
             particles: bondParticles,
             energyLoss: bond.energy_loss,
+            bondStrength: bondStrength,
             data: bond
         });
     });
@@ -512,16 +587,31 @@ function animate() {
         particle.mesh.scale.set(scale, scale, scale);
     });
 
-    // Orbital rotation for projects
+    // Orbital rotation for projects and students
     nodes.forEach(node => {
         if (node.orbitAngle !== undefined && !node.isNucleus) {
-            node.orbitAngle += 0.001;
-            const x = Math.cos(node.orbitAngle) * node.orbitRadius;
-            const z = Math.sin(node.orbitAngle) * node.orbitRadius;
-            node.mesh.position.x = x;
-            node.mesh.position.z = z;
-            node.position.x = x;
-            node.position.z = z;
+            if (node.type === 'student' && node.orbitCenter) {
+                // Students orbit around their team center (faster rotation like electrons)
+                node.orbitAngle += 0.005; // Faster rotation for students
+                const x = node.orbitCenter.x + Math.cos(node.orbitAngle) * node.orbitRadius;
+                const z = node.orbitCenter.z + Math.sin(node.orbitAngle) * node.orbitRadius;
+                const y = node.orbitCenter.y + (Math.sin(node.orbitAngle * 2) * 5); // Slight bobbing
+                node.mesh.position.x = x;
+                node.mesh.position.y = y;
+                node.mesh.position.z = z;
+                node.position.x = x;
+                node.position.y = y;
+                node.position.z = z;
+            } else if (node.type === 'project') {
+                // Projects orbit around nucleus (slower)
+                node.orbitAngle += 0.001;
+                const x = Math.cos(node.orbitAngle) * node.orbitRadius;
+                const z = Math.sin(node.orbitAngle) * node.orbitRadius;
+                node.mesh.position.x = x;
+                node.mesh.position.z = z;
+                node.position.x = x;
+                node.position.z = z;
+            }
         }
     });
 
@@ -545,6 +635,14 @@ function setupEventListeners() {
 
     canvas.addEventListener('click', onCanvasClick);
     canvas.addEventListener('mousemove', onCanvasMouseMove);
+    canvas.addEventListener('mousedown', onMouseDown);
+    canvas.addEventListener('mouseup', onMouseUp);
+
+    // Create an invisible drag plane for 3D dragging
+    const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
+    const planeMaterial = new THREE.MeshBasicMaterial({ visible: false });
+    dragPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+    scene.add(dragPlane);
 }
 
 function onCanvasClick(event) {
@@ -565,15 +663,118 @@ function onCanvasClick(event) {
 }
 
 function onCanvasMouseMove(event) {
+    if (isDragging && draggedNode) {
+        // Dragging mode: move the node
+        const raycaster = getRaycaster(event);
+        const intersects = raycaster.intersectObject(dragPlane);
+
+        if (intersects.length > 0) {
+            const intersectPoint = intersects[0].point;
+            draggedNode.mesh.position.copy(intersectPoint.add(dragOffset));
+            draggedNode.position.copy(draggedNode.mesh.position);
+
+            // Update connected edges
+            updateConnectedEdges(draggedNode);
+
+            // Disable orbit controls while dragging
+            controls.enabled = false;
+        }
+    } else {
+        // Hover mode: show cursor feedback
+        const raycaster = getRaycaster(event);
+        const meshes = Array.from(nodes.values()).map(n => n.mesh);
+        const intersects = raycaster.intersectObjects(meshes);
+
+        if (intersects.length > 0) {
+            document.body.style.cursor = 'grab';
+        } else {
+            document.body.style.cursor = 'default';
+        }
+    }
+}
+
+function onMouseDown(event) {
     const raycaster = getRaycaster(event);
     const meshes = Array.from(nodes.values()).map(n => n.mesh);
     const intersects = raycaster.intersectObjects(meshes);
 
     if (intersects.length > 0) {
-        document.body.style.cursor = 'pointer';
-    } else {
+        const clicked = intersects[0].object;
+        const node = Array.from(nodes.values()).find(n => n.mesh === clicked);
+
+        if (node) {
+            isDragging = true;
+            draggedNode = node;
+            document.body.style.cursor = 'grabbing';
+
+            // Set up the drag plane oriented to face the camera
+            dragPlane.position.copy(node.mesh.position);
+            dragPlane.lookAt(camera.position);
+
+            // Calculate offset between mouse ray and object position
+            const planeIntersects = raycaster.intersectObject(dragPlane);
+            if (planeIntersects.length > 0) {
+                dragOffset.copy(node.mesh.position).sub(planeIntersects[0].point);
+            }
+
+            // Stop auto-rotation while dragging
+            controls.autoRotate = false;
+        }
+    }
+}
+
+function onMouseUp(event) {
+    if (isDragging && draggedNode) {
+        isDragging = false;
+        controls.enabled = true;
+
+        // If it was a quick click (not much dragging), select the node
+        selectNode(draggedNode);
+
+        draggedNode = null;
         document.body.style.cursor = 'default';
     }
+}
+
+function updateConnectedEdges(node) {
+    // Rebuild curves for all connected edges
+    edges.forEach((edge, key) => {
+        if (edge.from === node.id || edge.to === node.id) {
+            const fromNode = nodes.get(edge.from);
+            const toNode = nodes.get(edge.to);
+
+            if (fromNode && toNode) {
+                // Update the curve
+                const newCurve = new THREE.QuadraticBezierCurve3(
+                    fromNode.position,
+                    getMidpoint(fromNode.position, toNode.position, edge.energyLoss),
+                    toNode.position
+                );
+
+                // Update tube geometry
+                const bondStrength = 1 - edge.energyLoss;
+                const tubeRadius = 0.5 + (bondStrength * 2.5);
+                const color = getEnergyColor(edge.energyLoss);
+
+                // Remove old tube
+                scene.remove(edge.line);
+
+                // Create new tube
+                const tubeGeometry = new THREE.TubeGeometry(newCurve, 20, tubeRadius, 8, false);
+                const tubeMaterial = new THREE.MeshBasicMaterial({
+                    color: color,
+                    transparent: true,
+                    opacity: 0.4
+                });
+                const newTube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+                scene.add(newTube);
+
+                // Update edge data
+                edge.curve = newCurve;
+                edge.line = newTube;
+            }
+        }
+    });
 }
 
 function getRaycaster(event) {
@@ -619,24 +820,68 @@ function updateInfoPanel(node) {
     let html = `<strong>${node.data.name || node.id}</strong><br>`;
     html += `<span style="color:var(--text-secondary)">Type: ${node.type}</span><br>`;
 
+    // Add type-specific info
     if (node.type === 'nucleus') {
         html += `<br><span style="color: var(--cyan);">⚛️ Central Project (Nucleus)</span>`;
+    } else if (node.type === 'student') {
+        const statusColors = {
+            'incoming': '#f59e0b',
+            'established': '#10b981',
+            'outgoing': '#ef4444'
+        };
+        const statusColor = statusColors[node.data.status] || '#64ffda';
+        html += `<br><span style="color: ${statusColor};">Status: ${node.data.status}</span>`;
+        if (node.data.year) {
+            html += `<br><span style="color:var(--text-secondary)">Year: ${node.data.year}</span>`;
+        }
+    } else if (node.type === 'team') {
+        if (node.data.lifecycle) {
+            html += `<br><span style="color:var(--text-secondary)">Lifecycle: ${node.data.lifecycle}</span>`;
+        }
+        if (node.data.discipline) {
+            html += `<br><span style="color:var(--text-secondary)">Discipline: ${node.data.discipline}</span>`;
+        }
+    } else if (node.type === 'faculty') {
+        if (node.data.role) {
+            html += `<br><span style="color:var(--text-secondary)">${node.data.role}</span>`;
+        }
     }
 
-    // Show connected nodes
+    // Show connected nodes with bond strength details
     const connections = Array.from(edges.values()).filter(e =>
         e.from === node.id || e.to === node.id
     );
 
     if (connections.length > 0) {
-        html += `<br><br><strong>Connections:</strong> ${connections.length}`;
-        html += `<br><small>`;
-        connections.slice(0, 5).forEach(conn => {
+        html += `<br><br><strong>Bonds:</strong> ${connections.length} total`;
+        html += `<br><div style="font-size: 0.75rem; max-height: 200px; overflow-y: auto;">`;
+
+        connections.slice(0, 10).forEach(conn => {
             const energyPercent = Math.round(conn.energyLoss * 100);
+            const strengthPercent = Math.round(conn.bondStrength * 100);
             const color = energyPercent < 15 ? '#10b981' : energyPercent < 35 ? '#fbbf24' : energyPercent < 60 ? '#f59e0b' : '#ef4444';
-            html += `<div style="margin: 0.25rem 0; color: ${color};">${energyPercent}% energy loss</div>`;
+
+            // Get the other node's name
+            const otherId = conn.from === node.id ? conn.to : conn.from;
+            const otherNode = nodes.get(otherId);
+            const otherName = otherNode ? (otherNode.data.name || otherId) : otherId;
+
+            // Bond strength indicator (thickness visualization)
+            const thicknessBar = '█'.repeat(Math.max(1, Math.floor(strengthPercent / 20)));
+
+            html += `<div style="margin: 0.5rem 0; padding: 0.25rem; background: rgba(255,255,255,0.05); border-left: 3px solid ${color};">`;
+            html += `<div style="font-weight: 600;">${otherName}</div>`;
+            html += `<div style="color: ${color};">Energy Loss: ${energyPercent}%</div>`;
+            html += `<div style="color: #64ffda;">Bond Strength: ${strengthPercent}% <span style="letter-spacing: -2px;">${thicknessBar}</span></div>`;
+            html += `<div style="color:var(--text-secondary); font-size: 0.7rem;">${conn.data.type || 'interface'}</div>`;
+            html += `</div>`;
         });
-        html += `</small>`;
+
+        if (connections.length > 10) {
+            html += `<div style="color:var(--text-secondary); margin-top: 0.5rem; font-style: italic;">...and ${connections.length - 10} more</div>`;
+        }
+
+        html += `</div>`;
     }
 
     panel.innerHTML = html;
@@ -652,3 +897,174 @@ window.addEventListener('beforeunload', () => {
         renderer.dispose();
     }
 });
+
+// ============================================================================
+// Sample Data Loading (for testing without backend)
+// ============================================================================
+
+window.loadComprehensiveSampleData = function() {
+    console.log('Loading comprehensive sample data with students...');
+
+    const comprehensiveData = {
+        projects: [
+            { id: 'PROVES', name: 'PROVES', type: 'collaborative', is_nucleus: true },
+            { id: 'JPL_CubeSat', name: 'JPL CubeSat Mission', type: 'contract' },
+            { id: 'Multi_Uni', name: 'Multi-University Research', type: 'collaborative' },
+            { id: 'Contract_Pursuit', name: 'Contract Proposal', type: 'proposal' }
+        ],
+        teams: [
+            // PROVES teams
+            { id: 'proves_core', name: 'PROVES Core Team', project_id: 'PROVES', discipline: 'Multidisciplinary', lifecycle: 'established' },
+
+            // JPL CubeSat teams
+            { id: 'power_sys', name: 'Power Systems', project_id: 'JPL_CubeSat', discipline: 'Electrical', lifecycle: 'established' },
+            { id: 'flight_sw', name: 'Flight Software', project_id: 'JPL_CubeSat', discipline: 'Software', lifecycle: 'established' },
+            { id: 'comms', name: 'Communications', project_id: 'JPL_CubeSat', discipline: 'Electrical', lifecycle: 'incoming' },
+
+            // Multi-University teams
+            { id: 'mission_ops', name: 'Mission Operations', project_id: 'Multi_Uni', discipline: 'Mission Ops', lifecycle: 'established' },
+            { id: 'mechanical', name: 'Mechanical Systems', project_id: 'Multi_Uni', discipline: 'Mechanical', lifecycle: 'established' },
+
+            // Contract Pursuit teams
+            { id: 'proposal_eng', name: 'Proposal Engineering', project_id: 'Contract_Pursuit', discipline: 'Engineering', lifecycle: 'incoming' },
+            { id: 'legacy_sw', name: 'Software Legacy', project_id: 'Contract_Pursuit', discipline: 'Software', lifecycle: 'outgoing' }
+        ],
+        students: [
+            // PROVES Core Team students
+            { id: 's1', name: 'Alice Chen', team_id: 'proves_core', status: 'established', year: 3 },
+            { id: 's2', name: 'Bob Martinez', team_id: 'proves_core', status: 'established', year: 3 },
+            { id: 's3', name: 'Carol Kim', team_id: 'proves_core', status: 'established', year: 4 },
+
+            // Power Systems students
+            { id: 's4', name: 'David Lopez', team_id: 'power_sys', status: 'established', year: 3 },
+            { id: 's5', name: 'Emma Wilson', team_id: 'power_sys', status: 'established', year: 4 },
+            { id: 's6', name: 'Frank Zhang', team_id: 'power_sys', status: 'incoming', year: 2 },
+            { id: 's7', name: 'Grace Lee', team_id: 'power_sys', status: 'established', year: 3 },
+
+            // Flight Software students
+            { id: 's8', name: 'Henry Patel', team_id: 'flight_sw', status: 'established', year: 4 },
+            { id: 's9', name: 'Iris Johnson', team_id: 'flight_sw', status: 'established', year: 3 },
+            { id: 's10', name: 'Jack Brown', team_id: 'flight_sw', status: 'incoming', year: 2 },
+            { id: 's11', name: 'Kelly Davis', team_id: 'flight_sw', status: 'established', year: 3 },
+            { id: 's12', name: 'Leo Garcia', team_id: 'flight_sw', status: 'established', year: 4 },
+
+            // Communications students
+            { id: 's13', name: 'Maya Singh', team_id: 'comms', status: 'incoming', year: 2 },
+            { id: 's14', name: 'Noah Taylor', team_id: 'comms', status: 'incoming', year: 2 },
+            { id: 's15', name: 'Olivia White', team_id: 'comms', status: 'incoming', year: 1 },
+
+            // Mission Ops students
+            { id: 's16', name: 'Peter Anderson', team_id: 'mission_ops', status: 'established', year: 3 },
+            { id: 's17', name: 'Quinn Thomas', team_id: 'mission_ops', status: 'established', year: 4 },
+            { id: 's18', name: 'Rachel Moore', team_id: 'mission_ops', status: 'incoming', year: 2 },
+            { id: 's19', name: 'Sam Jackson', team_id: 'mission_ops', status: 'established', year: 3 },
+
+            // Mechanical Systems students
+            { id: 's20', name: 'Tina Martin', team_id: 'mechanical', status: 'established', year: 4 },
+            { id: 's21', name: 'Uma Patel', team_id: 'mechanical', status: 'established', year: 3 },
+            { id: 's22', name: 'Victor Lee', team_id: 'mechanical', status: 'incoming', year: 2 },
+
+            // Proposal Engineering students
+            { id: 's23', name: 'Wendy Clark', team_id: 'proposal_eng', status: 'incoming', year: 1 },
+            { id: 's24', name: 'Xavier Rodriguez', team_id: 'proposal_eng', status: 'incoming', year: 2 },
+
+            // Legacy Software students (outgoing)
+            { id: 's25', name: 'Yuki Tanaka', team_id: 'legacy_sw', status: 'outgoing', year: 4 },
+            { id: 's26', name: 'Zoe Williams', team_id: 'legacy_sw', status: 'outgoing', year: 4 }
+        ],
+        faculty: [
+            { id: 'f1', name: 'Dr. Sarah Chen', role: 'Principal Investigator' },
+            { id: 'f2', name: 'Dr. James Rodriguez', role: 'Technical Lead' },
+            { id: 'f3', name: 'Dr. Maria Garcia', role: 'Program Director' }
+        ],
+        interfaces: [
+            // PROVES to other projects (nucleus connections) - healthy
+            { from: 'PROVES', to: 'JPL_CubeSat', energy_loss: 0.10, type: 'knowledge_transfer' },
+            { from: 'PROVES', to: 'Multi_Uni', energy_loss: 0.12, type: 'knowledge_transfer' },
+            { from: 'PROVES', to: 'Contract_Pursuit', energy_loss: 0.15, type: 'knowledge_transfer' },
+
+            // Project to Team connections
+            { from: 'PROVES', to: 'proves_core', energy_loss: 0.08, type: 'project_team' },
+            { from: 'JPL_CubeSat', to: 'power_sys', energy_loss: 0.12, type: 'project_team' },
+            { from: 'JPL_CubeSat', to: 'flight_sw', energy_loss: 0.10, type: 'project_team' },
+            { from: 'JPL_CubeSat', to: 'comms', energy_loss: 0.25, type: 'project_team' },
+            { from: 'Multi_Uni', to: 'mission_ops', energy_loss: 0.15, type: 'project_team' },
+            { from: 'Multi_Uni', to: 'mechanical', energy_loss: 0.18, type: 'project_team' },
+            { from: 'Contract_Pursuit', to: 'proposal_eng', energy_loss: 0.40, type: 'project_team' },
+            { from: 'Contract_Pursuit', to: 'legacy_sw', energy_loss: 0.65, type: 'project_team' },
+
+            // Team to Student connections (showing varying bond strengths)
+            { from: 'proves_core', to: 's1', energy_loss: 0.05, type: 'team_student' },
+            { from: 'proves_core', to: 's2', energy_loss: 0.08, type: 'team_student' },
+            { from: 'proves_core', to: 's3', energy_loss: 0.10, type: 'team_student' },
+
+            { from: 'power_sys', to: 's4', energy_loss: 0.12, type: 'team_student' },
+            { from: 'power_sys', to: 's5', energy_loss: 0.10, type: 'team_student' },
+            { from: 'power_sys', to: 's6', energy_loss: 0.30, type: 'team_student' }, // Incoming student
+            { from: 'power_sys', to: 's7', energy_loss: 0.15, type: 'team_student' },
+
+            { from: 'flight_sw', to: 's8', energy_loss: 0.08, type: 'team_student' },
+            { from: 'flight_sw', to: 's9', energy_loss: 0.12, type: 'team_student' },
+            { from: 'flight_sw', to: 's10', energy_loss: 0.35, type: 'team_student' }, // Incoming
+            { from: 'flight_sw', to: 's11', energy_loss: 0.14, type: 'team_student' },
+            { from: 'flight_sw', to: 's12', energy_loss: 0.10, type: 'team_student' },
+
+            { from: 'comms', to: 's13', energy_loss: 0.40, type: 'team_student' }, // New team
+            { from: 'comms', to: 's14', energy_loss: 0.38, type: 'team_student' },
+            { from: 'comms', to: 's15', energy_loss: 0.50, type: 'team_student' },
+
+            { from: 'mission_ops', to: 's16', energy_loss: 0.15, type: 'team_student' },
+            { from: 'mission_ops', to: 's17', energy_loss: 0.12, type: 'team_student' },
+            { from: 'mission_ops', to: 's18', energy_loss: 0.28, type: 'team_student' },
+            { from: 'mission_ops', to: 's19', energy_loss: 0.18, type: 'team_student' },
+
+            { from: 'mechanical', to: 's20', energy_loss: 0.14, type: 'team_student' },
+            { from: 'mechanical', to: 's21', energy_loss: 0.16, type: 'team_student' },
+            { from: 'mechanical', to: 's22', energy_loss: 0.32, type: 'team_student' },
+
+            { from: 'proposal_eng', to: 's23', energy_loss: 0.55, type: 'team_student' }, // Very new
+            { from: 'proposal_eng', to: 's24', energy_loss: 0.45, type: 'team_student' },
+
+            { from: 'legacy_sw', to: 's25', energy_loss: 0.70, type: 'team_student' }, // Graduating
+            { from: 'legacy_sw', to: 's26', energy_loss: 0.68, type: 'team_student' },
+
+            // Faculty mentoring connections
+            { from: 'f1', to: 'proves_core', energy_loss: 0.10, type: 'mentoring' },
+            { from: 'f1', to: 'JPL_CubeSat', energy_loss: 0.12, type: 'mentoring' },
+            { from: 'f2', to: 'flight_sw', energy_loss: 0.15, type: 'mentoring' },
+            { from: 'f2', to: 'power_sys', energy_loss: 0.18, type: 'mentoring' },
+            { from: 'f3', to: 'mission_ops', energy_loss: 0.20, type: 'mentoring' },
+            { from: 'f3', to: 'mechanical', energy_loss: 0.22, type: 'mentoring' },
+
+            // Cross-team knowledge transfer
+            { from: 'power_sys', to: 'flight_sw', energy_loss: 0.20, type: 'team_team' },
+            { from: 'flight_sw', to: 'comms', energy_loss: 0.30, type: 'team_team' },
+            { from: 'legacy_sw', to: 'flight_sw', energy_loss: 0.50, type: 'team_team' }, // Knowledge loss from graduating team
+
+            // Student to student collaboration (within and across teams)
+            { from: 's8', to: 's9', energy_loss: 0.08, type: 'student_student' }, // Same team, strong
+            { from: 's4', to: 's8', energy_loss: 0.25, type: 'student_student' }, // Cross-team
+            { from: 's25', to: 's12', energy_loss: 0.60, type: 'student_student' }  // Outgoing to established
+        ]
+    };
+
+    // Rebuild the visualization with this data
+    buildMolecularStructure(comprehensiveData);
+
+    // Update info panel
+    document.getElementById('nodeDetails').innerHTML = `
+        <p style="color: #10b981; font-weight: 600;">✓ Sample data loaded!</p>
+        <p style="font-size: 0.875rem; margin-top: 10px;">
+            <strong>4</strong> projects<br>
+            <strong>8</strong> teams<br>
+            <strong>26</strong> students<br>
+            <strong>3</strong> faculty<br>
+            <strong>60+</strong> interfaces
+        </p>
+        <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 10px;">
+            Click any node to see details
+        </p>
+    `;
+
+    console.log('Sample data loaded successfully');
+};
