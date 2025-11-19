@@ -75,7 +75,7 @@ document.querySelectorAll('.university-btn').forEach(btn => {
 });
 
 function showRoleSelection(uniName) {
-    document.getElementById('universitySelection').classList.add('hidden');
+    document.getElementById('mainLanding').classList.add('hidden');
     document.getElementById('roleSelection').classList.remove('hidden');
     document.getElementById('selectedUniNameRole').textContent = uniName;
 }
@@ -127,7 +127,7 @@ function showDashboardOptions(uniName, role) {
 function changeUniversity() {
     document.getElementById('dashboardOptions').classList.add('hidden');
     document.getElementById('roleSelection').classList.add('hidden');
-    document.getElementById('universitySelection').classList.remove('hidden');
+    document.getElementById('mainLanding').classList.remove('hidden');
     selectedUniversity = null;
     selectedRole = null;
     sessionStorage.removeItem('selectedUniversity');

@@ -21,10 +21,21 @@
     </div>
 
     <div class="container">
-        <!-- Step 1: Select University -->
-        <section id="universitySelection" class="card active">
-            <h2 class="section-title">Select Your Institution</h2>
-            <p class="hint">Choose your university to view and manage program data</p>
+        <!-- Main Landing: Feature Bronco Star Research Team -->
+        <section id="mainLanding" class="card active">
+            <div class="featured-tile research-featured" onclick="openResearchDashboard()">
+                <div class="featured-icon"><span class="lucide" data-lucide="star"></span></div>
+                <h2 class="featured-title">Bronco Star Research Team</h2>
+                <p class="featured-description">Advanced multi-university analysis and network visualization tools for program leadership and research</p>
+                <button class="btn-featured">Access Research Dashboard <span class="lucide" data-lucide="arrow-right"></span></button>
+            </div>
+            
+            <div class="divider-text">
+                <span>or</span>
+            </div>
+            
+            <h3 class="section-subtitle" style="text-align: center; margin-bottom: var(--space-4);">University Program Management</h3>
+            <p class="hint" style="text-align: center; margin-bottom: var(--space-4);">Select your institution to manage teams, faculty, and projects</p>
             <div class="university-grid">
                 <button class="university-btn" data-id="CalPolyPomona">
                     <div class="uni-logo-placeholder">
