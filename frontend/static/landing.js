@@ -9,8 +9,7 @@ let selectedRole = null;
 // Role permissions mapping
 const rolePermissions = {
     faculty: ['teams', 'faculty', 'projects', 'connections', 'health', 'compare', 'research'],
-    teamlead: ['teams', 'faculty', 'projects', 'health'],
-    student: ['teams']
+    teamlead: ['teams', 'health']
 };
 
 // Tile definitions
