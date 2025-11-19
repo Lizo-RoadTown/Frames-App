@@ -11,6 +11,11 @@
  * Uses global THREE from CDN for PythonAnywhere compatibility
  */
 
+// API configuration
+const API_BASE_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
+    : '/api';
+
 // Global state
 let scene, camera, renderer, controls;
 let nodes = new Map();
@@ -58,6 +63,15 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 function initScene() {
+    // Check if OrbitControls is available
+    if (typeof OrbitControls === 'undefined' && typeof THREE !== 'undefined' && THREE.OrbitControls) {
+        window.OrbitControls = THREE.OrbitControls;
+    }
+    
+    if (typeof OrbitControls === 'undefined') {
+        throw new Error('OrbitControls is not defined. Check that Three.js scripts are loaded correctly.');
+    }
+
     // Scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0f);
