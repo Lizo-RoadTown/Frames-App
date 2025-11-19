@@ -427,10 +427,10 @@ def create_student():
             university_id=data['university_id'],
             name=data['name'],
             team_id=data.get('team_id'),
-            project_id=data.get('project_id'),
             expertise_area=data.get('expertise_area'),
             graduation_term=data.get('graduation_term'),
-            terms_remaining=data.get('terms_remaining', 4)
+            terms_remaining=data.get('terms_remaining', 4),
+            is_lead=data.get('is_lead', False)
         )
 
         # Auto-calculate status
@@ -479,8 +479,6 @@ def update_student(student_id):
             student.name = data['name']
         if 'team_id' in data:
             student.team_id = data['team_id']
-        if 'project_id' in data:
-            student.project_id = data['project_id']
         if 'expertise_area' in data:
             student.expertise_area = data['expertise_area']
         if 'graduation_term' in data:
@@ -488,6 +486,8 @@ def update_student(student_id):
         if 'terms_remaining' in data:
             student.terms_remaining = data['terms_remaining']
             student.status = student.calculate_status()
+        if 'is_lead' in data:
+            student.is_lead = data['is_lead']
 
         db.session.commit()
         return jsonify(student.to_dict())

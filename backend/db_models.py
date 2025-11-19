@@ -169,6 +169,7 @@ class StudentModel(db.Model):
     graduation_term = db.Column(db.String, nullable=True)  # e.g., "Spring 2026"
     terms_remaining = db.Column(db.Integer, nullable=False, default=4)  # Auto-decrements each term
     status = db.Column(db.String, nullable=True)  # Auto-calculated: incoming/established/outgoing
+    is_lead = db.Column(db.Boolean, default=False)  # Team lead designation
     active = db.Column(db.Boolean, default=True)  # False when graduated
     created_at = db.Column(db.String, default=lambda: datetime.now().isoformat())
     graduated_at = db.Column(db.String, nullable=True)  # Set when terms_remaining hits 0
@@ -193,6 +194,7 @@ class StudentModel(db.Model):
             'graduation_term': self.graduation_term,
             'terms_remaining': self.terms_remaining,
             'status': self.status or self.calculate_status(),
+            'is_lead': self.is_lead,
             'active': self.active,
             'created_at': self.created_at,
             'graduated_at': self.graduated_at,
