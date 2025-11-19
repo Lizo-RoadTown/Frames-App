@@ -121,7 +121,6 @@ function displayStudents(students) {
                 <div class="item-details">
                     ${team ? `👥 ${team.name}` : ''}
                     ${project ? `• 🛸 ${project.name}` : ''}
-                    ${student.graduation_term ? `• 🎓 ${student.graduation_term}` : ''}
                 </div>
                 <div class="item-details" style="margin-top: 8px;">
                     <strong>Terms remaining:</strong> ${student.terms_remaining}
@@ -154,7 +153,6 @@ document.getElementById('addStudentForm').addEventListener('submit', async (e) =
         name: formData.get('name'),
         team_id: formData.get('team_id'),
         expertise_area: formData.get('expertise_area') || null,
-        graduation_term: formData.get('graduation_term') || null,
         terms_remaining: parseInt(formData.get('terms_remaining'))
     };
 
