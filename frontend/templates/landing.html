@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FRAMES - Space Program Knowledge Network</title>
-    <link rel="stylesheet" href="/static/professional.css">
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
 </head>
 <body>
     <div class="hero">
@@ -18,42 +23,31 @@
     <div class="container">
         <!-- Step 1: Select University -->
         <section id="universitySelection" class="card active">
-            <h2>Select Your Institution</h2>
+            <h2 class="section-title">Select Your Institution</h2>
             <p class="hint">Choose your university to view and manage program data</p>
-
             <div class="university-grid">
+                <!-- Example: Replace with real logos as needed -->
                 <button class="university-btn" data-id="CalPolyPomona">
                     <div class="uni-logo-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
+                        <img src="/static/logos/calpoly.png" alt="Cal Poly Pomona" class="uni-logo-img" onerror="this.style.display='none'">
                     </div>
                     <div>
                         <div class="uni-name">Cal Poly Pomona</div>
                         <div class="uni-location">Lead Institution</div>
                     </div>
                 </button>
-
                 <button class="university-btn" data-id="TexasState">
                     <div class="uni-logo-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
+                        <img src="/static/logos/texasstate.png" alt="Texas State University" class="uni-logo-img" onerror="this.style.display='none'">
                     </div>
                     <div>
                         <div class="uni-name">Texas State University</div>
                         <div class="uni-location">San Marcos, TX</div>
                     </div>
                 </button>
-
                 <button class="university-btn" data-id="Columbia">
                     <div class="uni-logo-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
+                        <img src="/static/logos/columbia.png" alt="Columbia University" class="uni-logo-img" onerror="this.style.display='none'">
                     </div>
                     <div>
                         <div class="uni-name">Columbia University</div>
@@ -61,162 +55,60 @@
                     </div>
                 </button>
 
-                <button class="university-btn" data-id="Uni_D">
-                    <div class="uni-logo-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="uni-name">University D</div>
-                        <div class="uni-location">Location TBD</div>
-                    </div>
-                </button>
-
-                <button class="university-btn" data-id="Uni_E">
-                    <div class="uni-logo-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="uni-name">University E</div>
-                        <div class="uni-location">Location TBD</div>
-                    </div>
-                </button>
-
-                <button class="university-btn" data-id="Uni_F">
-                    <div class="uni-logo-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="uni-name">University F</div>
-                        <div class="uni-location">Location TBD</div>
-                    </div>
-                </button>
-
-                <button class="university-btn" data-id="Uni_G">
-                    <div class="uni-logo-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="uni-name">University G</div>
-                        <div class="uni-location">Location TBD</div>
-                    </div>
-                </button>
-
-                <button class="university-btn" data-id="Uni_H">
-                    <div class="uni-logo-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="uni-name">University H</div>
-                        <div class="uni-location">Location TBD</div>
-                    </div>
-                </button>
+                <!-- Add more universities as needed, using real logos if available -->
             </div>
 
-            <div style="margin-top: 2rem; text-align: center;">
-                <button class="btn-change" onclick="viewAllUniversities()" style="padding: 0.75rem 2rem;">
-                    View All Programs (Comparison Dashboard)
+            <div class="university-btn-row">
+                <button class="btn-glow" onclick="viewAllUniversities()">
+                    <span class="lucide" data-lucide="bar-chart-2"></span> View All Programs (Comparison Dashboard)
                 </button>
             </div>
         </section>
 
         <!-- Step 2: Dashboard Options (shown after university selection) -->
         <section id="dashboardOptions" class="card hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2 id="selectedUniName" style="margin: 0;">Cal Poly Pomona</h2>
-                <button class="btn-change" onclick="changeUniversity()">Change University</button>
+            <div class="dashboard-header">
+                <h2 id="selectedUniName">Cal Poly Pomona</h2>
+                <button class="btn-glow" onclick="changeUniversity()"><span class="lucide" data-lucide="globe"></span> Change University</button>
             </div>
-
             <div class="options-grid">
                 <div class="option-card" onclick="manageTeams()">
-                    <div class="option-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                    </div>
+                    <div class="option-icon"><span class="lucide" data-lucide="users"></span></div>
                     <div class="option-content">
                         <h3>Student Teams</h3>
                         <p>Add or update your student team structure and expertise areas</p>
                     </div>
                 </div>
-
                 <div class="option-card" onclick="manageFaculty()">
-                    <div class="option-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                    </div>
+                    <div class="option-icon"><span class="lucide" data-lucide="graduation-cap"></span></div>
                     <div class="option-content">
                         <h3>Faculty & Mentors</h3>
                         <p>Add or update faculty advisors, staff, and expert involvement</p>
                     </div>
                 </div>
-
                 <div class="option-card" onclick="manageProjects()">
-                    <div class="option-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                        </svg>
-                    </div>
+                    <div class="option-icon"><span class="lucide" data-lucide="rocket"></span></div>
                     <div class="option-content">
                         <h3>Missions & Projects</h3>
                         <p>Add your active missions, including PROVES and local projects</p>
                     </div>
                 </div>
-
                 <div class="option-card" onclick="viewConnections()">
-                    <div class="option-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                        </svg>
-                    </div>
+                    <div class="option-icon"><span class="lucide" data-lucide="link"></span></div>
                     <div class="option-content">
                         <h3>Connections</h3>
                         <p>Track your program's connections between teams, mentors, and other universities</p>
                     </div>
                 </div>
-
                 <div class="option-card" onclick="viewAnalytics()">
-                    <div class="option-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="20" x2="12" y2="10"/>
-                            <line x1="18" y1="20" x2="18" y2="4"/>
-                            <line x1="6" y1="20" x2="6" y2="16"/>
-                        </svg>
-                    </div>
+                    <div class="option-icon"><span class="lucide" data-lucide="bar-chart-2"></span></div>
                     <div class="option-content">
                         <h3>Program Health</h3>
                         <p>View your program's overall health and data analytics</p>
                     </div>
                 </div>
-
                 <div class="option-card" onclick="comparePrograms()">
-                    <div class="option-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="2" y1="12" x2="22" y2="12"/>
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                        </svg>
-                    </div>
+                    <div class="option-icon"><span class="lucide" data-lucide="globe"></span></div>
                     <div class="option-content">
                         <h3>Compare with Others</h3>
                         <p>See how other universities structure their programs</p>
@@ -226,12 +118,15 @@
         </section>
     </div>
 
-    <footer style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary); border-top: 1px solid var(--border);">
-        <p style="font-weight: 500; margin-bottom: 0.5rem;">FRAMES</p>
-        <p style="font-size: 0.875rem;">Framework for Resilience Assessment in Modular Engineering Systems</p>
+    <footer class="main-footer">
+        <p class="footer-title">FRAMES</p>
+        <p class="footer-desc">Framework for Resilience Assessment in Modular Engineering Systems</p>
     </footer>
 
-    <script src="/static/api.js"></script>
-    <script src="/static/landing.js"></script>
+        <script src="/static/api.js"></script>
+        <script src="/static/landing.js"></script>
+        <script>
+            lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });
+        </script>
 </body>
 </html>
