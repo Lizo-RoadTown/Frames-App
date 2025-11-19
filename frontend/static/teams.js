@@ -92,9 +92,6 @@ document.getElementById('addTeamForm').addEventListener('submit', async (e) => {
         university_id: universityId,
         name: formData.get('name'),
         discipline: formData.get('discipline') || null,
-        lifecycle: formData.get('lifecycle') || null,
-        size: formData.get('size') ? parseInt(formData.get('size')) : null,
-        experience: formData.get('experience') ? parseInt(formData.get('experience')) : null,
         description: formData.get('description') || null
     };
 

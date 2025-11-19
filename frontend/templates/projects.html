@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missions & Projects - FRAMES</title>
+    <link rel="stylesheet" href="/static/landing.css">
+    <link rel="stylesheet" href="/static/forms.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="back-link">← Back to Home</a>
+        <h2 id="universityName">Your University</h2>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>🛸 Missions & Projects</h1>
+            <p class="subtitle">Manage your space missions and research projects</p>
+        </div>
+
+        <!-- Existing Projects List -->
+        <section class="card">
+            <h2>Your Projects</h2>
+            <div id="projectsList" class="items-list">
+                <p class="empty-state">No projects yet. Add your first project below!</p>
+            </div>
+        </section>
+
+        <!-- Add New Project Form -->
+        <section class="card">
+            <h2>Add a New Project</h2>
+            <p class="hint">Create projects, then assign students to work on them</p>
+            <form id="addProjectForm" class="form">
+                <div class="form-group">
+                    <label for="projectName">Project Name *</label>
+                    <input type="text" id="projectName" name="name" required
+                           placeholder="e.g., PROVES, CubeSat Mission, JPL Contract">
+                    <span class="hint">Give your project a clear name</span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="type">Project Type</label>
+                        <select id="type" name="type">
+                            <option value="">Select type...</option>
+                            <option value="cubesat">CubeSat Mission</option>
+                            <option value="jpl-contract">JPL Contract</option>
+                            <option value="multiversity">Multi-University (PROVES)</option>
+                            <option value="research">Research Project</option>
+                            <option value="competition">Competition</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration">Duration (years)</label>
+                        <input type="number" id="duration" name="duration" min="1" max="10" step="0.5"
+                               placeholder="e.g., 2">
+                        <span class="hint">How long will this project run?</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Project Description</label>
+                    <textarea id="description" name="description" rows="3"
+                              placeholder="Brief description of the project goals and deliverables..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Add Project</button>
+                    <button type="reset" class="btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="/static/api.js"></script>
+    <script src="/static/projects.js"></script>
+</body>
+</html>
