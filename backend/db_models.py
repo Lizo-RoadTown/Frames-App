@@ -161,6 +161,51 @@ class Outcome(db.Model):
         }
 
 
+class StudentModel(db.Model):
+    """Individual student tracking for term-based rotation analysis"""
+    __tablename__ = 'students'
+
+    id = db.Column(db.String, primary_key=True)
+    university_id = db.Column(db.String, nullable=False, index=True)
+    name = db.Column(db.String, nullable=False)
+    team_id = db.Column(db.String, nullable=True)  # Foreign key to teams
+    project_id = db.Column(db.String, nullable=True)  # Foreign key to projects
+    expertise_area = db.Column(db.String, nullable=True)  # e.g., "Electrical", "Software"
+    graduation_term = db.Column(db.String, nullable=True)  # e.g., "Spring 2026"
+    terms_remaining = db.Column(db.Integer, nullable=False, default=4)  # Auto-decrements each term
+    status = db.Column(db.String, nullable=True)  # Auto-calculated: incoming/established/outgoing
+    active = db.Column(db.Boolean, default=True)  # False when graduated
+    created_at = db.Column(db.String, default=lambda: datetime.now().isoformat())
+    graduated_at = db.Column(db.String, nullable=True)  # Set when terms_remaining hits 0
+    meta = db.Column(db.JSON, nullable=True)
+
+    def calculate_status(self):
+        """Auto-calculate student status based on terms remaining"""
+        if self.terms_remaining >= 4:
+            return 'incoming'
+        elif self.terms_remaining >= 2:
+            return 'established'
+        else:
+            return 'outgoing'
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'university_id': self.university_id,
+            'name': self.name,
+            'team_id': self.team_id,
+            'project_id': self.project_id,
+            'expertise_area': self.expertise_area,
+            'graduation_term': self.graduation_term,
+            'terms_remaining': self.terms_remaining,
+            'status': self.status or self.calculate_status(),
+            'active': self.active,
+            'created_at': self.created_at,
+            'graduated_at': self.graduated_at,
+            'meta': self.meta,
+        }
+
+
 class AuditLog(db.Model):
     __tablename__ = 'audit_logs'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

@@ -305,6 +305,157 @@ def delete_team(team_id):
 
 
 # ============================================================================
+# API ENDPOINTS - Students
+# ============================================================================
+
+@app.route('/api/students', methods=['GET'])
+def get_students():
+    """Get all students, optionally filtered by university, team, or project"""
+    from db_models import StudentModel
+
+    university_id = request.args.get('university_id')
+    team_id = request.args.get('team_id')
+    project_id = request.args.get('project_id')
+    active_only = request.args.get('active', 'true').lower() == 'true'
+
+    try:
+        query = StudentModel.query
+
+        if university_id:
+            query = query.filter_by(university_id=university_id)
+        if team_id:
+            query = query.filter_by(team_id=team_id)
+        if project_id:
+            query = query.filter_by(project_id=project_id)
+        if active_only:
+            query = query.filter_by(active=True)
+
+        students = query.all()
+        return jsonify([s.to_dict() for s in students])
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/students', methods=['POST'])
+def create_student():
+    """Create a new student"""
+    from db_models import StudentModel
+    import uuid
+
+    data = request.json
+    student_id = f"student_{uuid.uuid4().hex[:12]}"
+
+    try:
+        student = StudentModel(
+            id=student_id,
+            university_id=data['university_id'],
+            name=data['name'],
+            team_id=data.get('team_id'),
+            project_id=data.get('project_id'),
+            expertise_area=data.get('expertise_area'),
+            graduation_term=data.get('graduation_term'),
+            terms_remaining=data.get('terms_remaining', 4)
+        )
+
+        # Auto-calculate status
+        student.status = student.calculate_status()
+
+        db.session.add(student)
+        db.session.commit()
+
+        return jsonify(student.to_dict()), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/students/<student_id>', methods=['DELETE'])
+def delete_student(student_id):
+    """Delete a student"""
+    from db_models import StudentModel
+
+    try:
+        student = StudentModel.query.filter_by(id=student_id).first()
+        if not student:
+            return jsonify({'error': 'Student not found'}), 404
+
+        db.session.delete(student)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/students/<student_id>', methods=['PUT'])
+def update_student(student_id):
+    """Update a student"""
+    from db_models import StudentModel
+
+    try:
+        student = StudentModel.query.filter_by(id=student_id).first()
+        if not student:
+            return jsonify({'error': 'Student not found'}), 404
+
+        data = request.json
+
+        if 'name' in data:
+            student.name = data['name']
+        if 'team_id' in data:
+            student.team_id = data['team_id']
+        if 'project_id' in data:
+            student.project_id = data['project_id']
+        if 'expertise_area' in data:
+            student.expertise_area = data['expertise_area']
+        if 'graduation_term' in data:
+            student.graduation_term = data['graduation_term']
+        if 'terms_remaining' in data:
+            student.terms_remaining = data['terms_remaining']
+            student.status = student.calculate_status()
+
+        db.session.commit()
+        return jsonify(student.to_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/university/<university_id>/advance-term', methods=['POST'])
+def advance_term(university_id):
+    """Advance all students in a university by one term"""
+    from db_models import StudentModel
+
+    try:
+        students = StudentModel.query.filter_by(university_id=university_id, active=True).all()
+
+        graduated_count = 0
+        updated_count = 0
+
+        for student in students:
+            student.terms_remaining -= 1
+
+            if student.terms_remaining <= 0:
+                student.active = False
+                student.graduated_at = datetime.now().isoformat()
+                graduated_count += 1
+            else:
+                student.status = student.calculate_status()
+                updated_count += 1
+
+        db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'graduated': graduated_count,
+            'updated': updated_count,
+            'message': f'{updated_count} students advanced, {graduated_count} graduated'
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+# ============================================================================
 # API ENDPOINTS - Faculty
 # ============================================================================
 
