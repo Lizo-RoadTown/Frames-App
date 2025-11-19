@@ -21,21 +21,61 @@
     </div>
 
     <div class="container">
-        <!-- Main Landing: Feature Bronco Star Research Team -->
+        <!-- Main Landing: Portal Selection -->
         <section id="mainLanding" class="card active">
-            <div class="featured-tile research-featured" onclick="openResearchDashboard()">
-                <div class="featured-icon"><span class="lucide" data-lucide="star"></span></div>
-                <h2 class="featured-title">Bronco Star Research Team</h2>
-                <p class="featured-description">Advanced multi-university analysis and network visualization tools for program leadership and research</p>
-                <button class="btn-featured">Access Research Dashboard <span class="lucide" data-lucide="arrow-right"></span></button>
-            </div>
+            <h3 class="section-subtitle" style="text-align: center; margin-bottom: var(--space-6);">Select Portal</h3>
             
-            <div class="divider-text">
-                <span>or</span>
+            <div class="portals-grid">
+                <div class="portal-card research-portal" onclick="openResearchDashboard()">
+                    <span class="lucide portal-icon" data-lucide="star"></span>
+                    <h2>Bronco Star Research Portal</h2>
+                    <p>Access the collaborative research network</p>
+                </div>
+                
+                <div class="portal-card university-portal" onclick="showUniversitySelection()">
+                    <span class="lucide portal-icon" data-lucide="graduation-cap"></span>
+                    <h2>University Program Management Portal</h2>
+                    <p>Manage university research programs</p>
+                </div>
+                
+                <div class="portal-card student-portal" onclick="showStudentCodeEntry()">
+                    <span class="lucide portal-icon" data-lucide="users"></span>
+                    <h2>Student Portal</h2>
+                    <p>Student team access (code required)</p>
+                </div>
             </div>
+        </section>
+
+        <!-- Student Code Entry Section -->
+        <section id="studentCodeEntry" class="card hidden">
+            <button class="btn-back" onclick="backToPortals()">
+                <span class="lucide" data-lucide="arrow-left"></span> Back to Portals
+            </button>
             
-            <h3 class="section-subtitle" style="text-align: center; margin-bottom: var(--space-4);">University Program Management</h3>
-            <p class="hint" style="text-align: center; margin-bottom: var(--space-4);">Select your institution to manage teams, faculty, and projects</p>
+            <div class="code-entry-container">
+                <span class="lucide" data-lucide="shield-check" style="width: 64px; height: 64px; color: var(--cyan); margin: 0 auto var(--space-4); display: block;"></span>
+                <h2 style="text-align: center; margin-bottom: var(--space-2);">Student Portal Access</h2>
+                <p style="color: var(--text-secondary); text-align: center; margin-bottom: var(--space-6);">Enter your access code to continue</p>
+                
+                <div class="code-input-group">
+                    <input type="text" id="studentCode" class="code-input" placeholder="Enter access code" maxlength="20">
+                    <button onclick="validateStudentCode()" class="btn-primary">
+                        Submit <span class="lucide" data-lucide="arrow-right"></span>
+                    </button>
+                </div>
+                
+                <p id="codeError" class="error-message" style="display: none; margin-top: var(--space-3); color: #EF4444; text-align: center;"></p>
+            </div>
+        </section>
+
+        <!-- University Selection Section -->
+        <section id="universitySelection" class="card hidden">
+            <button class="btn-back" onclick="backToPortals()">
+                <span class="lucide" data-lucide="arrow-left"></span> Back to Portals
+            </button>
+            
+            <h3 class="section-subtitle" style="text-align: center; margin-bottom: var(--space-4);">Select Your University</h3>
+            <p class="hint" style="text-align: center; margin-bottom: var(--space-4);">Choose your institution to manage teams, faculty, and projects</p>
             <div class="university-grid">
                 <button class="university-btn" data-id="CalPolyPomona">
                     <div class="uni-logo-placeholder">
@@ -110,7 +150,6 @@
                     </div>
                 </button>
             </div>
-
         </section>
 
         <!-- Step 2: Role Selection (shown after university selection) -->

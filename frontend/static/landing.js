@@ -1,6 +1,6 @@
 /**
  * FRAMES Landing Page JavaScript
- * Handles university selection, role selection, and navigation with permissions
+ * Handles portal selection, university selection, role selection, and student code entry
  */
 
 let selectedUniversity = null;
@@ -58,6 +58,58 @@ const tiles = {
         special: true
     }
 };
+
+// Portal selection functions
+function showUniversitySelection() {
+    document.getElementById('mainLanding').classList.add('hidden');
+    document.getElementById('universitySelection').classList.remove('hidden');
+}
+
+function showStudentCodeEntry() {
+    document.getElementById('mainLanding').classList.add('hidden');
+    document.getElementById('studentCodeEntry').classList.remove('hidden');
+    document.getElementById('studentCode').value = '';
+    document.getElementById('codeError').style.display = 'none';
+}
+
+function backToPortals() {
+    // Hide all sections
+    document.getElementById('universitySelection').classList.add('hidden');
+    document.getElementById('studentCodeEntry').classList.add('hidden');
+    document.getElementById('roleSelection').classList.add('hidden');
+    document.getElementById('dashboardOptions').classList.add('hidden');
+    
+    // Show main landing
+    document.getElementById('mainLanding').classList.remove('hidden');
+    
+    // Clear code input
+    document.getElementById('studentCode').value = '';
+    document.getElementById('codeError').style.display = 'none';
+}
+
+function validateStudentCode() {
+    const code = document.getElementById('studentCode').value.trim();
+    const errorMsg = document.getElementById('codeError');
+    
+    if (!code) {
+        errorMsg.textContent = 'Please enter an access code';
+        errorMsg.style.display = 'block';
+        return;
+    }
+    
+    // Placeholder validation - TODO: implement actual validation
+    // For now, accept any non-empty code
+    console.log('Student code entered:', code);
+    
+    // TODO: Replace with actual backend validation
+    errorMsg.textContent = 'Code validation is not yet implemented. Please contact your administrator.';
+    errorMsg.style.display = 'block';
+    
+    // Future implementation:
+    // - Send code to backend for validation
+    // - On success, redirect to student portal page
+    // - On failure, show error message
+}
 
 // University selection
 document.querySelectorAll('.university-btn').forEach(btn => {
