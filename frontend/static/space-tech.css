@@ -1,3 +1,34 @@
+/* Dashboard layout */
+.dashboard-flex {
+    display: flex;
+    gap: 2rem;
+    min-height: 80vh;
+}
+.dashboard-network {
+    flex: 2;
+    height: 70vh;
+    background: var(--bg-card);
+    border-radius: 16px;
+}
+.dashboard-info-panel {
+    flex: 1;
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+}
+.dashboard-info-title {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--cyan);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+.dashboard-node-details {
+    color: var(--text-primary);
+    font-size: 1rem;
+}
 /* Students page summary row */
 .student-summary-row {
     display: flex;
