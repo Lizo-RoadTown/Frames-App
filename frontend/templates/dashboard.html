@@ -10,9 +10,87 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Space Tech CSS -->
     <link rel="stylesheet" href="/static/space-tech.css">
-    <!-- Three.js from unpkg (more reliable) -->
-    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Three.js from cdnjs (more reliable) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Define OrbitControls inline to avoid CDN issues
+        THREE.OrbitControls = function(camera, domElement) {
+            this.object = camera;
+            this.domElement = domElement;
+            this.enabled = true;
+            this.enableDamping = false;
+            this.dampingFactor = 0.05;
+            this.minDistance = 0;
+            this.maxDistance = Infinity;
+            this.autoRotate = false;
+            this.autoRotateSpeed = 2.0;
+            
+            var scope = this;
+            var rotateStart = new THREE.Vector2();
+            var rotateEnd = new THREE.Vector2();
+            var rotateDelta = new THREE.Vector2();
+            var spherical = new THREE.Spherical();
+            var sphericalDelta = new THREE.Spherical();
+            var scale = 1;
+            var panOffset = new THREE.Vector3();
+            var zoomChanged = false;
+            var state = -1;
+            var EPS = 0.000001;
+            
+            this.update = function() {
+                var offset = new THREE.Vector3();
+                var quat = new THREE.Quaternion().setFromUnitVectors(camera.up, new THREE.Vector3(0, 1, 0));
+                var quatInverse = quat.clone().invert();
+                var lastPosition = new THREE.Vector3();
+                var lastQuaternion = new THREE.Quaternion();
+                
+                return function update() {
+                    var position = scope.object.position;
+                    offset.copy(position).sub(new THREE.Vector3(0, 0, 0));
+                    offset.applyQuaternion(quat);
+                    
+                    spherical.setFromVector3(offset);
+                    
+                    if (scope.autoRotate) {
+                        spherical.theta -= scope.autoRotateSpeed * 2 * Math.PI / 60 / 60;
+                    }
+                    
+                    spherical.theta += sphericalDelta.theta;
+                    spherical.phi += sphericalDelta.phi;
+                    spherical.theta = Math.max(0, Math.min(Math.PI, spherical.theta));
+                    spherical.makeSafe();
+                    spherical.radius *= scale;
+                    spherical.radius = Math.max(scope.minDistance, Math.min(scope.maxDistance, spherical.radius));
+                    
+                    offset.setFromSpherical(spherical);
+                    offset.applyQuaternion(quatInverse);
+                    position.copy(new THREE.Vector3(0, 0, 0)).add(offset);
+                    scope.object.lookAt(new THREE.Vector3(0, 0, 0));
+                    
+                    if (scope.enableDamping === true) {
+                        sphericalDelta.theta *= (1 - scope.dampingFactor);
+                        sphericalDelta.phi *= (1 - scope.dampingFactor);
+                    } else {
+                        sphericalDelta.set(0, 0, 0);
+                    }
+                    
+                    scale = 1;
+                    panOffset.set(0, 0, 0);
+                    
+                    if (zoomChanged || lastPosition.distanceToSquared(scope.object.position) > EPS || 
+                        8 * (1 - lastQuaternion.dot(scope.object.quaternion)) > EPS) {
+                        lastPosition.copy(scope.object.position);
+                        lastQuaternion.copy(scope.object.quaternion);
+                        zoomChanged = false;
+                        return true;
+                    }
+                    return false;
+                };
+            }();
+        };
+        
+        window.OrbitControls = THREE.OrbitControls;
+    </script>
 </head>
 <body>
     <div class="dashboard-flex">
