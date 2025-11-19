@@ -1,3 +1,10 @@
+# Program Health Dashboard
+from flask import render_template
+@app.route('/dashboard')
+def program_health_dashboard():
+    """Serve the Program Health dashboard (dynamic network graph)"""
+    university = request.args.get('university')
+    return render_template('dashboard.html', university=university)
 """
 Flask application for FRAMES
 Provides REST API endpoints for real-time data manipulation
