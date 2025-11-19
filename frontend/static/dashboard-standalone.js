@@ -11,10 +11,12 @@
  * Uses global THREE from CDN for PythonAnywhere compatibility
  */
 
-// API configuration
-const API_BASE_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:5000/api'
-    : '/api';
+// API configuration (check if already defined by api.js)
+if (typeof API_BASE_URL === 'undefined') {
+    var API_BASE_URL = window.location.hostname === 'localhost'
+        ? 'http://localhost:5000/api'
+        : '/api';
+}
 
 // Global state
 let scene, camera, renderer, controls;
