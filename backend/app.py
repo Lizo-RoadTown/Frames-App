@@ -10,7 +10,7 @@ Flask application for FRAMES
 Provides REST API endpoints for real-time data manipulation
 """
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_cors import CORS
 from datetime import datetime
 import os
