@@ -157,6 +157,12 @@ def projects_page():
     return send_from_directory('../frontend/templates', 'projects.html')
 
 
+@app.route('/analytics')
+def analytics_page():
+    """Serve the analytics dashboard page"""
+    return send_from_directory('../frontend/templates', 'analytics.html')
+
+
 @app.route('/static/<path:path>')
 def serve_static(path):
     """Serve static files (CSS, JS)"""
@@ -1327,6 +1333,291 @@ def get_proves_dashboard():
         return jsonify(result)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# ============================================================================
+# API ENDPOINTS - Analytics (Dynamic Dashboard)
+# ============================================================================
+
+@app.route('/api/analytics/data', methods=['POST'])
+def get_analytics_data():
+    """
+    Flexible analytics endpoint that returns aggregated data based on user selections.
+
+    Request body:
+    {
+        "metric": "student_count" | "team_count" | "faculty_count" | "avg_terms_remaining" | "expertise_distribution",
+        "groupBy": "university" | "project" | "team" | "expertise_area" | "status" | "role",
+        "filters": {
+            "university_id": "CalPolyPomona",
+            "project_id": "PROVES",
+            "team_id": "team_abc",
+            "status": "established",
+            "expertise_area": "Software"
+        },
+        "timeRange": {
+            "start": "2024-01-01",
+            "end": "2024-12-31"
+        }
+    }
+    """
+    from db_models import StudentModel, TeamModel, FacultyModel, ProjectModel
+    from sqlalchemy import func
+
+    try:
+        data = request.json
+        metric = data.get('metric', 'student_count')
+        group_by = data.get('groupBy')
+        filters = data.get('filters', {})
+
+        result = []
+
+        # ==== STUDENT METRICS ====
+        if metric == 'student_count':
+            query = db.session.query(
+                StudentModel.university_id if group_by == 'university' else
+                StudentModel.team_id if group_by == 'team' else
+                StudentModel.expertise_area if group_by == 'expertise_area' else
+                StudentModel.status if group_by == 'status' else
+                func.count().label('value'),
+                func.count(StudentModel.id).label('count')
+            )
+
+            # Apply filters
+            if filters.get('university_id'):
+                query = query.filter(StudentModel.university_id == filters['university_id'])
+            if filters.get('team_id'):
+                query = query.filter(StudentModel.team_id == filters['team_id'])
+            if filters.get('status'):
+                query = query.filter(StudentModel.status == filters['status'])
+            if filters.get('expertise_area'):
+                query = query.filter(StudentModel.expertise_area == filters['expertise_area'])
+
+            # Group by dimension
+            if group_by:
+                if group_by == 'university':
+                    query = query.group_by(StudentModel.university_id)
+                elif group_by == 'team':
+                    query = query.group_by(StudentModel.team_id)
+                elif group_by == 'expertise_area':
+                    query = query.group_by(StudentModel.expertise_area)
+                elif group_by == 'status':
+                    query = query.group_by(StudentModel.status)
+
+                results = query.all()
+                result = [{'label': str(r[0] or 'Unknown'), 'value': r[1]} for r in results]
+            else:
+                # Total count without grouping
+                count = query.filter(StudentModel.active == True).count()
+                result = [{'label': 'Total Students', 'value': count}]
+
+        elif metric == 'avg_terms_remaining':
+            query = db.session.query(
+                StudentModel.university_id if group_by == 'university' else
+                StudentModel.team_id if group_by == 'team' else
+                StudentModel.status if group_by == 'status' else
+                func.avg(StudentModel.terms_remaining).label('avg_terms'),
+                func.avg(StudentModel.terms_remaining).label('value')
+            )
+
+            # Apply filters
+            if filters.get('university_id'):
+                query = query.filter(StudentModel.university_id == filters['university_id'])
+            if filters.get('team_id'):
+                query = query.filter(StudentModel.team_id == filters['team_id'])
+            if filters.get('status'):
+                query = query.filter(StudentModel.status == filters['status'])
+
+            query = query.filter(StudentModel.active == True)
+
+            # Group by dimension
+            if group_by:
+                if group_by == 'university':
+                    query = query.group_by(StudentModel.university_id)
+                elif group_by == 'team':
+                    query = query.group_by(StudentModel.team_id)
+                elif group_by == 'status':
+                    query = query.group_by(StudentModel.status)
+
+                results = query.all()
+                result = [{'label': str(r[0] or 'Unknown'), 'value': round(float(r[1] or 0), 2)} for r in results]
+            else:
+                avg = query.scalar() or 0
+                result = [{'label': 'Average Terms Remaining', 'value': round(float(avg), 2)}]
+
+        elif metric == 'status_distribution':
+            query = db.session.query(
+                StudentModel.status,
+                func.count(StudentModel.id).label('count')
+            ).filter(StudentModel.active == True)
+
+            # Apply filters
+            if filters.get('university_id'):
+                query = query.filter(StudentModel.university_id == filters['university_id'])
+            if filters.get('team_id'):
+                query = query.filter(StudentModel.team_id == filters['team_id'])
+
+            query = query.group_by(StudentModel.status)
+            results = query.all()
+
+            result = [{'label': str(r[0] or 'Unknown').title(), 'value': r[1]} for r in results]
+
+        # ==== TEAM METRICS ====
+        elif metric == 'team_count':
+            query = db.session.query(
+                TeamModel.university_id if group_by == 'university' else
+                TeamModel.project_id if group_by == 'project' else
+                TeamModel.discipline if group_by == 'discipline' else
+                func.count().label('value'),
+                func.count(TeamModel.id).label('count')
+            )
+
+            # Apply filters
+            if filters.get('university_id'):
+                query = query.filter(TeamModel.university_id == filters['university_id'])
+            if filters.get('project_id'):
+                query = query.filter(TeamModel.project_id == filters['project_id'])
+            if filters.get('discipline'):
+                query = query.filter(TeamModel.discipline == filters['discipline'])
+
+            # Group by dimension
+            if group_by:
+                if group_by == 'university':
+                    query = query.group_by(TeamModel.university_id)
+                elif group_by == 'project':
+                    query = query.group_by(TeamModel.project_id)
+                elif group_by == 'discipline':
+                    query = query.group_by(TeamModel.discipline)
+
+                results = query.all()
+                result = [{'label': str(r[0] or 'Unknown'), 'value': r[1]} for r in results]
+            else:
+                count = query.count()
+                result = [{'label': 'Total Teams', 'value': count}]
+
+        # ==== FACULTY METRICS ====
+        elif metric == 'faculty_count':
+            query = db.session.query(
+                FacultyModel.university_id if group_by == 'university' else
+                FacultyModel.role if group_by == 'role' else
+                func.count().label('value'),
+                func.count(FacultyModel.id).label('count')
+            )
+
+            # Apply filters
+            if filters.get('university_id'):
+                query = query.filter(FacultyModel.university_id == filters['university_id'])
+            if filters.get('role'):
+                query = query.filter(FacultyModel.role == filters['role'])
+
+            # Group by dimension
+            if group_by:
+                if group_by == 'university':
+                    query = query.group_by(FacultyModel.university_id)
+                elif group_by == 'role':
+                    query = query.group_by(FacultyModel.role)
+
+                results = query.all()
+                result = [{'label': str(r[0] or 'Unknown'), 'value': r[1]} for r in results]
+            else:
+                count = query.count()
+                result = [{'label': 'Total Faculty/Mentors', 'value': count}]
+
+        # ==== PROJECT METRICS ====
+        elif metric == 'project_count':
+            query = db.session.query(
+                ProjectModel.university_id if group_by == 'university' else
+                ProjectModel.type if group_by == 'type' else
+                func.count().label('value'),
+                func.count(ProjectModel.id).label('count')
+            )
+
+            # Apply filters
+            if filters.get('university_id'):
+                query = query.filter(ProjectModel.university_id == filters['university_id'])
+            if filters.get('type'):
+                query = query.filter(ProjectModel.type == filters['type'])
+
+            # Group by dimension
+            if group_by:
+                if group_by == 'university':
+                    query = query.group_by(ProjectModel.university_id)
+                elif group_by == 'type':
+                    query = query.group_by(ProjectModel.type)
+
+                results = query.all()
+                result = [{'label': str(r[0] or 'Unknown'), 'value': r[1]} for r in results]
+            else:
+                count = query.count()
+                result = [{'label': 'Total Projects', 'value': count}]
+
+        # ==== CROSS-TABULATION (Two dimensions) ====
+        elif metric == 'students_by_status_and_expertise':
+            query = db.session.query(
+                StudentModel.status,
+                StudentModel.expertise_area,
+                func.count(StudentModel.id).label('count')
+            ).filter(StudentModel.active == True)
+
+            if filters.get('university_id'):
+                query = query.filter(StudentModel.university_id == filters['university_id'])
+
+            query = query.group_by(StudentModel.status, StudentModel.expertise_area)
+            results = query.all()
+
+            # Format for grouped bar chart or heatmap
+            result = [
+                {
+                    'status': str(r[0] or 'Unknown'),
+                    'expertise': str(r[1] or 'Unknown'),
+                    'value': r[2]
+                }
+                for r in results
+            ]
+
+        return jsonify({
+            'metric': metric,
+            'groupBy': group_by,
+            'data': result
+        })
+
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'trace': traceback.format_exc()}), 500
+
+
+@app.route('/api/analytics/dimensions', methods=['GET'])
+def get_analytics_dimensions():
+    """Return available dimensions and metrics for the analytics dashboard"""
+    return jsonify({
+        'metrics': [
+            {'value': 'student_count', 'label': 'Student Count', 'description': 'Total number of students'},
+            {'value': 'avg_terms_remaining', 'label': 'Average Terms to Graduation', 'description': 'Average terms remaining until graduation'},
+            {'value': 'status_distribution', 'label': 'Student Status Distribution', 'description': 'Breakdown by incoming/established/outgoing'},
+            {'value': 'team_count', 'label': 'Team Count', 'description': 'Total number of teams'},
+            {'value': 'faculty_count', 'label': 'Faculty/Mentor Count', 'description': 'Total number of faculty and mentors'},
+            {'value': 'project_count', 'label': 'Project Count', 'description': 'Total number of projects'},
+            {'value': 'students_by_status_and_expertise', 'label': 'Students by Status & Expertise', 'description': 'Cross-tabulation of status and expertise area'}
+        ],
+        'dimensions': [
+            {'value': 'university', 'label': 'University', 'applicableTo': ['student_count', 'avg_terms_remaining', 'team_count', 'faculty_count', 'project_count']},
+            {'value': 'project', 'label': 'Project', 'applicableTo': ['team_count']},
+            {'value': 'team', 'label': 'Team', 'applicableTo': ['student_count', 'avg_terms_remaining']},
+            {'value': 'status', 'label': 'Student Status', 'applicableTo': ['student_count', 'avg_terms_remaining']},
+            {'value': 'expertise_area', 'label': 'Expertise Area', 'applicableTo': ['student_count']},
+            {'value': 'discipline', 'label': 'Team Discipline', 'applicableTo': ['team_count']},
+            {'value': 'role', 'label': 'Faculty Role', 'applicableTo': ['faculty_count']},
+            {'value': 'type', 'label': 'Project Type', 'applicableTo': ['project_count']}
+        ],
+        'filters': [
+            {'value': 'university_id', 'label': 'Filter by University', 'type': 'select'},
+            {'value': 'project_id', 'label': 'Filter by Project', 'type': 'select'},
+            {'value': 'team_id', 'label': 'Filter by Team', 'type': 'select'},
+            {'value': 'status', 'label': 'Filter by Status', 'type': 'select', 'options': ['incoming', 'established', 'outgoing']},
+            {'value': 'expertise_area', 'label': 'Filter by Expertise', 'type': 'select'},
+            {'value': 'role', 'label': 'Filter by Role', 'type': 'select'}
+        ]
+    })
 
 
 # ============================================================================
