@@ -30,9 +30,104 @@ system_state = SystemState()
 # Program Health Dashboard
 @app.route('/dashboard')
 def program_health_dashboard():
-    """Serve the Program Health dashboard (dynamic network graph)"""
+    """Serve the Program Health dashboard (3D molecular visualization)"""
     university = request.args.get('university')
     return render_template('dashboard.html', university=university)
+
+
+@app.route('/api/network-data')
+def get_network_data():
+    """
+    Get network data for 3D molecular visualization.
+    Returns projects, teams, faculty, and energy bonds.
+    """
+    try:
+        from db_models import ProjectModel, TeamModel, FacultyModel, InterfaceModel
+        from energy_engine import EnergyCalculationEngine
+
+        university_id = request.args.get('university')
+
+        # Build query filters
+        project_query = ProjectModel.query
+        team_query = TeamModel.query
+        faculty_query = FacultyModel.query
+        interface_query = InterfaceModel.query
+
+        if university_id:
+            project_query = project_query.filter_by(university_id=university_id)
+            team_query = team_query.filter_by(university_id=university_id)
+            faculty_query = faculty_query.filter_by(university_id=university_id)
+            interface_query = interface_query.filter(
+                (InterfaceModel.from_university == university_id) |
+                (InterfaceModel.to_university == university_id)
+            )
+
+        # Get data
+        projects = project_query.all()
+        teams = team_query.all()
+        faculty = faculty_query.all()
+        interfaces = interface_query.all()
+
+        # Calculate energy for interfaces using active model
+        engine = EnergyCalculationEngine()
+
+        # Format response
+        result = {
+            'projects': [
+                {
+                    'id': p.id,
+                    'name': p.name,
+                    'type': p.type,
+                    'is_nucleus': p.is_collaborative or p.name == 'PROVES'
+                }
+                for p in projects
+            ],
+            'teams': [
+                {
+                    'id': t.id,
+                    'name': t.name,
+                    'project_id': t.project_id,
+                    'discipline': t.discipline
+                }
+                for t in teams
+            ],
+            'faculty': [
+                {
+                    'id': f.id,
+                    'name': f.name,
+                    'role': f.role
+                }
+                for f in faculty
+            ],
+            'interfaces': []
+        }
+
+        # Calculate energy loss for each interface
+        for interface in interfaces:
+            try:
+                energy_data = engine.calculate_interface_energy_loss(interface.id)
+                result['interfaces'].append({
+                    'from': interface.from_entity,
+                    'to': interface.to_entity,
+                    'energy_loss': energy_data['total_energy_loss'],
+                    'type': interface.interface_type
+                })
+            except Exception as e:
+                # Fallback to legacy energy_loss if calculation fails
+                result['interfaces'].append({
+                    'from': interface.from_entity,
+                    'to': interface.to_entity,
+                    'energy_loss': interface.energy_loss / 100 if interface.energy_loss else 0.5,
+                    'type': interface.interface_type
+                })
+
+        return jsonify(result)
+
+    except Exception as e:
+        print(f"Error in network-data endpoint: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
 
 # Data persistence file
 DATA_FILE = 'frames_data.json'
