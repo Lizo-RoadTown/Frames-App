@@ -643,8 +643,11 @@ body::before {
     font-size: 0.9375rem;
     font-family: var(--font-body);
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-secondary);
     transition: all 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    box-shadow: none;
 }
 
 .form-group input:focus,
@@ -653,7 +656,7 @@ body::before {
     outline: none;
     border-color: var(--cyan);
     box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1), 0 0 15px var(--cyan-glow);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-card-hover);
 }
 
 .form-group textarea {
@@ -850,16 +853,20 @@ body::before {
     border-radius: 8px;
     font-size: 0.875rem;
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-secondary);
     min-width: 200px;
     cursor: pointer;
     font-family: var(--font-body);
+    appearance: none;
+    -webkit-appearance: none;
+    box-shadow: none;
 }
 
 .filter-select:focus {
     outline: none;
     border-color: var(--cyan);
     box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+    background: var(--bg-card-hover);
 }
 
 /* Messages */
