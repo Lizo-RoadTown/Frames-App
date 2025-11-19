@@ -1687,8 +1687,8 @@ def get_analytics_dimensions():
 
 @app.route('/research')
 def research_dashboard():
-    """Serve the Research Dashboard for factor configuration and model testing"""
-    return render_template('research.html')
+    """Serve the Research Dashboard landing page with multiple analysis tools"""
+    return send_from_directory('../frontend/templates', 'researcher_dashboard.html')
 
 
 # --- Risk Factor Management ---

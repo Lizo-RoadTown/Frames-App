@@ -100,17 +100,6 @@
                 </button>
             </div>
 
-            <div class="university-btn-row">
-                <button class="btn-glow" onclick="viewAllUniversities()">
-                    <span class="lucide" data-lucide="bar-chart-2"></span> View All Programs (Comparison)
-                </button>
-                <button class="btn-glow" onclick="window.location.href='/multi-university-network'" style="background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);">
-                    <span class="lucide" data-lucide="globe"></span> Multi-University Network
-                </button>
-                <button class="btn-glow" onclick="window.location.href='/research'" style="background: linear-gradient(135deg, #7c3aed 0%, #c026d3 100%);">
-                    <span class="lucide" data-lucide="flask-conical"></span> Research Dashboard
-                </button>
-            </div>
         </section>
 
         <!-- Step 2: Dashboard Options (shown after university selection) -->
@@ -158,17 +147,33 @@
                 <div class="option-card" onclick="comparePrograms()">
                     <div class="option-icon"><span class="lucide" data-lucide="table"></span></div>
                     <div class="option-content">
-                        <h3>Compare with Others (Table)</h3>
+                        <h3>Compare with Others</h3>
                         <p>See comparison metrics and statistics across universities</p>
                     </div>
                 </div>
-                <div class="option-card" onclick="viewMultiUniversityNetwork()">
-                    <div class="option-icon"><span class="lucide" data-lucide="globe"></span></div>
-                    <div class="option-content">
-                        <h3>Multi-University Network (3D)</h3>
-                        <p>Visualize all universities and their collaborations in 3D</p>
-                    </div>
-                </div>
+            </div>
+        </section>
+
+        <!-- Researcher Access Section -->
+        <section class="card active" style="margin-top: 2rem; background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(192, 38, 211, 0.1) 100%); border: 2px solid rgba(124, 58, 237, 0.3);">
+            <div style="text-align: center;">
+                <h3 style="color: #c084fc; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span class="lucide" data-lucide="flask-conical"></span>
+                    Research Tools
+                </h3>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.5rem;">
+                    Access advanced multi-university analysis and network visualization tools
+                </p>
+                <button class="btn-glow" onclick="openResearchDashboard()" style="
+                    background: linear-gradient(135deg, #7c3aed 0%, #c026d3 100%);
+                    padding: 1rem 2rem;
+                    font-size: 1.125rem;
+                    font-weight: 700;
+                    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4);
+                ">
+                    <span class="lucide" data-lucide="flask-conical"></span>
+                    Open Research Dashboard
+                </button>
             </div>
         </section>
     </div>

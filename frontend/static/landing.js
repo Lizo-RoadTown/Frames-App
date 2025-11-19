@@ -66,6 +66,10 @@ function viewMultiUniversityNetwork() {
     window.location.href = '/multi-university-network';
 }
 
+function openResearchDashboard() {
+    window.location.href = '/research';
+}
+
 // Check if university was previously selected
 window.addEventListener('DOMContentLoaded', () => {
     const savedUni = sessionStorage.getItem('selectedUniversity');
