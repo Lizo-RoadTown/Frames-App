@@ -1621,6 +1621,361 @@ def get_analytics_dimensions():
 
 
 # ============================================================================
+# Research Dashboard & Factor Management API
+# ============================================================================
+
+@app.route('/research')
+def research_dashboard():
+    """Serve the Research Dashboard for factor configuration and model testing"""
+    return render_template('research.html')
+
+
+# --- Risk Factor Management ---
+
+@app.route('/api/research/factors', methods=['GET'])
+def get_risk_factors():
+    """Get all risk factors with their values"""
+    try:
+        from db_models import RiskFactor, FactorValue
+
+        factors = RiskFactor.query.filter_by(active=True).all()
+        result = []
+
+        for factor in factors:
+            factor_data = factor.to_dict()
+
+            # Get factor values
+            values = FactorValue.query.filter_by(factor_id=factor.id).order_by(FactorValue.sort_order).all()
+            factor_data['values'] = [v.to_dict() for v in values]
+
+            result.append(factor_data)
+
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/research/factors', methods=['POST'])
+def create_risk_factor():
+    """Create a new risk factor"""
+    try:
+        from db_models import RiskFactor, FactorValue
+
+        data = request.json
+
+        # Create the factor
+        factor = RiskFactor(
+            factor_name=data['factor_name'],
+            display_name=data['display_name'],
+            description=data.get('description'),
+            category=data['category'],
+            confidence_level=data.get('confidence_level', 'exploratory'),
+            research_notes=data.get('research_notes'),
+            active=True
+        )
+        db.session.add(factor)
+        db.session.flush()
+
+        # Create factor values
+        for value_data in data.get('values', []):
+            factor_value = FactorValue(
+                factor_id=factor.id,
+                value_name=value_data['value_name'],
+                display_name=value_data['display_name'],
+                description=value_data.get('description'),
+                energy_loss_contribution=value_data['energy_loss_contribution'],
+                sort_order=value_data.get('sort_order', 0)
+            )
+            db.session.add(factor_value)
+
+        db.session.commit()
+
+        return jsonify({'success': True, 'factor_id': factor.id})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/research/factors/<int:factor_id>', methods=['PUT'])
+def update_risk_factor(factor_id):
+    """Update an existing risk factor"""
+    try:
+        from db_models import RiskFactor
+
+        factor = RiskFactor.query.get_or_404(factor_id)
+        data = request.json
+
+        # Update fields
+        if 'display_name' in data:
+            factor.display_name = data['display_name']
+        if 'description' in data:
+            factor.description = data['description']
+        if 'confidence_level' in data:
+            factor.confidence_level = data['confidence_level']
+        if 'research_notes' in data:
+            factor.research_notes = data['research_notes']
+        if 'active' in data:
+            factor.active = data['active']
+
+        db.session.commit()
+
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
+# --- Factor Model Management ---
+
+@app.route('/api/research/models', methods=['GET'])
+def get_factor_models():
+    """Get all factor models"""
+    try:
+        from db_models import FactorModel, ModelFactor, RiskFactor
+
+        models = FactorModel.query.all()
+        result = []
+
+        for model in models:
+            model_data = model.to_dict()
+
+            # Get model factors with weights
+            model_factors = db.session.query(ModelFactor, RiskFactor).join(
+                RiskFactor, ModelFactor.factor_id == RiskFactor.id
+            ).filter(ModelFactor.model_id == model.id).all()
+
+            model_data['factors'] = [
+                {
+                    'factor_id': rf.id,
+                    'factor_name': rf.factor_name,
+                    'display_name': rf.display_name,
+                    'weight': mf.weight,
+                    'enabled': mf.enabled
+                }
+                for mf, rf in model_factors
+            ]
+
+            result.append(model_data)
+
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/research/models', methods=['POST'])
+def create_factor_model():
+    """Create a new factor model"""
+    try:
+        from db_models import FactorModel, ModelFactor
+
+        data = request.json
+
+        # Deactivate other models if this one is being set as active
+        if data.get('is_active'):
+            FactorModel.query.update({'is_active': False})
+
+        # Create the model
+        model = FactorModel(
+            model_name=data['model_name'],
+            display_name=data['display_name'],
+            description=data.get('description'),
+            is_active=data.get('is_active', False),
+            is_baseline=data.get('is_baseline', False),
+            hypothesis=data.get('hypothesis'),
+            validation_status=data.get('validation_status', 'testing')
+        )
+        db.session.add(model)
+        db.session.flush()
+
+        # Add factors with weights
+        for factor_data in data.get('factors', []):
+            model_factor = ModelFactor(
+                model_id=model.id,
+                factor_id=factor_data['factor_id'],
+                weight=factor_data.get('weight', 1.0),
+                enabled=factor_data.get('enabled', True)
+            )
+            db.session.add(model_factor)
+
+        db.session.commit()
+
+        return jsonify({'success': True, 'model_id': model.id})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/research/models/<int:model_id>/activate', methods=['POST'])
+def activate_model(model_id):
+    """Set a model as the active model"""
+    try:
+        from db_models import FactorModel
+
+        # Deactivate all models
+        FactorModel.query.update({'is_active': False})
+
+        # Activate the specified model
+        model = FactorModel.query.get_or_404(model_id)
+        model.is_active = True
+
+        db.session.commit()
+
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/research/models/<int:model_id>/factors/<int:factor_id>/weight', methods=['PUT'])
+def update_model_factor_weight(model_id, factor_id):
+    """Update the weight of a factor in a specific model"""
+    try:
+        from db_models import ModelFactor
+
+        data = request.json
+        new_weight = data['weight']
+
+        model_factor = ModelFactor.query.filter_by(
+            model_id=model_id,
+            factor_id=factor_id
+        ).first_or_404()
+
+        model_factor.weight = new_weight
+
+        db.session.commit()
+
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
+# --- Energy Calculation API ---
+
+@app.route('/api/research/energy/interface/<interface_id>', methods=['GET'])
+def calculate_interface_energy(interface_id):
+    """Calculate energy loss for a specific interface"""
+    try:
+        from energy_engine import EnergyCalculationEngine
+
+        model_id = request.args.get('model_id', type=int)
+
+        engine = EnergyCalculationEngine(model_id=model_id)
+        result = engine.calculate_interface_energy_loss(interface_id, model_id)
+
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/research/energy/network', methods=['GET'])
+def calculate_network_energy():
+    """Calculate energy loss for entire network or specific university"""
+    try:
+        from energy_engine import EnergyCalculationEngine
+
+        university_id = request.args.get('university_id')
+        model_id = request.args.get('model_id', type=int)
+
+        engine = EnergyCalculationEngine(model_id=model_id)
+        result = engine.calculate_network_energy(university_id, model_id)
+
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/research/interface/<interface_id>/factors', methods=['POST'])
+def assign_interface_factors(interface_id):
+    """Assign factor values to an interface"""
+    try:
+        from energy_engine import EnergyCalculationEngine
+
+        data = request.json
+        factor_assignments = data.get('factors', [])
+
+        engine = EnergyCalculationEngine()
+        success = engine.assign_factor_values_to_interface(interface_id, factor_assignments)
+
+        return jsonify({'success': success})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/research/migrate-legacy-interfaces', methods=['POST'])
+def migrate_legacy_interfaces():
+    """
+    Migrate all legacy interfaces to use the factor system.
+    This auto-assigns factors based on bond_type.
+    """
+    try:
+        from db_models import InterfaceModel
+        from energy_engine import EnergyCalculationEngine
+
+        engine = EnergyCalculationEngine()
+
+        # Get all interfaces without factor assignments
+        interfaces = InterfaceModel.query.all()
+
+        migrated = 0
+        failed = 0
+
+        for interface in interfaces:
+            try:
+                success = engine.auto_assign_factors_from_legacy(interface.id)
+                if success:
+                    migrated += 1
+                else:
+                    failed += 1
+            except Exception as e:
+                print(f"Failed to migrate interface {interface.id}: {e}")
+                failed += 1
+
+        db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'migrated': migrated,
+            'failed': failed,
+            'total': len(interfaces)
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+# --- Model Comparison & Validation ---
+
+@app.route('/api/research/compare-models', methods=['POST'])
+def compare_models():
+    """
+    Compare multiple models by calculating energy loss across the same dataset.
+    Used for model validation and selection.
+    """
+    try:
+        from energy_engine import EnergyCalculationEngine
+
+        data = request.json
+        model_ids = data.get('model_ids', [])
+        university_id = data.get('university_id')
+
+        results = []
+
+        for model_id in model_ids:
+            engine = EnergyCalculationEngine(model_id=model_id)
+            network_result = engine.calculate_network_energy(university_id, model_id)
+            results.append(network_result)
+
+        return jsonify({
+            'success': True,
+            'comparisons': results
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# ============================================================================
 # Run Application
 # ============================================================================
 
