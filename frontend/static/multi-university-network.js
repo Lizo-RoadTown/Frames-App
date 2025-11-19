@@ -20,9 +20,17 @@ let edges = new Map();
 let particles = [];
 let selectedNode = null;
 let universityId = null;
+let isResearcher = false; // Will be set based on user role
+let isDragging = false;
+let draggedNode = null;
 
 // Animation
 let animationId = null;
+
+// Drag state
+let dragPlane = null;
+let dragOffset = new THREE.Vector3();
+let dragIntersection = new THREE.Vector3();
 
 // ============================================================================
 // Initialization
@@ -30,6 +38,13 @@ let animationId = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
     console.log('Multi-University Network initializing...');
+
+    // Check if user is a researcher
+    const urlParams = new URLSearchParams(window.location.search);
+    isResearcher = urlParams.get('researcher') === 'true';
+    universityId = urlParams.get('university'); // Optional: for regular users viewing from their dashboard
+    console.log('Is Researcher:', isResearcher);
+    console.log('University ID:', universityId);
 
     try {
         initScene();
@@ -423,6 +438,14 @@ function setupEventListeners() {
 
     canvas.addEventListener('click', onCanvasClick);
     canvas.addEventListener('mousemove', onCanvasMouseMove);
+    canvas.addEventListener('mousedown', onMouseDown);
+    canvas.addEventListener('mouseup', onMouseUp);
+
+    // Create an invisible drag plane for 3D dragging
+    const planeGeometry = new THREE.PlaneGeometry(5000, 5000);
+    const planeMaterial = new THREE.MeshBasicMaterial({ visible: false });
+    dragPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+    scene.add(dragPlane);
 }
 
 function onCanvasClick(event) {
@@ -443,15 +466,164 @@ function onCanvasClick(event) {
 }
 
 function onCanvasMouseMove(event) {
+    if (isDragging && draggedNode) {
+        // Dragging mode: move the node
+        const raycaster = getRaycaster(event);
+        const intersects = raycaster.intersectObject(dragPlane);
+
+        if (intersects.length > 0) {
+            const intersectPoint = intersects[0].point;
+            draggedNode.mesh.position.copy(intersectPoint.add(dragOffset));
+            draggedNode.position.copy(draggedNode.mesh.position);
+
+            // Update connected edges
+            updateConnectedEdges(draggedNode);
+
+            // Disable orbit controls while dragging
+            controls.enabled = false;
+        }
+    } else {
+        // Hover mode: show cursor feedback
+        const raycaster = getRaycaster(event);
+        const meshes = Array.from(nodes.values()).map(n => n.mesh);
+        const intersects = raycaster.intersectObjects(meshes);
+
+        if (intersects.length > 0) {
+            const node = Array.from(nodes.values()).find(n => n.mesh === intersects[0].object);
+            // Show grab cursor only if user can drag this node
+            if (node && canDragNode(node)) {
+                document.body.style.cursor = 'grab';
+            } else {
+                document.body.style.cursor = 'pointer';
+            }
+        } else {
+            document.body.style.cursor = 'default';
+        }
+    }
+}
+
+function onMouseDown(event) {
     const raycaster = getRaycaster(event);
     const meshes = Array.from(nodes.values()).map(n => n.mesh);
     const intersects = raycaster.intersectObjects(meshes);
 
     if (intersects.length > 0) {
-        document.body.style.cursor = 'pointer';
-    } else {
+        const clicked = intersects[0].object;
+        const node = Array.from(nodes.values()).find(n => n.mesh === clicked);
+
+        if (node) {
+            // Permission check: Can this node be dragged?
+            if (!canDragNode(node)) {
+                console.log('Permission denied: Cannot drag this university');
+                showPermissionDenied(node);
+                return;
+            }
+
+            isDragging = true;
+            draggedNode = node;
+            document.body.style.cursor = 'grabbing';
+
+            // Set up the drag plane
+            dragPlane.position.copy(node.mesh.position);
+            dragPlane.lookAt(camera.position);
+
+            // Calculate offset
+            const planeIntersects = raycaster.intersectObject(dragPlane);
+            if (planeIntersects.length > 0) {
+                dragOffset.copy(node.mesh.position).sub(planeIntersects[0].point);
+            }
+
+            // Stop auto-rotation
+            controls.autoRotate = false;
+        }
+    }
+}
+
+function onMouseUp(event) {
+    if (isDragging && draggedNode) {
+        isDragging = false;
+        controls.enabled = true;
+
+        // Select the node
+        selectNode(draggedNode);
+
+        draggedNode = null;
         document.body.style.cursor = 'default';
     }
+}
+
+function canDragNode(node) {
+    // Researchers can drag ANY university
+    if (isResearcher) {
+        return true;
+    }
+
+    // Regular users cannot drag universities in the multi-university view
+    // (They can only drag in their own single-university dashboard)
+    return false;
+}
+
+function showPermissionDenied(node) {
+    // Flash the node red briefly
+    const originalColor = node.mesh.material.color.clone();
+    node.mesh.material.color.setHex(0xff0000);
+
+    setTimeout(() => {
+        node.mesh.material.color.copy(originalColor);
+    }, 200);
+
+    // Update info panel
+    const panel = document.getElementById('nodeDetails');
+    panel.innerHTML = `
+        <p style="color: #ef4444; font-weight: 600;">⚠️ Researcher Access Only</p>
+        <p style="font-size: 0.875rem; margin-top: 0.5rem;">
+            Only researchers can edit the multi-university network.
+        </p>
+        <p style="font-size: 0.875rem; margin-top: 0.5rem;">
+            Use your individual university dashboard to edit your own network.
+        </p>
+    `;
+}
+
+function updateConnectedEdges(node) {
+    // Rebuild curves for all connected edges
+    edges.forEach((edge, key) => {
+        if (edge.from === node.id || edge.to === node.id) {
+            const fromNode = nodes.get(edge.from);
+            const toNode = nodes.get(edge.to);
+
+            if (fromNode && toNode) {
+                // Update the curve
+                const newCurve = new THREE.QuadraticBezierCurve3(
+                    fromNode.position,
+                    getMidpoint(fromNode.position, toNode.position, edge.energyLoss),
+                    toNode.position
+                );
+
+                // Update tube geometry
+                const bondStrength = 1 - edge.energyLoss;
+                const tubeRadius = 1.0 + (bondStrength * 4.0);
+                const color = getEnergyColor(edge.energyLoss);
+
+                // Remove old tube
+                scene.remove(edge.line);
+
+                // Create new tube
+                const tubeGeometry = new THREE.TubeGeometry(newCurve, 20, tubeRadius, 8, false);
+                const tubeMaterial = new THREE.MeshBasicMaterial({
+                    color: color,
+                    transparent: true,
+                    opacity: 0.5
+                });
+                const newTube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+                scene.add(newTube);
+
+                // Update edge data
+                edge.curve = newCurve;
+                edge.line = newTube;
+            }
+        }
+    });
 }
 
 function getRaycaster(event) {

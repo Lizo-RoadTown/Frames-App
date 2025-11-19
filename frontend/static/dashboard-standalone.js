@@ -25,6 +25,7 @@ let selectedNode = null;
 let isDragging = false;
 let draggedNode = null;
 let universityId = null;
+let isResearcher = false; // Will be set based on user role
 
 // Animation
 let animationId = null;
@@ -47,7 +48,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Get university from URL
     const urlParams = new URLSearchParams(window.location.search);
     universityId = urlParams.get('university');
+    isResearcher = urlParams.get('researcher') === 'true'; // Check if user is a researcher
     console.log('University ID:', universityId);
+    console.log('Is Researcher:', isResearcher);
 
     try {
         initScene();
@@ -755,6 +758,14 @@ function onMouseDown(event) {
         const node = Array.from(nodes.values()).find(n => n.mesh === clicked);
 
         if (node) {
+            // Permission check: Can this node be dragged?
+            if (!canDragNode(node)) {
+                console.log('Permission denied: Cannot drag this node');
+                // Show visual feedback that drag is not allowed
+                showPermissionDenied(node);
+                return;
+            }
+
             isDragging = true;
             draggedNode = node;
             document.body.style.cursor = 'grabbing';
@@ -773,6 +784,40 @@ function onMouseDown(event) {
             controls.autoRotate = false;
         }
     }
+}
+
+function canDragNode(node) {
+    // Researchers can drag everything
+    if (isResearcher) {
+        return true;
+    }
+
+    // For single university view: users can only drag nodes from their own university
+    // In this dashboard, all nodes belong to the selected university
+    // So if universityId matches, user can drag
+    return universityId !== null;
+}
+
+function showPermissionDenied(node) {
+    // Flash the node red briefly to show permission denied
+    const originalColor = node.mesh.material.color.clone();
+    node.mesh.material.color.setHex(0xff0000);
+
+    setTimeout(() => {
+        node.mesh.material.color.copy(originalColor);
+    }, 200);
+
+    // Update info panel
+    const panel = document.getElementById('nodeDetails');
+    panel.innerHTML = `
+        <p style="color: #ef4444; font-weight: 600;">⚠️ Permission Denied</p>
+        <p style="font-size: 0.875rem; margin-top: 0.5rem;">
+            You can only edit your own university's network.
+        </p>
+        <p style="font-size: 0.875rem; margin-top: 0.5rem;">
+            Click to view details only.
+        </p>
+    `;
 }
 
 function onMouseUp(event) {
