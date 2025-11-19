@@ -51,7 +51,7 @@ function manageProjects() {
 }
 
 function viewConnections() {
-    window.location.href = `/connections?university=${selectedUniversity}`;
+    window.location.href = `/dashboard?university=${selectedUniversity}`;
 }
 
 function viewAnalytics() {
