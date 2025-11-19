@@ -29,14 +29,33 @@ let animationId = null;
 // ============================================================================
 
 window.addEventListener('DOMContentLoaded', async () => {
+    console.log('Dashboard initializing...');
+
     // Get university from URL
     const urlParams = new URLSearchParams(window.location.search);
     universityId = urlParams.get('university');
+    console.log('University ID:', universityId);
 
-    initScene();
-    await loadNetworkData();
-    animate();
-    setupEventListeners();
+    try {
+        initScene();
+        console.log('Scene initialized');
+
+        await loadNetworkData();
+        console.log('Data loaded');
+
+        animate();
+        console.log('Animation started');
+
+        setupEventListeners();
+        console.log('Event listeners setup complete');
+    } catch (error) {
+        console.error('Error during initialization:', error);
+        document.getElementById('nodeDetails').innerHTML = `
+            <p style="color: #ef4444;">Error loading 3D visualization</p>
+            <p style="font-size: 0.875rem;">${error.message}</p>
+            <p style="font-size: 0.875rem;">Check browser console for details.</p>
+        `;
+    }
 });
 
 function initScene() {
@@ -100,16 +119,27 @@ function onWindowResize() {
 
 async function loadNetworkData() {
     try {
+        console.log('Loading network data...');
         // Load actual data from API
         const response = await fetch(`${API_BASE_URL}/network-data?university=${universityId || ''}`);
 
         if (!response.ok) {
+            console.warn('API returned error, using demo data');
             // Fallback to demo data if API not ready
             createDemoMolecule();
             return;
         }
 
         const data = await response.json();
+        console.log('Loaded network data:', data);
+
+        // Check if we have any data
+        if (!data.projects || data.projects.length === 0) {
+            console.warn('No projects found, using demo data');
+            createDemoMolecule();
+            return;
+        }
+
         buildMolecularStructure(data);
     } catch (error) {
         console.warn('API not available, using demo data:', error);
