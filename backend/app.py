@@ -39,95 +39,55 @@ def program_health_dashboard():
 def get_network_data():
     """
     Get network data for 3D molecular visualization.
-    Returns projects, teams, faculty, and energy bonds.
+    Returns preset sample data for demo purposes.
     """
-    try:
-        from db_models import ProjectModel, TeamModel, FacultyModel, InterfaceModel
-        from energy_engine import EnergyCalculationEngine
-
-        university_id = request.args.get('university')
-
-        # Build query filters
-        project_query = ProjectModel.query
-        team_query = TeamModel.query
-        faculty_query = FacultyModel.query
-        interface_query = InterfaceModel.query
-
-        if university_id:
-            project_query = project_query.filter_by(university_id=university_id)
-            team_query = team_query.filter_by(university_id=university_id)
-            faculty_query = faculty_query.filter_by(university_id=university_id)
-            interface_query = interface_query.filter(
-                (InterfaceModel.from_university == university_id) |
-                (InterfaceModel.to_university == university_id)
-            )
-
-        # Get data
-        projects = project_query.all()
-        teams = team_query.all()
-        faculty = faculty_query.all()
-        interfaces = interface_query.all()
-
-        # Calculate energy for interfaces using active model
-        engine = EnergyCalculationEngine()
-
-        # Format response
-        result = {
-            'projects': [
-                {
-                    'id': p.id,
-                    'name': p.name,
-                    'type': p.type,
-                    'is_nucleus': p.is_collaborative or p.name == 'PROVES'
-                }
-                for p in projects
-            ],
-            'teams': [
-                {
-                    'id': t.id,
-                    'name': t.name,
-                    'project_id': t.project_id,
-                    'discipline': t.discipline
-                }
-                for t in teams
-            ],
-            'faculty': [
-                {
-                    'id': f.id,
-                    'name': f.name,
-                    'role': f.role
-                }
-                for f in faculty
-            ],
-            'interfaces': []
-        }
-
-        # Calculate energy loss for each interface
-        for interface in interfaces:
-            try:
-                energy_data = engine.calculate_interface_energy_loss(interface.id)
-                result['interfaces'].append({
-                    'from': interface.from_entity,
-                    'to': interface.to_entity,
-                    'energy_loss': energy_data['total_energy_loss'],
-                    'type': interface.interface_type
-                })
-            except Exception as e:
-                # Fallback to legacy energy_loss if calculation fails
-                result['interfaces'].append({
-                    'from': interface.from_entity,
-                    'to': interface.to_entity,
-                    'energy_loss': interface.energy_loss / 100 if interface.energy_loss else 0.5,
-                    'type': interface.interface_type
-                })
-
-        return jsonify(result)
-
-    except Exception as e:
-        print(f"Error in network-data endpoint: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
+    # Preset sample data - no database required
+    sample_data = {
+        'projects': [
+            {'id': 'proves', 'name': 'PROVES', 'type': 'collaborative', 'is_nucleus': True, 'team_size': 6},
+            {'id': 'contract', 'name': 'Funded Contract Project', 'type': 'contract', 'is_nucleus': False, 'team_size': 15},
+            {'id': 'proposal', 'name': 'Contract Proposal Project', 'type': 'proposal', 'is_nucleus': False, 'team_size': 60}
+        ],
+        'teams': [
+            # PROVES teams (6 members total)
+            {'id': 'proves_team1', 'name': 'PROVES Core Team', 'project_id': 'proves', 'discipline': 'Multidisciplinary', 'size': 6},
+            # Contract project teams (15 members total)
+            {'id': 'contract_team1', 'name': 'Contract Engineering Team', 'project_id': 'contract', 'discipline': 'Engineering', 'size': 8},
+            {'id': 'contract_team2', 'name': 'Contract Research Team', 'project_id': 'contract', 'discipline': 'Research', 'size': 7},
+            # Proposal project teams (60 members total)
+            {'id': 'proposal_team1', 'name': 'Proposal Lead Team', 'project_id': 'proposal', 'discipline': 'Engineering', 'size': 20},
+            {'id': 'proposal_team2', 'name': 'Proposal Development Team', 'project_id': 'proposal', 'discipline': 'Computer Science', 'size': 20},
+            {'id': 'proposal_team3', 'name': 'Proposal Support Team', 'project_id': 'proposal', 'discipline': 'Design', 'size': 20}
+        ],
+        'faculty': [
+            {'id': 'fac1', 'name': 'Dr. Sarah Chen', 'role': 'Faculty Advisor - Engineering'},
+            {'id': 'fac2', 'name': 'Dr. James Rodriguez', 'role': 'Faculty Advisor - Computer Science'},
+            {'id': 'staff1', 'name': 'Maria Garcia', 'role': 'Program Coordinator'}
+        ],
+        'interfaces': [
+            # PROVES to other projects (nucleus connections) - healthy
+            {'from': 'proves', 'to': 'contract', 'energy_loss': 0.1, 'type': 'knowledge_transfer'},
+            {'from': 'proves', 'to': 'proposal', 'energy_loss': 0.15, 'type': 'knowledge_transfer'},
+            # Project to team connections
+            {'from': 'proves', 'to': 'proves_team1', 'energy_loss': 0.12, 'type': 'project_team'},
+            {'from': 'contract', 'to': 'contract_team1', 'energy_loss': 0.2, 'type': 'project_team'},
+            {'from': 'contract', 'to': 'contract_team2', 'energy_loss': 0.25, 'type': 'project_team'},
+            {'from': 'proposal', 'to': 'proposal_team1', 'energy_loss': 0.4, 'type': 'project_team'},
+            {'from': 'proposal', 'to': 'proposal_team2', 'energy_loss': 0.5, 'type': 'project_team'},
+            {'from': 'proposal', 'to': 'proposal_team3', 'energy_loss': 0.45, 'type': 'project_team'},
+            # Faculty/staff mentoring
+            {'from': 'fac1', 'to': 'proves_team1', 'energy_loss': 0.15, 'type': 'mentoring'},
+            {'from': 'fac1', 'to': 'contract_team1', 'energy_loss': 0.2, 'type': 'mentoring'},
+            {'from': 'fac2', 'to': 'contract_team2', 'energy_loss': 0.25, 'type': 'mentoring'},
+            {'from': 'fac2', 'to': 'proposal_team2', 'energy_loss': 0.6, 'type': 'mentoring'},
+            {'from': 'staff1', 'to': 'proposal_team1', 'energy_loss': 0.35, 'type': 'coordination'},
+            {'from': 'staff1', 'to': 'proposal_team3', 'energy_loss': 0.4, 'type': 'coordination'},
+            # Cross-project collaboration
+            {'from': 'contract', 'to': 'proposal', 'energy_loss': 0.5, 'type': 'collaboration'}
+        ]
+    }
+    
+    return jsonify(sample_data)
 
 # Data persistence file
 DATA_FILE = 'frames_data.json'
