@@ -338,17 +338,34 @@ function createProjectOrbits(projects, nucleusId) {
 }
 
 function createTeamNodes(teams) {
+    // Group teams by project to evenly distribute them
+    const teamsByProject = new Map();
+    teams.forEach(team => {
+        if (!teamsByProject.has(team.project_id)) {
+            teamsByProject.set(team.project_id, []);
+        }
+        teamsByProject.get(team.project_id).push(team);
+    });
+
     teams.forEach(team => {
         const parentProject = nodes.get(team.project_id);
         if (!parentProject) return;
 
-        // Position near parent project
-        const offset = new THREE.Vector3(
-            (Math.random() - 0.5) * 80,
-            (Math.random() - 0.5) * 80,
-            (Math.random() - 0.5) * 80
-        );
-        const position = parentProject.position.clone().add(offset);
+        // Get index of this team within their project
+        const projectTeams = teamsByProject.get(team.project_id);
+        const teamIndexInProject = projectTeams.indexOf(team);
+        const teamsInProject = projectTeams.length;
+
+        // Teams orbit around their parent project (like moons around planets)
+        const teamOrbitRadius = 60; // Orbit radius around project
+        const angleStep = (Math.PI * 2) / teamsInProject;
+        const angle = angleStep * teamIndexInProject;
+
+        const x = parentProject.position.x + Math.cos(angle) * teamOrbitRadius;
+        const z = parentProject.position.z + Math.sin(angle) * teamOrbitRadius;
+        const y = parentProject.position.y + (Math.sin(angle) * 10); // Slight vertical variation
+
+        const position = new THREE.Vector3(x, y, z);
 
         const geometry = new THREE.SphereGeometry(12, 16, 16);
         const material = new THREE.MeshPhongMaterial({
@@ -366,7 +383,10 @@ function createTeamNodes(teams) {
             type: 'team',
             data: team,
             mesh: mesh,
-            position: position
+            position: position,
+            orbitAngle: angle,
+            orbitRadius: teamOrbitRadius,
+            parentProjectId: team.project_id // Store parent project ID for dynamic orbit updates
         });
     });
 }
@@ -402,24 +422,38 @@ function createFacultyNodes(faculty) {
 }
 
 function createStudentNodes(students) {
-    students.forEach((student, index) => {
+    // Group students by team to evenly distribute them
+    const studentsByTeam = new Map();
+    students.forEach(student => {
+        if (!studentsByTeam.has(student.team_id)) {
+            studentsByTeam.set(student.team_id, []);
+        }
+        studentsByTeam.get(student.team_id).push(student);
+    });
+
+    students.forEach((student) => {
         const parentTeam = nodes.get(student.team_id);
         if (!parentTeam) {
             console.warn(`Parent team ${student.team_id} not found for student ${student.id}`);
             return;
         }
 
-        // Students orbit within their team sphere (like electrons)
-        // Position them in a small orbit around the team
-        const teamOrbitRadius = 20; // Small radius around team
-        const angle = (Math.PI * 2 / 10) * (Math.random() * 10); // Random angle
+        // Get index of this student within their team
+        const teamStudents = studentsByTeam.get(student.team_id);
+        const studentIndexInTeam = teamStudents.indexOf(student);
+        const studentsInTeam = teamStudents.length;
 
-        const offset = new THREE.Vector3(
-            Math.cos(angle) * teamOrbitRadius,
-            (Math.random() - 0.5) * 15, // Slight vertical variation
-            Math.sin(angle) * teamOrbitRadius
-        );
-        const position = parentTeam.position.clone().add(offset);
+        // Students orbit within their team sphere (like electrons)
+        // Evenly distribute students around the team
+        const teamOrbitRadius = 20; // Small radius around team
+        const angleStep = (Math.PI * 2) / studentsInTeam;
+        const angle = angleStep * studentIndexInTeam;
+
+        const x = parentTeam.position.x + Math.cos(angle) * teamOrbitRadius;
+        const z = parentTeam.position.z + Math.sin(angle) * teamOrbitRadius;
+        const y = parentTeam.position.y + (Math.sin(angle * 2) * 5); // Slight vertical variation
+
+        const position = new THREE.Vector3(x, y, z);
 
         // Color code by status: incoming (orange), established (green), outgoing (red)
         let color, emissiveColor;
@@ -455,7 +489,7 @@ function createStudentNodes(students) {
             position: position,
             orbitAngle: angle,
             orbitRadius: teamOrbitRadius,
-            orbitCenter: parentTeam.position.clone() // Store the team center for orbiting
+            parentTeamId: student.team_id // Store parent team ID for dynamic orbit updates
         });
     });
 }
@@ -587,21 +621,24 @@ function animate() {
         particle.mesh.scale.set(scale, scale, scale);
     });
 
-    // Orbital rotation for projects and students
+    // Orbital rotation for projects, teams, and students
     nodes.forEach(node => {
         if (node.orbitAngle !== undefined && !node.isNucleus) {
-            if (node.type === 'student' && node.orbitCenter) {
+            if (node.type === 'student' && node.parentTeamId) {
                 // Students orbit around their team center (faster rotation like electrons)
-                node.orbitAngle += 0.005; // Faster rotation for students
-                const x = node.orbitCenter.x + Math.cos(node.orbitAngle) * node.orbitRadius;
-                const z = node.orbitCenter.z + Math.sin(node.orbitAngle) * node.orbitRadius;
-                const y = node.orbitCenter.y + (Math.sin(node.orbitAngle * 2) * 5); // Slight bobbing
-                node.mesh.position.x = x;
-                node.mesh.position.y = y;
-                node.mesh.position.z = z;
-                node.position.x = x;
-                node.position.y = y;
-                node.position.z = z;
+                const parentTeam = nodes.get(node.parentTeamId);
+                if (parentTeam) {
+                    node.orbitAngle += 0.005; // Faster rotation for students
+                    const x = parentTeam.position.x + Math.cos(node.orbitAngle) * node.orbitRadius;
+                    const z = parentTeam.position.z + Math.sin(node.orbitAngle) * node.orbitRadius;
+                    const y = parentTeam.position.y + (Math.sin(node.orbitAngle * 2) * 5); // Slight bobbing
+                    node.mesh.position.x = x;
+                    node.mesh.position.y = y;
+                    node.mesh.position.z = z;
+                    node.position.x = x;
+                    node.position.y = y;
+                    node.position.z = z;
+                }
             } else if (node.type === 'project') {
                 // Projects orbit around nucleus (slower)
                 node.orbitAngle += 0.001;
@@ -611,6 +648,21 @@ function animate() {
                 node.mesh.position.z = z;
                 node.position.x = x;
                 node.position.z = z;
+            } else if (node.type === 'team' && node.parentProjectId) {
+                // Teams orbit around their parent project (medium speed)
+                const parentProject = nodes.get(node.parentProjectId);
+                if (parentProject) {
+                    node.orbitAngle += 0.003;
+                    const x = parentProject.position.x + Math.cos(node.orbitAngle) * node.orbitRadius;
+                    const z = parentProject.position.z + Math.sin(node.orbitAngle) * node.orbitRadius;
+                    const y = parentProject.position.y + (Math.sin(node.orbitAngle) * 10);
+                    node.mesh.position.x = x;
+                    node.mesh.position.y = y;
+                    node.mesh.position.z = z;
+                    node.position.x = x;
+                    node.position.y = y;
+                    node.position.z = z;
+                }
             }
         }
     });
