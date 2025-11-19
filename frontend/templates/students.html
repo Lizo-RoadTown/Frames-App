@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Roster - FRAMES</title>
-    <link rel="stylesheet" href="/static/landing.css">
-    <link rel="stylesheet" href="/static/forms.css">
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
 </head>
 <body>
     <nav class="top-nav">
@@ -21,9 +25,9 @@
 
         <!-- Student Summary -->
         <section class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div class="student-summary-row">
                 <h2>Active Students</h2>
-                <div id="studentSummary" style="display: flex; gap: 20px;">
+                <div id="studentSummary" class="student-summary-badges">
                     <div class="stat-badge incoming">
                         <span class="stat-number" id="incomingCount">0</span>
                         <span class="stat-label">Incoming</span>
@@ -40,8 +44,9 @@
             </div>
 
             <!-- Filter by team -->
-            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                <select id="filterTeam" class="filter-select" onchange="filterStudents()">
+            <div class="student-filter-row">
+                <label for="filterTeam" class="visually-hidden">Filter by Team</label>
+                <select id="filterTeam" class="filter-select" onchange="filterStudents()" title="Filter by Team">
                     <option value="">All Teams</option>
                 </select>
             </div>
