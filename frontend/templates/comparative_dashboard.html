@@ -3,25 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRAMES - Comparative Dashboard</title>
+    <title>Comparative Analysis - FRAMES</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
     <link rel="stylesheet" href="/static/comparative_dashboard.css">
 </head>
 <body>
-    <header>
-        <h1>FRAMES - Multi-University Comparative Dashboard</h1>
-        <nav>
-            <button id="viewAllBtn" class="active">All Universities</button>
-            <button id="viewProvesBtn">PROVES Collaboration</button>
-            <button id="viewOutcomesBtn">Outcomes</button>
-        </nav>
-    </header>
+    <nav class="top-nav">
+        <a href="/research" class="back-link">← Back to Research Dashboard</a>
+        <h2>Comparative Analysis</h2>
+    </nav>
 
-    <main id="dashboardContent">
-        <!-- This section will show all 8 universities side-by-side -->
-        <section id="allUniversitiesView">
-            <h2>All Universities Overview</h2>
+    <div class="container">
+        <div class="page-header">
+            <h1>📊 Multi-University Comparative Analysis</h1>
+            <p class="subtitle">Side-by-side comparison of program metrics across all institutions</p>
+        </div>
 
-            <div class="universities-grid">
+        <div class="card active" style="padding: 1.5rem; margin-bottom: 1rem;">
+            <nav style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button id="viewAllBtn" class="btn-glow active" style="min-width: 150px;">All Universities</button>
+                <button id="viewProvesBtn" class="btn-glow" style="min-width: 150px;">PROVES Collaboration</button>
+                <button id="viewOutcomesBtn" class="btn-glow" style="min-width: 150px;">Outcomes</button>
+            </nav>
+        </div>
+
+        <main id="dashboardContent">
+            <!-- This section will show all 8 universities side-by-side -->
+            <section id="allUniversitiesView" class="card active">
+                <h2 class="section-title">All Universities Overview</h2>
+
+                <div class="universities-grid">
                 <!-- Repeat this card 8 times, one per university -->
                 <!-- University 1: Cal Poly Pomona -->
                 <div class="university-card" data-university-id="CalPolyPomona">
@@ -266,9 +282,16 @@
                 </div>
             </div>
         </section>
-    </main>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <p class="footer-title">FRAMES Comparative Analysis</p>
+        <p class="footer-desc">Framework for Resilience Assessment in Modular Engineering Systems</p>
+    </footer>
 
     <!-- JavaScript for API integration -->
     <script src="/static/comparative_dashboard.js"></script>
+    <script>lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });</script>
 </body>
 </html>
