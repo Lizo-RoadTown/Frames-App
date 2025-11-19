@@ -12,11 +12,9 @@ class TeamModel(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.String, primary_key=True)
     university_id = db.Column(db.String, nullable=True, index=True)  # Nullable for backwards compat during migration
+    project_id = db.Column(db.String, nullable=False, index=True)  # Teams belong to projects
     discipline = db.Column(db.String, nullable=True)
-    lifecycle = db.Column(db.String, nullable=True)
     name = db.Column(db.String, nullable=False)
-    size = db.Column(db.Integer, nullable=True)
-    experience = db.Column(db.Integer, nullable=True)
     description = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.String, default=lambda: datetime.now().isoformat())
     meta = db.Column(db.JSON, nullable=True)
@@ -25,11 +23,9 @@ class TeamModel(db.Model):
         return {
             'id': self.id,
             'university_id': self.university_id,
+            'project_id': self.project_id,
             'discipline': self.discipline,
-            'lifecycle': self.lifecycle,
             'name': self.name,
-            'size': self.size,
-            'experience': self.experience,
             'description': self.description,
             'created_at': self.created_at,
             'meta': self.meta,
@@ -168,8 +164,7 @@ class StudentModel(db.Model):
     id = db.Column(db.String, primary_key=True)
     university_id = db.Column(db.String, nullable=False, index=True)
     name = db.Column(db.String, nullable=False)
-    team_id = db.Column(db.String, nullable=True)  # Foreign key to teams
-    project_id = db.Column(db.String, nullable=True)  # Foreign key to projects
+    team_id = db.Column(db.String, nullable=True)  # Foreign key to teams (which belong to projects)
     expertise_area = db.Column(db.String, nullable=True)  # e.g., "Electrical", "Software"
     graduation_term = db.Column(db.String, nullable=True)  # e.g., "Spring 2026"
     terms_remaining = db.Column(db.Integer, nullable=False, default=4)  # Auto-decrements each term
@@ -194,7 +189,6 @@ class StudentModel(db.Model):
             'university_id': self.university_id,
             'name': self.name,
             'team_id': self.team_id,
-            'project_id': self.project_id,
             'expertise_area': self.expertise_area,
             'graduation_term': self.graduation_term,
             'terms_remaining': self.terms_remaining,

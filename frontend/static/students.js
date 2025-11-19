@@ -27,30 +27,31 @@ function getUniversityInfo() {
 // Load teams and projects for dropdowns
 async function loadDropdowns() {
     try {
-        // Load teams
-        const teamsResponse = await fetch(`${API_BASE_URL}/teams?university_id=${universityId}`);
+        // Load teams and projects in parallel
+        const [teamsResponse, projectsResponse] = await Promise.all([
+            fetch(`${API_BASE_URL}/teams?university_id=${universityId}`),
+            fetch(`${API_BASE_URL}/projects?university_id=${universityId}`)
+        ]);
+
         teams = await teamsResponse.json();
+        projects = await projectsResponse.json();
+
+        // Create project lookup
+        const projectMap = {};
+        projects.forEach(p => projectMap[p.id] = p);
 
         const teamSelect = document.getElementById('teamId');
         const filterTeamSelect = document.getElementById('filterTeam');
 
         teams.forEach(team => {
-            const option = new Option(team.name, team.id);
+            const projectName = team.project_id && projectMap[team.project_id]
+                ? ` (${projectMap[team.project_id].name})`
+                : '';
+            const displayName = `${team.name}${projectName}`;
+
+            const option = new Option(displayName, team.id);
             teamSelect.add(option.cloneNode(true));
             filterTeamSelect.add(option);
-        });
-
-        // Load projects
-        const projectsResponse = await fetch(`${API_BASE_URL}/projects?university_id=${universityId}`);
-        projects = await projectsResponse.json();
-
-        const projectSelect = document.getElementById('projectId');
-        const filterProjectSelect = document.getElementById('filterProject');
-
-        projects.forEach(project => {
-            const option = new Option(project.name, project.id);
-            projectSelect.add(option.cloneNode(true));
-            filterProjectSelect.add(option);
         });
     } catch (error) {
         console.error('Error loading dropdowns:', error);
@@ -82,19 +83,14 @@ function updateSummary() {
     document.getElementById('outgoingCount').textContent = outgoing;
 }
 
-// Filter students by team/project
+// Filter students by team
 function filterStudents() {
     const teamFilter = document.getElementById('filterTeam').value;
-    const projectFilter = document.getElementById('filterProject').value;
 
     let filtered = allStudents;
 
     if (teamFilter) {
         filtered = filtered.filter(s => s.team_id === teamFilter);
-    }
-
-    if (projectFilter) {
-        filtered = filtered.filter(s => s.project_id === projectFilter);
     }
 
     displayStudents(filtered);
@@ -111,7 +107,7 @@ function displayStudents(students) {
 
     studentsList.innerHTML = students.map(student => {
         const team = teams.find(t => t.id === student.team_id);
-        const project = projects.find(p => p.id === student.project_id);
+        const project = team && team.project_id ? projects.find(p => p.id === team.project_id) : null;
 
         return `
             <div class="item-card" data-id="${student.id}">
@@ -157,7 +153,6 @@ document.getElementById('addStudentForm').addEventListener('submit', async (e) =
         university_id: universityId,
         name: formData.get('name'),
         team_id: formData.get('team_id'),
-        project_id: formData.get('project_id') || null,
         expertise_area: formData.get('expertise_area') || null,
         graduation_term: formData.get('graduation_term') || null,
         terms_remaining: parseInt(formData.get('terms_remaining'))

@@ -30,12 +30,20 @@
         <!-- Add New Team Form -->
         <section class="card">
             <h2>Add a New Team</h2>
-            <p class="hint">Create teams first, then add students to them</p>
+            <p class="hint">Teams belong to projects - select which project this team will work on</p>
             <form id="addTeamForm" class="form">
+                <div class="form-group">
+                    <label for="project_id">Project *</label>
+                    <select id="project_id" name="project_id" required>
+                        <option value="">Select project...</option>
+                    </select>
+                    <span class="hint">Which project does this team belong to?</span>
+                </div>
+
                 <div class="form-group">
                     <label for="teamName">Team Name *</label>
                     <input type="text" id="teamName" name="name" required
-                           placeholder="e.g., Power Systems Team, Flight Software">
+                           placeholder="e.g., Software Team, Power Systems">
                     <span class="hint">Give your team a descriptive name</span>
                 </div>
 

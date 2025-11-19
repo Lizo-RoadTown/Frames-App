@@ -21,11 +21,40 @@ function getUniversityInfo() {
     return true;
 }
 
+// Load available projects for dropdown
+async function loadProjects() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/projects?university_id=${universityId}`);
+        const projects = await response.json();
+
+        const projectSelect = document.getElementById('project_id');
+        projectSelect.innerHTML = '<option value="">Select project...</option>';
+
+        projects.forEach(project => {
+            const option = document.createElement('option');
+            option.value = project.id;
+            option.textContent = project.name;
+            projectSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading projects:', error);
+    }
+}
+
 // Load existing teams
 async function loadTeams() {
     try {
-        const response = await fetch(`${API_BASE_URL}/teams?university_id=${universityId}`);
-        const teams = await response.json();
+        const [teamsRes, projectsRes] = await Promise.all([
+            fetch(`${API_BASE_URL}/teams?university_id=${universityId}`),
+            fetch(`${API_BASE_URL}/projects?university_id=${universityId}`)
+        ]);
+
+        const teams = await teamsRes.json();
+        const projects = await projectsRes.json();
+
+        // Create project lookup
+        const projectMap = {};
+        projects.forEach(p => projectMap[p.id] = p.name);
 
         const teamsList = document.getElementById('teamsList');
 
@@ -39,13 +68,9 @@ async function loadTeams() {
                 <div class="item-header">
                     <h3 class="item-title">${team.name}</h3>
                     <div class="item-badges">
+                        ${team.project_id && projectMap[team.project_id] ? `<span class="badge badge-project">📦 ${projectMap[team.project_id]}</span>` : ''}
                         ${team.discipline ? `<span class="badge">${formatDiscipline(team.discipline)}</span>` : ''}
-                        ${team.lifecycle ? `<span class="badge ${team.lifecycle}">${formatLifecycle(team.lifecycle)}</span>` : ''}
                     </div>
-                </div>
-                <div class="item-details">
-                    ${team.size ? `👥 ${team.size} students` : ''}
-                    ${team.experience ? `• 📅 ${team.experience} months experience` : ''}
                 </div>
                 ${team.description ? `<p class="item-description">${team.description}</p>` : ''}
                 <div class="item-actions">
@@ -88,8 +113,16 @@ document.getElementById('addTeamForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
+    const projectId = formData.get('project_id');
+
+    if (!projectId) {
+        showError('Please select a project for this team');
+        return;
+    }
+
     const teamData = {
         university_id: universityId,
+        project_id: projectId,
         name: formData.get('name'),
         discipline: formData.get('discipline') || null,
         description: formData.get('description') || null
@@ -172,6 +205,7 @@ function showError(message) {
 // Initialize
 window.addEventListener('DOMContentLoaded', () => {
     if (getUniversityInfo()) {
+        loadProjects();
         loadTeams();
     }
 });
