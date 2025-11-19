@@ -554,6 +554,24 @@ body::before {
     line-height: 1.5;
 }
 
+/* Special Research Tile */
+.research-tile {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(192, 38, 211, 0.1) 100%) !important;
+    border: 2px solid rgba(124, 58, 237, 0.3) !important;
+}
+
+.research-tile .option-icon {
+    color: #c084fc;
+}
+
+.research-tile h3 {
+    color: #c084fc !important;
+}
+
+.research-tile:hover {
+    border-color: rgba(124, 58, 237, 0.5) !important;
+}
+
 /* Buttons */
 .btn-change,
 .btn-primary,
