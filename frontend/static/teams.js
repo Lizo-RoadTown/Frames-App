@@ -8,8 +8,19 @@ let universityName = null;
 // Get university from URL or session
 function getUniversityInfo() {
     const urlParams = new URLSearchParams(window.location.search);
-    universityId = urlParams.get('university') || sessionStorage.getItem('selectedUniversity');
-    universityName = sessionStorage.getItem('selectedUniversityName') || 'Your University';
+    const urlUniversity = urlParams.get('university');
+
+    // URL parameter takes precedence over sessionStorage
+    if (urlUniversity) {
+        universityId = urlUniversity;
+        sessionStorage.setItem('selectedUniversity', universityId);
+        // Try to get a better name (could be improved with a lookup table)
+        universityName = urlUniversity.replace(/([A-Z])/g, ' $1').trim() || 'Your University';
+        sessionStorage.setItem('selectedUniversityName', universityName);
+    } else {
+        universityId = sessionStorage.getItem('selectedUniversity');
+        universityName = sessionStorage.getItem('selectedUniversityName') || 'Your University';
+    }
 
     if (!universityId) {
         alert('Please select a university first');
