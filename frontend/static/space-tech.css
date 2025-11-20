@@ -290,8 +290,8 @@ body::before {
 /* Cards - Glassmorphic data panels */
 .card {
     background: var(--bg-card);
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border-radius: 16px;
     padding: var(--space-8);
     margin-bottom: var(--space-6);
@@ -343,8 +343,8 @@ body::before {
 /* Top Navigation */
 .top-nav {
     background: rgba(10, 10, 15, 0.95);
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     padding: var(--space-4) var(--space-6);
     display: flex;
@@ -393,6 +393,7 @@ body::before {
 
 .university-btn {
     background: var(--bg-card);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -476,6 +477,7 @@ body::before {
 
 .option-card {
     background: var(--bg-card);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -714,6 +716,7 @@ body::before {
 
 .portal-card {
     background: var(--bg-card);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 2px solid var(--border);
     border-radius: 16px;
@@ -1001,8 +1004,8 @@ body::before {
     color: var(--text-primary);
     background: var(--bg-secondary);
     transition: all 0.2s ease;
-    appearance: none;
     -webkit-appearance: none;
+    appearance: none;
     box-shadow: none;
 }
 
@@ -1047,6 +1050,7 @@ body::before {
 
 .item-card {
     background: var(--bg-card);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border-subtle);
     border-radius: 12px;
@@ -1167,6 +1171,7 @@ body::before {
     border-radius: 12px;
     border: 1px solid;
     min-width: 100px;
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
@@ -1213,8 +1218,8 @@ body::before {
     min-width: 200px;
     cursor: pointer;
     font-family: var(--font-body);
-    appearance: none;
     -webkit-appearance: none;
+    appearance: none;
     box-shadow: none;
 }
 
