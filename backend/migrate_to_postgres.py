@@ -18,13 +18,14 @@ from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker
 import json
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from parent directory
+env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path=env_path)
 
 # Import models
 from db_models import (
     TeamModel, FacultyModel, ProjectModel, InterfaceModel,
-    StudentModel, RiskFactor, FactorValue, ModelDefinition
+    StudentModel, RiskFactor, FactorValue, FactorModel
 )
 from database import db
 
@@ -198,12 +199,11 @@ class PostgreSQLMigration:
 
         # Try to migrate additional tables if they exist
         try:
-            from db_models import StudentModel, RiskFactor, FactorValue, ModelDefinition
             tables.extend([
                 (StudentModel, 'students'),
                 (RiskFactor, 'risk_factors'),
                 (FactorValue, 'factor_values'),
-                (ModelDefinition, 'model_definitions'),
+                (FactorModel, 'factor_models'),
             ])
         except ImportError:
             print("ℹ️  Some models not found, migrating core tables only")
