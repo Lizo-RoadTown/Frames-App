@@ -118,18 +118,29 @@ function validateStudentCode() {
 
 // University selection - this will be set up in DOMContentLoaded
 function setupUniversityButtons() {
-    document.querySelectorAll('.university-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            selectedUniversity = this.dataset.id;
-            const universityName = this.querySelector('.uni-name').textContent;
+    const buttons = document.querySelectorAll('.university-btn');
+    console.log(`Found ${buttons.length} university buttons`);
 
-            // Store in session
-            sessionStorage.setItem('selectedUniversity', selectedUniversity);
-            sessionStorage.setItem('selectedUniversityName', universityName);
+    buttons.forEach((btn, index) => {
+        // Only attach to buttons that have data-id (landing page university buttons)
+        // Skip buttons with onclick attribute (researcher dashboard buttons)
+        if (btn.dataset.id && !btn.getAttribute('onclick')) {
+            console.log(`Attaching click handler to button ${index}: ${btn.dataset.id}`);
+            btn.addEventListener('click', function() {
+                console.log(`University button clicked: ${this.dataset.id}`);
+                selectedUniversity = this.dataset.id;
+                const universityName = this.querySelector('.uni-name').textContent;
 
-            // Show role selection
-            showRoleSelection(universityName);
-        });
+                // Store in session
+                sessionStorage.setItem('selectedUniversity', selectedUniversity);
+                sessionStorage.setItem('selectedUniversityName', universityName);
+
+                console.log(`Stored university: ${selectedUniversity}, ${universityName}`);
+
+                // Show role selection
+                showRoleSelection(universityName);
+            });
+        }
     });
 }
 
