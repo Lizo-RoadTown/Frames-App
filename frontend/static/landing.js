@@ -194,17 +194,13 @@ function openResearchDashboard() {
 }
 
 // Check if university and role were previously selected
+// NOTE: Removed auto-navigation on page load - it was confusing to auto-redirect
+// users when they first visit the landing page. They should explicitly select
+// their university and role each time they visit the landing page.
 window.addEventListener('DOMContentLoaded', () => {
-    const savedUni = sessionStorage.getItem('selectedUniversity');
-    const savedUniName = sessionStorage.getItem('selectedUniversityName');
-    const savedRole = sessionStorage.getItem('selectedRole');
-
-    if (savedUni && savedUniName && savedRole) {
-        selectedUniversity = savedUni;
-        selectedRole = savedRole;
-        showDashboardOptions(savedUniName, savedRole);
-    } else if (savedUni && savedUniName) {
-        selectedUniversity = savedUni;
-        showRoleSelection(savedUniName);
-    }
+    // Clear any previous selections when returning to landing page
+    // This ensures a fresh start each time
+    sessionStorage.removeItem('selectedUniversity');
+    sessionStorage.removeItem('selectedUniversityName');
+    sessionStorage.removeItem('selectedRole');
 });
