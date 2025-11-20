@@ -78,13 +78,18 @@ function backToPortals() {
     document.getElementById('studentCodeEntry').classList.add('hidden');
     document.getElementById('roleSelection').classList.add('hidden');
     document.getElementById('dashboardOptions').classList.add('hidden');
-    
+
     // Show main landing
     document.getElementById('mainLanding').classList.remove('hidden');
-    
+
     // Clear code input
     document.getElementById('studentCode').value = '';
     document.getElementById('codeError').style.display = 'none';
+
+    // Clear session storage when going back to portal selection
+    sessionStorage.removeItem('selectedUniversity');
+    sessionStorage.removeItem('selectedUniversityName');
+    sessionStorage.removeItem('selectedRole');
 }
 
 function validateStudentCode() {
@@ -193,14 +198,19 @@ function openResearchDashboard() {
     window.location.href = '/research';
 }
 
-// Check if university and role were previously selected
-// NOTE: Removed auto-navigation on page load - it was confusing to auto-redirect
-// users when they first visit the landing page. They should explicitly select
-// their university and role each time they visit the landing page.
+// Initialize landing page
 window.addEventListener('DOMContentLoaded', () => {
-    // Clear any previous selections when returning to landing page
-    // This ensures a fresh start each time
-    sessionStorage.removeItem('selectedUniversity');
-    sessionStorage.removeItem('selectedUniversityName');
-    sessionStorage.removeItem('selectedRole');
+    // Clear sessionStorage ONLY if user is coming from outside the app
+    // This prevents auto-navigation on fresh page loads while preserving
+    // sessionStorage during the university selection flow
+
+    const fromExternal = !document.referrer || !document.referrer.includes(window.location.origin);
+
+    if (fromExternal) {
+        // User came from external site or typed URL directly - clear old selections
+        sessionStorage.removeItem('selectedUniversity');
+        sessionStorage.removeItem('selectedUniversityName');
+        sessionStorage.removeItem('selectedRole');
+    }
+    // If from internal navigation, preserve sessionStorage for the flow
 });
