@@ -4,6 +4,10 @@ from flask_cors import CORS
 from datetime import datetime
 import os
 import json
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from models import SystemState, Team, Faculty, Project, Interface
 from analytics import FramesAnalytics
