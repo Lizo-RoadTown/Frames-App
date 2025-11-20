@@ -141,39 +141,9 @@ function selectRole(role) {
 }
 
 function showDashboardOptions(uniName, role) {
-    document.getElementById('roleSelection').classList.add('hidden');
-    document.getElementById('dashboardOptions').classList.remove('hidden');
-    
-    // Build dashboard header and tiles based on role
-    const permissions = rolePermissions[role];
-    const dashboardDiv = document.getElementById('dashboardOptions');
-    
-    dashboardDiv.innerHTML = `
-        <div class="dashboard-header">
-            <h2 id="selectedUniName">${uniName}</h2>
-            <button class="btn-glow" onclick="changeUniversity()"><span class="lucide" data-lucide="globe"></span> Change University</button>
-        </div>
-        <div class="options-grid">
-            ${permissions.map(tileKey => {
-                const tile = tiles[tileKey];
-                const specialClass = tile.special ? ' class="research-tile"' : '';
-                return `
-                    <div class="option-card" onclick="${tile.action}"${specialClass}>
-                        <div class="option-icon"><span class="lucide" data-lucide="${tile.icon}"></span></div>
-                        <div class="option-content">
-                            <h3>${tile.title}</h3>
-                            <p>${tile.description}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('')}
-        </div>
-    `;
-    
-    // Reinitialize Lucide icons
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });
-    }
+    // Navigate to the university dashboard page with proper parameters
+    // This provides a clearer user experience with dedicated pages
+    window.location.href = `/university-dashboard?university=${selectedUniversity}&role=${role}`;
 }
 
 function changeUniversity() {

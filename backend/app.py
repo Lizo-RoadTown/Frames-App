@@ -1691,6 +1691,14 @@ def research_dashboard():
     return send_from_directory('../frontend/templates', 'researcher_dashboard.html')
 
 
+@app.route('/university-dashboard')
+def university_dashboard():
+    """Serve the University Dashboard page - hub for managing a specific university's program"""
+    university = request.args.get('university')
+    role = request.args.get('role', 'faculty')
+    return render_template('university_dashboard.html', university=university, role=role)
+
+
 # --- Risk Factor Management ---
 
 @app.route('/api/research/factors', methods=['GET'])
