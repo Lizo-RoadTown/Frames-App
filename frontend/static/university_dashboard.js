@@ -9,7 +9,7 @@ let userRole = null;
 
 // Role permissions mapping
 const rolePermissions = {
-    faculty: ['teams', 'faculty', 'projects', 'connections', 'health', 'compare', 'research'],
+    faculty: ['teams', 'faculty', 'projects', 'connections', 'health', 'compare'],
     teamlead: ['teams', 'health']
 };
 
