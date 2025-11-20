@@ -320,8 +320,9 @@ body::before {
     box-shadow: var(--shadow-glow);
 }
 
-.card.hidden {
-    display: none;
+.card.hidden,
+.hidden {
+    display: none !important;
 }
 
 .card h2 {
