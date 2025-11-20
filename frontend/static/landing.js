@@ -116,20 +116,22 @@ function validateStudentCode() {
     // - On failure, show error message
 }
 
-// University selection
-document.querySelectorAll('.university-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        selectedUniversity = this.dataset.id;
-        const universityName = this.querySelector('.uni-name').textContent;
+// University selection - this will be set up in DOMContentLoaded
+function setupUniversityButtons() {
+    document.querySelectorAll('.university-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            selectedUniversity = this.dataset.id;
+            const universityName = this.querySelector('.uni-name').textContent;
 
-        // Store in session
-        sessionStorage.setItem('selectedUniversity', selectedUniversity);
-        sessionStorage.setItem('selectedUniversityName', universityName);
+            // Store in session
+            sessionStorage.setItem('selectedUniversity', selectedUniversity);
+            sessionStorage.setItem('selectedUniversityName', universityName);
 
-        // Show role selection
-        showRoleSelection(universityName);
+            // Show role selection
+            showRoleSelection(universityName);
+        });
     });
-});
+}
 
 function showRoleSelection(uniName) {
     document.getElementById('mainLanding').classList.add('hidden');
@@ -213,4 +215,7 @@ window.addEventListener('DOMContentLoaded', () => {
         sessionStorage.removeItem('selectedRole');
     }
     // If from internal navigation, preserve sessionStorage for the flow
+
+    // Set up university button click handlers
+    setupUniversityButtons();
 });
