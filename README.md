@@ -1,64 +1,76 @@
-# 🚀 FRAMES - Framework for Resilience Assessment in Modular Engineering Systems
+# FRAMES - Multi-University Research & Training Platform
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-316192.svg)](https://www.postgresql.org/)
-[![Status: Active Development](https://img.shields.io/badge/status-active%20development-green.svg)]()
+[![Azure](https://img.shields.io/badge/Azure-Free_Tier-0078D4.svg)](https://azure.microsoft.com/free/students/)
 
-> **A multi-university research platform for analyzing knowledge transfer patterns in space mission programs and predicting mission success through AI-powered interface analysis.**
-
----
-
-## 📖 What is FRAMES?
-
-FRAMES is a collaborative research instrument designed to study **knowledge transfer dynamics** across 8 universities working on space missions. By capturing real-time data from Discord, GitHub, and project management tools, FRAMES uses **molecular modeling metaphors** to visualize team structures and predict mission outcomes.
-
-### 🎯 Core Capabilities
-
-- **🔬 Knowledge Transfer Analysis** - Track how information flows between teams, faculty, and projects
-- **🤖 AI-Powered Predictions** - Machine learning models predict mission and program success
-- **🌐 Multi-University Collaboration** - 8 universities share data transparently for collective learning
-- **📊 Real-Time Monitoring** - Live dashboards show team health and interface strength
-- **📱 Mobile-First Design** - Students and team leads access data on-the-go
-- **🧪 Research Platform** - Faculty analyze patterns and test hypotheses about knowledge transfer
+> **A comprehensive platform combining AI-powered student onboarding, research analytics, and predictive modeling for multi-university space mission programs.**
 
 ---
 
-## 🏗️ Architecture Overview
+## 🎯 What is FRAMES?
+
+FRAMES (Framework for Resilience Assessment in Modular Engineering Systems) is a multi-application platform serving 8 universities collaborating on space missions. It provides:
+
+### **Three Integrated Applications:**
+
+#### 1. 📚 Student Onboarding LMS
+AI-powered learning management system for training incoming students
+
+- Interactive, mobile-friendly training modules
+- AI assistant for team leads to manage content
+- Comprehensive usage analytics
+- Self-paced learning with progress tracking
+
+**Status:** 🚧 Active Development | **Launch:** Next cohort
+**Docs:** [Onboarding LMS Documentation](docs/onboarding-lms/)
+
+---
+
+#### 2. 📊 Research Analytics Dashboard
+Faculty and researcher tools for analyzing team dynamics and knowledge transfer patterns
+
+- Multi-university comparison dashboards
+- NDA (Non-Decomposable Architecture) diagnostics
+- Interface and energy loss analysis
+- Predictive risk modeling
+
+**Status:** ✅ Core Features Complete | **Users:** Faculty & Researchers
+**Docs:** [Research Analytics Documentation](docs/research-analytics/)
+
+---
+
+#### 3. 🤖 AI Prediction Core _(Planned)_
+Machine learning engine for mission success prediction
+
+- Predictive models using team/interface data
+- MLflow experiment tracking
+- Automated risk assessment
+- Research hypothesis testing
+
+**Status:** 📅 Planned | **Timeline:** Post-LMS Launch
+**Docs:** [AI Core Documentation](docs/ai-prediction-core/)
+
+---
+
+## 🏗️ Shared Infrastructure
+
+All three applications connect to a **single PostgreSQL database** hosted on Azure (free tier):
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    DATA SOURCES                              │
-│  Discord  │  GitHub  │  Custom PM Tool  │  Manual Input     │
-└─────┬───────────┬──────────────┬────────────────┬───────────┘
-      │           │              │                │
-      ▼           ▼              ▼                ▼
-┌─────────────────────────────────────────────────────────────┐
-│              INTEGRATION LAYER (Python)                      │
-│  Discord Bot  │  GitHub API  │  PM Webhooks  │  Flask API   │
-└─────────────────────────────┬───────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  PostgreSQL DATABASE                         │
-│  Teams │ Faculty │ Projects │ Interfaces │ ML Models        │
-└─────────────────────────────┬───────────────────────────────┘
-                              │
-                ┌─────────────┴─────────────┐
-                │                           │
-                ▼                           ▼
-┌───────────────────────────┐   ┌──────────────────────────┐
-│   ML TRAINING PIPELINE    │   │   APPLICATION LAYER      │
-│  - Feature Engineering    │   │  - Flask REST API        │
-│  - Model Training         │   │  - WebSocket (real-time) │
-│  - MLflow Tracking        │   │  - Authentication        │
-└───────────────────────────┘   └──────────┬───────────────┘
-                                           │
-                                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     FRONTEND LAYER                           │
-│  Student App (PWA)  │  Faculty Dashboard  │  Researcher UI  │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│              Azure PostgreSQL Database (FREE)                 │
+│  Universities │ Teams │ Students │ Modules │ Interfaces      │
+└─────┬────────────────────┬───────────────────┬───────────────┘
+      │                    │                   │
+      ▼                    ▼                   ▼
+┌─────────────┐   ┌─────────────────┐   ┌──────────────┐
+│ Onboarding  │   │    Research     │   │  AI Engine   │
+│     LMS     │   │    Analytics    │   │   (Future)   │
+│  (React +   │   │  (React + Flask)│   │   (ML API)   │
+│   Flask)    │   │                 │   │              │
+└─────────────┘   └─────────────────┘   └──────────────┘
 ```
 
 ---
@@ -68,197 +80,183 @@ FRAMES is a collaborative research instrument designed to study **knowledge tran
 ### Prerequisites
 
 - Python 3.11+
-- PostgreSQL 15+
-- Node.js 18+ (for frontend)
-- Discord Bot Token (for Discord integration)
-- GitHub Personal Access Token (for GitHub integration)
+- Node.js 18+ (for React frontends)
+- Azure for Students account (free tier)
 
-### Installation
+### Get Started in 3 Steps
+
+1. **[Get Started Guide](GETTING_STARTED.md)** - Complete setup instructions
+2. **[Azure Database Setup](docs/shared/AZURE_SETUP.md)** - Set up free PostgreSQL database
+3. **[Project Roadmap](docs/shared/PROJECT_ROADMAP.md)** - Understand the development plan
+
+### For Developers
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/frames-python.git
-cd frames-python
+# Clone repository
+git clone https://github.com/Lizo-RoadTown/Frames-App.git
+cd Frames-App
 
-# Install Python dependencies
+# Set up Python environment
+python -m venv venv
+venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 
-# Set up environment variables
+# Configure database connection
 cp .env.example .env
-# Edit .env with your credentials
+# Edit .env with your Azure PostgreSQL connection string
 
-# Initialize database
-python backend/init_db.py
+# Run Flask backend
+python backend/app.py
 
-# Run the Flask server
-cd backend
-python app.py
-```
-
-The application will be available at `http://localhost:5000`
-
-### Docker Setup (Alternative)
-
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# Access at http://localhost:5000
+# Open browser: http://localhost:5000
 ```
 
 ---
 
 ## 📚 Documentation
 
-- **[System Architecture](docs/SYSTEM_ARCHITECTURE_COMPLETE.md)** - Complete technical architecture
-- **[Implementation Roadmap](docs/IMPLEMENTATION_ROADMAP.md)** - Phase-by-phase development plan
-- **[API Documentation](docs/API_DOCUMENTATION.md)** - REST API reference
-- **[Database Schema](docs/DATABASE_SCHEMA.md)** - PostgreSQL table structures
-- **[Discord Integration Guide](docs/DISCORD_INTEGRATION.md)** - Set up Discord bot
-- **[GitHub Integration Guide](docs/GITHUB_INTEGRATION.md)** - Set up GitHub data collection
+### By Application
+- **[Onboarding LMS](docs/onboarding-lms/)** - Student training system
+- **[Research Analytics](docs/research-analytics/)** - Faculty/researcher tools
+- **[AI Prediction Core](docs/ai-prediction-core/)** - ML prediction engine (planned)
 
----
+### Shared Resources
+- **[Project Roadmap](docs/shared/PROJECT_ROADMAP.md)** - Development timeline
+- **[Azure Setup Guide](docs/shared/AZURE_SETUP.md)** - Database configuration
+- **[Contributing Guide](docs/shared/CONTRIBUTING.md)** - How to contribute
 
-## 🎓 Research Background
-
-FRAMES is based on research into **Non-Decomposable Architectures (NDA)** in space mission programs. The system models knowledge transfer as a molecular structure where:
-
-- **Teams, Faculty, Projects** = Molecules (nodes)
-- **Interfaces** = Bonds (edges)
-- **Energy Loss** = Knowledge transfer friction
-- **Bond Strength** = Interface quality (codified vs institutional knowledge)
-
-### Key Research Questions
-
-1. **What interface patterns predict mission success?**
-2. **How does knowledge transfer degrade during team transitions?**
-3. **Can we predict program continuity across student cohorts?**
-4. **What interventions strengthen weak interfaces?**
-
-### NDA Diagnostic Dimensions
-
-- 🎯 **Actor Autonomy** - Degree of independent operation
-- 📚 **Partitioned Knowledge** - Knowledge siloing across disciplines
-- 🎲 **Emergent Outputs** - Shifting/undefined project goals
-- ⏰ **Temporal Misalignment** - Timing differences across teams
-- 💰 **Integration Cost** - Coordination effort required
-- 🔗 **Coupling Degradation** - Weakening relationships over time
+### Full Documentation Index
+See **[docs/README.md](docs/README.md)** for complete documentation overview.
 
 ---
 
 ## 🌟 Key Features
 
-### For Students & Team Leads 📱
+### For Students
+- 📱 Mobile-friendly training modules
+- ⏱️ Self-paced learning
+- ✅ Progress tracking
+- 🔄 Reusable reference materials
 
-- **Mobile-First PWA** - Works on any phone, no app store needed
-- **My Team Dashboard** - See your team's structure and interfaces
-- **Activity Logging** - Record knowledge transfer events
-- **Offline Support** - Works without internet connection
-- **Push Notifications** - Stay updated on team changes
+### For Team Leads
+- 🤖 AI-assisted content creation
+- 📊 Student progress analytics
+- ✏️ Easy module updates
+- 📈 Usage insights
 
-### For Faculty & Staff 💻
-
-- **Multi-University Comparison** - See all 8 universities side-by-side
-- **Approval Workflows** - Review and approve student submissions
-- **Live Monitoring** - Real-time team health indicators
-- **Mobile Quick Views** - Approve on-the-go from your phone
-- **Export & Reporting** - Generate reports for stakeholders
-
-### For Researchers 🔬
-
-- **Factor Model Management** - Define and test risk factors
-- **ML Experiment Tracking** - MLflow integration for model versioning
-- **Custom Analytics** - Jupyter notebooks for deep analysis
-- **A/B Testing** - Compare different prediction models
-- **Data Export** - CSV, JSON, SQL for external analysis
+### For Faculty & Researchers
+- 🔬 Multi-university data analysis
+- 📉 Risk factor modeling
+- 🎯 NDA diagnostics
+- 📑 Export capabilities
 
 ---
 
 ## 🛠️ Technology Stack
 
 ### Backend
-- **Python 3.11+** - Core language
-- **Flask** - REST API framework
-- **FastAPI** - High-performance webhooks
-- **PostgreSQL 15+** - Primary database
-  - pgvector - AI embeddings
-  - TimescaleDB - Time-series data
-- **Redis** - Message queue and caching
-- **Celery** - Async task processing
-- **SQLAlchemy** - ORM
-
-### Machine Learning
-- **Scikit-learn** - Traditional ML algorithms
-- **XGBoost** - Gradient boosting
-- **PyTorch** - Deep learning (optional)
-- **MLflow** - Experiment tracking
-- **NetworkX** - Graph analysis
-- **Sentence Transformers** - Text embeddings
+- **Python 3.11+** with Flask
+- **PostgreSQL 15+** (Azure hosted)
+- **SQLAlchemy** ORM
+- **Anthropic Claude API** (AI assistant)
 
 ### Frontend
-- **React Native (Expo)** - Student mobile app (PWA)
-- **React** - Faculty/researcher dashboard
-- **Chart.js** - Data visualization
-- **AG-Grid** - Advanced tables
-- **Socket.IO** - Real-time updates
+- **React** (Student LMS & Analytics dashboards)
+- **Vanilla JS** (Legacy analytics interface)
+- **Chart.js** (Data visualization)
 
-### Integrations
-- **discord.py** - Discord bot
-- **PyGithub** - GitHub API
-- **APScheduler** - Scheduled tasks
+### Infrastructure
+- **Azure PostgreSQL** (Database - FREE tier)
+- **Azure App Service** (Backend hosting - FREE tier)
+- **Azure Static Web Apps** (Frontend hosting - FREE tier)
+- **GitHub** (Version control & CI/CD)
 
-### DevOps
-- **Docker** - Containerization
-- **GitHub Actions** - CI/CD
-- **Railway/Heroku** - Hosting (development)
-- **AWS/GCP** - Production hosting (future)
+### Machine Learning (Planned)
+- **Scikit-learn** | **XGBoost** | **PyTorch**
+- **MLflow** (Experiment tracking)
+- **NetworkX** (Graph analysis)
 
 ---
 
 ## 📊 Current Status
 
-### ✅ Completed (Phase 1)
+### ✅ Completed
 - [x] Multi-university database schema
-- [x] REST API with CRUD operations
-- [x] Permission system (header-based auth)
-- [x] Comparative dashboard backend
-- [x] Student roster management
-- [x] Research dashboard with factor models
-- [x] Custom NDA analytics engine
+- [x] Research analytics backend (NDA diagnostics, interfaces)
+- [x] Comparative dashboard
+- [x] Student/team/faculty management
+- [x] Custom risk factor modeling
 
-### 🚧 In Progress (Phase 2)
-- [ ] Discord bot integration
-- [ ] GitHub data collection
-- [ ] PostgreSQL migration (from SQLite)
-- [ ] Frontend-backend integration
+### 🚧 In Progress
+- [ ] **Student Onboarding LMS** (Priority - Weeks 1-8)
+  - [ ] AI-powered module generation
+  - [ ] React student viewer
+  - [ ] Team lead AI assistant
+  - [ ] Analytics dashboard
 
-### 📅 Planned (Phase 3+)
-- [ ] Student mobile PWA
-- [ ] Faculty desktop dashboard
-- [ ] AI model training pipeline
-- [ ] Real-time WebSocket updates
-- [ ] Production deployment
+### 📅 Planned
+- [ ] React research analytics frontend
+- [ ] AI prediction core development
+- [ ] Multi-language support
+- [ ] Mobile native apps
+
+---
+
+## 👥 Participating Universities
+
+**Lead Institution:** California State Polytechnic University, Pomona
+
+**Partner Universities:**
+- Texas State University
+- Columbia University
+- _(5 additional universities)_
+
+---
+
+## 🎓 Research Background
+
+FRAMES is based on research into **Non-Decomposable Architectures (NDA)** in space mission programs, using molecular modeling metaphors to understand knowledge transfer:
+
+- **Teams/Faculty/Projects** = Molecules (nodes)
+- **Interfaces** = Bonds (edges)
+- **Energy Loss** = Knowledge transfer friction
+- **Bond Strength** = Interface quality (codified vs. institutional knowledge)
+
+### Research Questions
+1. What interface patterns predict mission success?
+2. How does knowledge transfer degrade during team transitions?
+3. Can we predict program continuity across student cohorts?
+4. What interventions strengthen weak interfaces?
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from researchers, developers, and space mission practitioners!
+We welcome contributions! See our [Contributing Guide](docs/shared/CONTRIBUTING.md) for:
 
-### How to Contribute
+- Development workflow
+- Git branching strategy
+- Code style guidelines
+- Pull request process
 
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
-4. **Push to the branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
+---
 
-### Development Guidelines
+## 💰 Cost
 
-- Follow PEP 8 style guide for Python
-- Write tests for new features
-- Update documentation
-- Keep commits atomic and descriptive
+**Total:** ~$0-20/year for complete platform!
+
+- **Database:** $0/month (Azure for Students free tier - 750 hours)
+- **Hosting:** $0/month (Azure App Service & Static Web Apps free tiers)
+- **AI API:** ~$5-10 one-time (initial module generation)
+- **Domain:** $12/year (optional)
+
+---
+
+## 📞 Contact & Support
+
+- **GitHub Issues:** [Report bugs or request features](https://github.com/Lizo-RoadTown/Frames-App/issues)
+- **Documentation:** [docs/](docs/)
+- **Project Lead:** _(Your contact info)_
 
 ---
 
@@ -268,66 +266,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🎓 Academic Citation
-
-If you use FRAMES in your research, please cite:
-
-```bibtex
-@software{frames2025,
-  title={FRAMES: Framework for Resilience Assessment in Modular Engineering Systems},
-  author={[Your Name/Institution]},
-  year={2025},
-  url={https://github.com/yourusername/frames-python}
-}
-```
-
----
-
-## 👥 Team
-
-**Lead Institution:** Cal Poly Pomona
-
-**Participating Universities:**
-- Cal Poly Pomona (Lead)
-- Texas State University
-- Columbia University
-- [5 additional universities]
-
-**Principal Investigator:** [Your Name]
-
----
-
-## 📞 Contact
-
-- **Project Lead:** [Your Email]
-- **Issues:** [GitHub Issues](https://github.com/yourusername/frames-python/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/yourusername/frames-python/discussions)
-- **Discord:** [Join our Discord server](#)
-
----
-
 ## 🙏 Acknowledgments
 
-- **NASA** - Research funding and mission data
-- **JPL** - CubeSat mission collaboration
-- **PROVES Program** - Multi-university collaboration framework
+- **NASA** - Research funding
+- **USIP Program** - Multi-university collaboration framework
 - **All participating universities** - Data sharing and collaboration
-
----
-
-## 📈 Project Stats
-
-![GitHub stars](https://img.shields.io/github/stars/yourusername/frames-python?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/frames-python?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/frames-python)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/frames-python)
+- **Cal Poly Pomona** - Lead institution and project management
 
 ---
 
 <div align="center">
 
-**[Documentation](docs/)** • **[Roadmap](docs/IMPLEMENTATION_ROADMAP.md)** • **[API Docs](docs/API_DOCUMENTATION.md)** • **[Contributing](#-contributing)**
+**[Documentation](docs/)** • **[Getting Started](GETTING_STARTED.md)** • **[Project Roadmap](docs/shared/PROJECT_ROADMAP.md)** • **[Contributing](docs/shared/CONTRIBUTING.md)**
 
-Made with ❤️ for space mission research
+Built for space mission research and student success 🚀
 
 </div>

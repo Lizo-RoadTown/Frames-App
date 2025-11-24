@@ -8,7 +8,12 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(python app.py:*)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "Bash(cat:*)",
+      "Bash(python run_migration.py:*)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(npx create-react-app frontend-react)"
     ],
     "deny": [],
     "ask": []
