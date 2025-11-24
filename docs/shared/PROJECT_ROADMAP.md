@@ -655,7 +655,7 @@ FRAMES Python/
 │   ├── migrations/                     # Database migrations
 │   │   └── add_module_system.sql
 │   └── instance/
-│       └── frames.db                   # Local SQLite (deprecated)
+│       └── frames.db                   # Local SQLite (deprecated, hosted DB is source of truth)
 │
 ├── frontend/                            # Existing vanilla JS (keep for now)
 │   ├── templates/

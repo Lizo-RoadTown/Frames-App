@@ -13,7 +13,13 @@
       "Bash(python run_migration.py:*)",
       "Bash(node --version:*)",
       "Bash(npm --version:*)",
-      "Bash(npx create-react-app frontend-react)"
+      "Bash(npx create-react-app frontend-react)",
+      "Bash(gh repo create:*)",
+      "Bash(gh repo delete:*)",
+      "Bash(gh auth refresh:*)",
+      "Bash(rsync:*)",
+      "Bash(tree:*)",
+      "Bash(python backend/test_endpoints.py:*)"
     ],
     "deny": [],
     "ask": []

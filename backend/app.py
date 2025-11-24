@@ -13,7 +13,7 @@ from models import SystemState, Team, Faculty, Project, Interface
 from analytics import FramesAnalytics
 from flask import make_response
 import traceback
-from database import db
+from backend.database import db
 
 app = Flask(__name__,
             static_folder='../frontend/static',
@@ -21,10 +21,9 @@ app = Flask(__name__,
 CORS(app)  # Enable CORS for frontend-backend communication
 
 # Configure SQLAlchemy (simple SQLite for dev; switch URI via env for Postgres later)
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-# Use absolute path for SQLite by default so the DB file is created next to backend code
-default_sqlite = f"sqlite:///{os.path.join(BASE_DIR, 'frames.db')}"
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', default_sqlite)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+if not app.config['SQLALCHEMY_DATABASE_URI']:
+    raise RuntimeError("DATABASE_URL is required. Please set it in your .env (Neon connection string).")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 

@@ -123,7 +123,7 @@
         async function testConnection() {
             try {
                 log('Testing backend connection...');
-                const response = await fetch('http://localhost:5000/api/state');
+                const response = await fetch('/api/state');
                 if (response.ok) {
                     log('✅ Backend connection successful!');
                     const data = await response.json();
