@@ -5,9 +5,9 @@ Your FRAMES project is organized as a monorepo and ready for development.
 ## What's Set Up
 
 ### Database
-- **Provider:** Neon PostgreSQL (free tier)
+- **Provider:** Neon PostgreSQL
 - **Status:** Connected and initialized
-- **Tables:** 14 tables created
+- **Tables:** 21 tables created
 - **Connection:** Configured in `.env`
 
 ### Repository Structure

@@ -56,11 +56,11 @@ Machine learning engine for mission success prediction
 
 ## 🏗️ Shared Infrastructure
 
-All three applications connect to a **single PostgreSQL database** hosted on Neon (free tier):
+All three applications connect to a **single PostgreSQL database** hosted on Neon:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│              Neon PostgreSQL Database (FREE)                  │
+│              Neon PostgreSQL Database                         │
 │  Universities │ Teams │ Students │ Modules │ Interfaces      │
 └─────┬────────────────────┬───────────────────┬───────────────┘
       │                    │                   │
@@ -81,7 +81,7 @@ All three applications connect to a **single PostgreSQL database** hosted on Neo
 
 - Python 3.11+
 - Node.js 18+ (for React frontends)
-- Neon account (free tier)
+- Neon account
 
 ### Get Started in 3 Steps
 
@@ -167,7 +167,7 @@ See **[docs/README.md](docs/README.md)** for complete documentation overview.
 
 ### Infrastructure
 
-- **Neon PostgreSQL** (Database - FREE tier)
+- **Neon PostgreSQL** (Database)
 - **GitHub** (Version control & CI/CD)
 
 ### Machine Learning (Planned)
