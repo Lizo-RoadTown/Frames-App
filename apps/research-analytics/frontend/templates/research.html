@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Dashboard - FRAMES</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
+    <style>
+        .research-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border-subtle);
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .tab.active {
+            color: var(--cyan);
+            border-bottom-color: var(--cyan);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .factor-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .factor-table th {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .factor-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+        }
+
+        .factor-table tr:hover {
+            background: rgba(0, 240, 255, 0.03);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-established {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-provisional {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .badge-exploratory {
+            background: rgba(124, 58, 237, 0.15);
+            color: #7c3aed;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .badge-active {
+            background: rgba(0, 240, 255, 0.15);
+            color: var(--cyan);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .btn-icon:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            color: var(--cyan);
+        }
+
+        .btn-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+        }
+
+        .btn-close:hover {
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+        }
+
+        .factor-values-list {
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 1rem;
+            background: var(--bg-secondary);
+        }
+
+        .factor-value-item {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr auto;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .model-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .model-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        .model-card.active {
+            border-color: var(--cyan);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .model-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .model-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .model-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .weight-slider-container {
+            margin-bottom: 1rem;
+        }
+
+        .weight-slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .weight-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--bg-secondary);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .weight-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--cyan);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .weight-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--cyan);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .energy-result {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .energy-bar {
+            height: 30px;
+            background: linear-gradient(to right, #10b981, #fbbf24, #f59e0b, #ef4444);
+            border-radius: 8px;
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .energy-indicator {
+            position: absolute;
+            top: -30px;
+            transform: translateX(-50%);
+            color: var(--cyan);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .factor-breakdown {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .factor-breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .comparison-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="javascript:history.back()" class="back-link"><span class="lucide" data-lucide="arrow-left"></span> Back</a>
+        <h2>Research Dashboard</h2>
+    </nav>
+
+    <div class="container research-container">
+        <div class="page-header">
+            <h1>🔬 Research Dashboard</h1>
+            <p class="subtitle">Configure risk factors, build predictive models, and validate knowledge transfer hypotheses</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="factors">
+                <span class="lucide" data-lucide="database"></span>
+                Factor Library
+            </button>
+            <button class="tab" data-tab="models">
+                <span class="lucide" data-lucide="layers"></span>
+                Models
+            </button>
+            <button class="tab" data-tab="calculator">
+                <span class="lucide" data-lucide="calculator"></span>
+                Energy Calculator
+            </button>
+            <button class="tab" data-tab="comparison">
+                <span class="lucide" data-lucide="bar-chart-2"></span>
+                Model Comparison
+            </button>
+        </div>
+
+        <!-- Factor Library Tab -->
+        <div id="factors-tab" class="tab-content active">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2>Risk Factors</h2>
+                    <button class="btn-primary" id="btn-add-factor">
+                        <span class="lucide" data-lucide="plus"></span>
+                        Add Factor
+                    </button>
+                </div>
+
+                <table class="factor-table" id="factors-table">
+                    <thead>
+                        <tr>
+                            <th>Factor Name</th>
+                            <th>Category</th>
+                            <th>Confidence</th>
+                            <th>Values</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="factors-tbody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-tertiary);">
+                                Loading factors...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Models Tab -->
+        <div id="models-tab" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>Factor Models</h2>
+                <button class="btn-primary" id="btn-create-model">
+                    <span class="lucide" data-lucide="plus"></span>
+                    Create Model
+                </button>
+            </div>
+
+            <div id="models-container">
+                <p style="text-align: center; padding: 2rem; color: var(--text-tertiary);">
+                    Loading models...
+                </p>
+            </div>
+        </div>
+
+        <!-- Energy Calculator Tab -->
+        <div id="calculator-tab" class="tab-content">
+            <div class="card">
+                <h2>Energy Calculator</h2>
+                <p class="hint">Calculate energy loss for specific interfaces or entire networks</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="calc-model-select">Model</label>
+                        <select id="calc-model-select" class="form-select">
+                            <option value="">Loading models...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="calc-university-select">University (optional)</label>
+                        <select id="calc-university-select" class="form-select">
+                            <option value="">All Universities</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="btn-calculate-network" style="margin-top: 1rem;">
+                    <span class="lucide" data-lucide="zap"></span>
+                    Calculate Network Energy
+                </button>
+
+                <div id="calculation-results"></div>
+            </div>
+        </div>
+
+        <!-- Model Comparison Tab -->
+        <div id="comparison-tab" class="tab-content">
+            <div class="card">
+                <h2>Model Comparison</h2>
+                <p class="hint">Compare multiple models side-by-side to evaluate prediction accuracy</p>
+
+                <div class="form-group" style="margin-top: 2rem;">
+                    <label class="form-label">Select Models to Compare</label>
+                    <div id="comparison-model-checkboxes"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="comparison-university">Filter by University</label>
+                    <select id="comparison-university" class="form-select">
+                        <option value="">All Universities</option>
+                    </select>
+                </div>
+
+                <button class="btn-primary" id="btn-compare-models">
+                    <span class="lucide" data-lucide="bar-chart-2"></span>
+                    Run Comparison
+                </button>
+
+                <div id="comparison-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Factor Modal -->
+    <div id="modal-add-factor" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Risk Factor</h3>
+                <button class="btn-close" onclick="closeModal('modal-add-factor')">&times;</button>
+            </div>
+
+            <form id="form-add-factor">
+                <div class="form-group">
+                    <label class="form-label" for="factor-name">Factor Name (machine-readable)</label>
+                    <input type="text" id="factor-name" class="form-input" placeholder="e.g., communication_frequency" required>
+                    <small class="hint">Use lowercase with underscores, no spaces</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="factor-display-name">Display Name</label>
+                    <input type="text" id="factor-display-name" class="form-input" placeholder="e.g., Communication Frequency" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="factor-description">Description</label>
+                    <textarea id="factor-description" class="form-textarea" placeholder="What does this factor measure?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="factor-category">Category</label>
+                    <select id="factor-category" class="form-select" required>
+                        <option value="NDA_Dimension">NDA Dimension</option>
+                        <option value="Interface_Property">Interface Property</option>
+                        <option value="Entity_Attribute">Entity Attribute</option>
+                        <option value="Temporal_Property">Temporal Property</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="factor-confidence">Confidence Level</label>
+                    <select id="factor-confidence" class="form-select">
+                        <option value="exploratory">Exploratory</option>
+                        <option value="provisional">Provisional</option>
+                        <option value="established">Established</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Factor Values</label>
+                    <div class="factor-values-list" id="factor-values-container">
+                        <div class="factor-value-item">
+                            <input type="text" class="form-input value-name" placeholder="Value name (e.g., high)" required>
+                            <input type="text" class="form-input value-display" placeholder="Display name (e.g., High)" required>
+                            <input type="number" class="form-input value-contribution" placeholder="0.00-1.00" step="0.01" min="0" max="1" required>
+                            <button type="button" class="btn-icon" onclick="removeFactorValue(this)">
+                                <span class="lucide" data-lucide="trash-2"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" id="btn-add-value" style="margin-top: 0.5rem;">
+                        Add Value
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modal-add-factor')">Cancel</button>
+                    <button type="submit" class="btn-primary">Create Factor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Model Modal -->
+    <div id="modal-create-model" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Factor Model</h3>
+                <button class="btn-close" onclick="closeModal('modal-create-model')">&times;</button>
+            </div>
+
+            <form id="form-create-model">
+                <div class="form-group">
+                    <label class="form-label" for="model-name">Model Name (machine-readable)</label>
+                    <input type="text" id="model-name" class="form-input" placeholder="e.g., hypothesis_v2_communication" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="model-display-name">Display Name</label>
+                    <input type="text" id="model-display-name" class="form-input" placeholder="e.g., Communication-Centric Model v2" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="model-hypothesis">Hypothesis</label>
+                    <textarea id="model-hypothesis" class="form-textarea" placeholder="What is this model testing?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Select Factors & Set Weights</label>
+                    <div id="model-factors-container" style="max-height: 300px; overflow-y: auto;">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modal-create-model')">Cancel</button>
+                    <button type="submit" class="btn-primary">Create Model</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <p class="footer-title">FRAMES</p>
+        <p class="footer-desc">Framework for Resilience Assessment in Modular Engineering Systems</p>
+    </footer>
+
+    <script src="/static/api.js"></script>
+    <script src="/static/research.js"></script>
+    <script>
+        lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });
+    </script>
+</body>
+</html>

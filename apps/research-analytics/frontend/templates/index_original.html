@@ -1,0 +1,2923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAMES: A Structural Diagnostic for Resilience in Modular University Space Programs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: radial-gradient(circle at 50% 50%, #0f1419, #1a1f2e);
+            color: white;
+            overflow-x: auto;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(0,0,0,0.3);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            color: #64ffda;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+        }
+        .subtitle {
+            text-align: center;
+            color: #b0bec5;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        
+        .setup-panel {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+        }
+        
+        .setup-section {
+            margin-bottom: 25px;
+        }
+        
+        .setup-title {
+            color: #64ffda;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(100, 255, 218, 0.3);
+            padding-bottom: 5px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #64ffda;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #64ffda;
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.2);
+        }
+        
+        .team-list, .faculty-list, .project-list, .interface-list {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .team-item, .faculty-item, .project-item, .interface-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            border-left: 3px solid #64ffda;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            color: #64ffda;
+        }
+        
+        .item-details {
+            font-size: 12px;
+            color: #b0bec5;
+        }
+        
+        .remove-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .remove-btn:hover {
+            background: #e74c3c;
+        }
+        
+        .molecular-structure {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            margin: 20px 0;
+            overflow: visible;
+            background: rgba(255,255,255,0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: none;
+            min-height: 600px;
+        }
+        
+        .molecule {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+            user-select: none;
+        }
+        
+        .molecule:hover {
+            transform: scale(1.1);
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+        }
+        
+        .molecule.selected {
+            transform: scale(1.15);
+            box-shadow: 0 0 40px rgba(100, 255, 218, 0.5);
+            border-color: #64ffda !important;
+        }
+        
+        .team-molecule {
+            background: radial-gradient(circle, #4ecdc4, #3498db);
+            border-color: #2980b9;
+            color: white;
+        }
+        
+        .team-molecule.incoming {
+            background: radial-gradient(circle, #3498db, #2980b9);
+            border-color: #1f618d;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.4);
+            animation: pulse 2s infinite;
+        }
+        
+        .team-molecule.established {
+            background: radial-gradient(circle, #2ecc71, #27ae60);
+            border-color: #229954;
+            box-shadow: 0 0 25px rgba(46, 204, 113, 0.4);
+        }
+        
+        .team-molecule.outgoing {
+            background: radial-gradient(circle, #e74c3c, #c0392b);
+            border-color: #a93226;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.4);
+            animation: fade 3s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes fade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .faculty-molecule {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #f39c12, #d35400);
+            border-color: #e67e22;
+            font-size: 11px;
+            box-shadow: 0 0 30px rgba(243, 156, 18, 0.4);
+        }
+        
+        .project-molecule {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #9b59b6, #8e44ad);
+            border-color: #7d3c98;
+            font-size: 12px;
+            box-shadow: 0 0 35px rgba(155, 89, 182, 0.4);
+        }
+        
+        .bond {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            height: 2px;
+            transform-origin: left center;
+            z-index: 1;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .codified-strong-bond {
+            background: linear-gradient(90deg, transparent, rgba(39, 174, 96, 0.8), transparent);
+            height: 4px;
+            box-shadow: 0 0 8px rgba(39, 174, 96, 0.4);
+        }
+        
+        .codified-moderate-bond {
+            background: linear-gradient(90deg, transparent, rgba(243, 156, 18, 0.8), transparent);
+            height: 3px;
+            box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
+        }
+        
+        .institutional-weak-bond {
+            background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.8), transparent);
+            height: 2px;
+            box-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
+            animation: flicker 2s infinite;
+        }
+        
+        .fragile-temporary-bond {
+            background: linear-gradient(90deg, transparent, rgba(192, 57, 43, 0.8), transparent);
+            height: 1px;
+            box-shadow: 0 0 4px rgba(192, 57, 43, 0.4);
+            animation: flicker 1s infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .energy-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #64ffda;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #64ffda;
+            animation: float 3s infinite ease-in-out;
+            z-index: 2;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(180deg); }
+        }
+        
+        .energy-leak {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ff4757;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ff4757;
+            animation: leak 1.5s infinite;
+            z-index: 2;
+        }
+        
+        @keyframes leak {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.3) translateY(20px); }
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: 2px solid #64ffda;
+            border-radius: 25px;
+            background: transparent;
+            color: #64ffda;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .btn:hover {
+            background: #64ffda;
+            color: #0f1419;
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+        }
+        
+        .btn.active {
+            background: #64ffda;
+            color: #0f1419;
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+        }
+        
+        .btn.primary {
+            background: #64ffda;
+            color: #0f1419;
+        }
+        
+        .btn.primary:hover {
+            background: #4ecdc4;
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+        }
+        
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .stat-card {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #64ffda;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #64ffda;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #b0bec5;
+            margin-top: 5px;
+        }
+        
+        .info-panel {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(100, 255, 218, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .legend-section {
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .legend-molecules { border-left-color: #64ffda; }
+        .legend-bonds { border-left-color: #f39c12; }
+        .legend-energy { border-left-color: #2ecc71; }
+        
+        .legend-title {
+            font-weight: bold;
+            color: #64ffda;
+            margin-bottom: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border-radius: 6px;
+        }
+        
+        .interface-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .interface-type {
+            padding: 10px;
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .interface-type:hover {
+            border-color: #64ffda;
+            background: rgba(100, 255, 218, 0.1);
+        }
+        
+        .interface-type.selected {
+            border-color: #64ffda;
+            background: rgba(100, 255, 218, 0.2);
+        }
+        
+        .interface-type-name {
+            font-weight: bold;
+            color: #64ffda;
+            margin-bottom: 5px;
+        }
+        
+        .interface-type-loss {
+            font-size: 12px;
+            color: #ff4757;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FRAMES: A Structural Diagnostic for Resilience in Modular University Space Programs</h1>
+        <p class="subtitle">Framework for Resilience Assessment in Modular Engineering Systems | Nearly Decomposable Architecture | Micro-modules as Molecules | Knowledge as Energy Flow</p>
+        
+        <!-- Methodology Panel -->
+        <div class="setup-panel" id="methodologyPanel" style="margin-bottom: 20px;">
+            <div class="setup-title">Research Methodology: Bronco Space Lab Case Study</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div style="background: rgba(100, 255, 218, 0.1); padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #64ffda; margin-top: 0;">🔬 NDA Diagnostic Dimensions</h4>
+                    <ul style="font-size: 12px; line-height: 1.4;">
+                        <li><strong>Actor Autonomy:</strong> Degree of independent operation</li>
+                        <li><strong>Partitioned Knowledge:</strong> Knowledge siloing across modules</li>
+                        <li><strong>Emergent Outputs:</strong> Shifting/undefined project goals</li>
+                        <li><strong>Temporal Misalignment:</strong> Timing differences across modules</li>
+                        <li><strong>Integration Cost:</strong> Coordination effort required</li>
+                        <li><strong>Coupling Degradation:</strong> Weakening relationships over time</li>
+                    </ul>
+                </div>
+                <div style="background: rgba(46, 204, 113, 0.1); padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #2ecc71; margin-top: 0;">🔄 Micro-Module Classification</h4>
+                    <ul style="font-size: 12px; line-height: 1.4;">
+                        <li><strong>Functional Role:</strong> Electrical, Software, Mission Ops, etc.</li>
+                        <li><strong>Time Position:</strong> Incoming, Established, Outgoing</li>
+                        <li><strong>Interface Types:</strong> Codified vs. Institutional Knowledge</li>
+                        <li><strong>Resilience Types:</strong> Inherited vs. Constructed</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="background: rgba(243, 156, 18, 0.1); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <h4 style="color: #f39c12; margin-top: 0;">📊 Key Findings from Bronco Space Lab Analysis</h4>
+                <div style="font-size: 12px; line-height: 1.4;">
+                    <p><strong>Rotational Nature:</strong> Micro-modules cycle in/out on semester cycles, creating predictable knowledge transfer issues.</p>
+                    <p><strong>Interface Fragility:</strong> Two types identified - codified (structured) and institutional (tacit) knowledge interfaces.</p>
+                    <p><strong>Backward Tracing:</strong> Critical validation method for identifying interface vulnerabilities and failure points.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Setup Panel -->
+        <div class="setup-panel" id="setupPanel">
+            <div class="setup-section">
+                <div class="setup-title">Step 1: Define Your Teams</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="teamDiscipline">Discipline/Department:</label>
+                        <select id="teamDiscipline">
+                            <option value="electrical">Electrical Engineering</option>
+                            <option value="software">Software Engineering</option>
+                            <option value="mechanical">Mechanical Engineering</option>
+                            <option value="mission-ops">Mission Operations</option>
+                            <option value="systems">Systems Engineering</option>
+                            <option value="communications">Communications</option>
+                            <option value="payload">Payload Development</option>
+                            <option value="ground">Ground Systems</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="teamLifecycle">Team Lifecycle State:</label>
+                        <select id="teamLifecycle">
+                            <option value="incoming">Incoming (New/Recruiting)</option>
+                            <option value="established">Established (Active/Stable)</option>
+                            <option value="outgoing">Outgoing (Graduating/Transitioning)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="teamName">Team Name/Identifier:</label>
+                        <input type="text" id="teamName" placeholder="e.g., EE Team Alpha, Mission Ops Beta">
+                    </div>
+                    <div class="form-group">
+                        <label for="teamSize">Team Size:</label>
+                        <input type="number" id="teamSize" min="1" max="20" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="teamExperience">Experience Level (months):</label>
+                        <input type="number" id="teamExperience" min="0" max="60" value="12">
+                    </div>
+                    <div class="form-group">
+                        <label for="teamDescription">Description:</label>
+                        <textarea id="teamDescription" rows="2" placeholder="Brief description of team's role and current status"></textarea>
+                    </div>
+                </div>
+                <button class="btn" onclick="addTeam()">Add Team</button>
+                <div class="team-list" id="teamList"></div>
+            </div>
+            
+            <div class="setup-section">
+                <div class="setup-title">Step 2: Define Your Faculty/Staff</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="facultyName">Faculty/Staff Name:</label>
+                        <input type="text" id="facultyName" placeholder="e.g., Dr. Smith">
+                    </div>
+                    <div class="form-group">
+                        <label for="facultyRole">Role:</label>
+                        <input type="text" id="facultyRole" placeholder="e.g., Principal Investigator">
+                    </div>
+                    <div class="form-group">
+                        <label for="facultyDescription">Description:</label>
+                        <textarea id="facultyDescription" rows="2" placeholder="Brief description of role"></textarea>
+                    </div>
+                </div>
+                <button class="btn" onclick="addFaculty()">Add Faculty/Staff</button>
+                <div class="faculty-list" id="facultyList"></div>
+            </div>
+            
+            <div class="setup-section">
+                <div class="setup-title">Step 2.5: Define Your Projects</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="projectName">Project Name:</label>
+                        <input type="text" id="projectName" placeholder="e.g., CubeSat Mission Alpha">
+                    </div>
+                    <div class="form-group">
+                        <label for="projectType">Project Type:</label>
+                        <select id="projectType">
+                            <option value="multiversity">Multi-University Collaborative</option>
+                            <option value="jpl-contract">JPL Contract</option>
+                            <option value="contract-pursuit">Contract Pursuit</option>
+                            <option value="research">Research Project</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDuration">Duration (years):</label>
+                        <input type="number" id="projectDuration" min="1" max="10" value="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">Description:</label>
+                        <textarea id="projectDescription" rows="2" placeholder="Brief description of project"></textarea>
+                    </div>
+                </div>
+                <button class="btn" onclick="addProject()">Add Project</button>
+                <div class="project-list" id="projectList"></div>
+            </div>
+            
+            <div class="setup-section">
+                <div class="setup-title">Step 3: Create Interfaces</div>
+                
+                <div class="form-group">
+                    <label for="interfaceType">Interface Type:</label>
+                    <select id="interfaceType" onchange="updateInterfaceTargets()">
+                        <option value="team-to-team">Team to Team</option>
+                        <option value="team-to-faculty">Team to Faculty/Staff</option>
+                        <option value="team-to-project">Team to Project (Micro-module to Full Project)</option>
+                    </select>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="interfaceFrom">From:</label>
+                        <select id="interfaceFrom"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="interfaceTo">To:</label>
+                        <select id="interfaceTo"></select>
+                    </div>
+                </div>
+                
+                <div class="interface-type-selector">
+                    <div class="interface-type" data-type="codified-strong" data-loss="5">
+                        <div class="interface-type-name">Codified Strong Bond</div>
+                        <div class="interface-type-loss">5% Energy Loss</div>
+                        <div style="font-size: 11px; color: #b0bec5;">Structured mechanisms: walkthroughs, onboarding, documentation repositories</div>
+                    </div>
+                    <div class="interface-type" data-type="codified-moderate" data-loss="15">
+                        <div class="interface-type-name">Codified Moderate Bond</div>
+                        <div class="interface-type-loss">15% Energy Loss</div>
+                        <div style="font-size: 11px; color: #b0bec5;">Integrated design reviews, standardized procedures, formal training</div>
+                    </div>
+                    <div class="interface-type" data-type="institutional-weak" data-loss="35">
+                        <div class="interface-type-name">Institutional Knowledge Bond</div>
+                        <div class="interface-type-loss">35% Energy Loss</div>
+                        <div style="font-size: 11px; color: #b0bec5;">Tacit knowledge, experience-based, vulnerable to turnover</div>
+                    </div>
+                    <div class="interface-type" data-type="fragile-temporary" data-loss="60">
+                        <div class="interface-type-name">Fragile Temporary Bond</div>
+                        <div class="interface-type-loss">60% Energy Loss</div>
+                        <div style="font-size: 11px; color: #b0bec5;">One-time interactions, minimal support, high turnover risk</div>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="addInterface()">Create Interface</button>
+                <div class="interface-list" id="interfaceList"></div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn primary" onclick="generateVisualization()">Generate Molecular Visualization</button>
+                <button class="btn" onclick="generateVisualizationWithSample()" style="margin-left: 10px;">Generate with Sample Data</button>
+                <button class="btn" onclick="addComprehensiveInterfaces()" style="margin-left: 10px;">Add Comprehensive Interfaces</button>
+            </div>
+        </div>
+        
+        <!-- Visualization Controls -->
+        <div class="controls hidden" id="visualizationControls">
+            <button class="btn" onclick="showBondStrength()">Show Bond Strength</button>
+            <button class="btn" onclick="showEnergyFlow()">Show Energy Flow</button>
+            <button class="btn" onclick="showDecomposition()">Show Decomposition Risk</button>
+            <button class="btn" onclick="showTeamLifecycleAnalysis()">Show Team Lifecycle Analysis</button>
+            <button class="btn" onclick="showProjectInterfaceAnalysis()">Show Project Interface Analysis</button>
+            <button class="btn" onclick="showNDADiagnosticAnalysis()">Show NDA Diagnostic Analysis</button>
+            <button class="btn" onclick="showBackwardTracingAnalysis()">Show Backward Tracing Analysis</button>
+            <button class="btn" onclick="simulateEnergyFlow()">Simulate Energy Flow</button>
+            <button class="btn" onclick="toggleLegend()">Toggle Legend</button>
+            <button class="btn" onclick="resetVisualization()">Reset to Setup</button>
+            <button class="btn" onclick="toggleVisualization()">Toggle Visualization</button>
+            <button class="btn" onclick="forceVisualization()">Force Show Visualization</button>
+        </div>
+        
+        <!-- Statistics Panel -->
+        <div class="stats-panel" id="statsPanel">
+            <div class="stat-card">
+                <div class="stat-value" id="totalMolecules">0</div>
+                <div class="stat-label">Total Molecules</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalBonds">0</div>
+                <div class="stat-label">Active Bonds</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="energyFlow">0%</div>
+                <div class="stat-label">Energy Flow Efficiency</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="decompositionRisk">0%</div>
+                <div class="stat-label">Decomposition Risk</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalEnergyLoss">0%</div>
+                <div class="stat-label">Total Energy Loss</div>
+            </div>
+        </div>
+        
+        <!-- Molecular Structure -->
+        <div class="molecular-structure" id="molecularStructure"></div>
+        
+        <!-- Legend -->
+        <div class="legend" id="legend">
+            <div class="legend-section legend-molecules">
+                <div class="legend-title">🔬 Molecules (Micro-modules)</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3498db;"></div>
+                    <span><strong>Incoming Teams (Blue)</strong><br>New teams in learning phase, pulsing animation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #2ecc71;"></div>
+                    <span><strong>Established Teams (Green)</strong><br>Stable, experienced teams as knowledge hubs</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e74c3c;"></div>
+                    <span><strong>Outgoing Teams (Red)</strong><br>Graduating/transitioning teams, fading animation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f39c12;"></div>
+                    <span><strong>Faculty/Staff Hubs (Orange)</strong><br>Knowledge centers and institutional support</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #9b59b6;"></div>
+                    <span><strong>Project Molecules (Purple)</strong><br>Full projects showing cumulative effects</span>
+                </div>
+            </div>
+            
+            <div class="legend-section legend-bonds">
+                <div class="legend-title">🔗 Molecular Bonds (Interfaces)</div>
+                <div class="legend-item">
+                    <div class="legend-color strong-bond"></div>
+                    <span><strong>Codified Strong Bond (Green)</strong><br>5% energy loss - Structured mechanisms, documentation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color moderate-bond"></div>
+                    <span><strong>Codified Moderate Bond (Orange)</strong><br>15% energy loss - Integrated reviews, formal training</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color weak-bond"></div>
+                    <span><strong>Institutional Knowledge Bond (Red)</strong><br>35% energy loss - Tacit knowledge, vulnerable to turnover</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #c0392b;"></div>
+                    <span><strong>Fragile Temporary Bond (Dark Red)</strong><br>60% energy loss - One-time interactions, high turnover risk</span>
+                </div>
+            </div>
+            
+            <div class="legend-section legend-energy">
+                <div class="legend-title">⚡ Knowledge Energy Flow</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #64ffda;"></div>
+                    <span><strong>Energy Particles (Cyan)</strong><br>Knowledge flowing through bonds</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff4757;"></div>
+                    <span><strong>Energy Leaks (Red)</strong><br>Knowledge loss at weak interfaces</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #2ecc71;"></div>
+                    <span><strong>Cumulative Flow (Green)</strong><br>Positive knowledge impact on projects</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e74c3c;"></div>
+                    <span><strong>Cumulative Loss (Red)</strong><br>Negative knowledge impact on projects</span>
+                </div>
+            </div>
+            
+            <div class="legend-section" style="border-left-color: #e74c3c;">
+                <div class="legend-title">📊 What This Shows</div>
+                <div style="font-size: 12px; line-height: 1.4;">
+                    <p><strong>Resilience:</strong> Strong bonds (green) maintain knowledge flow even under stress.</p>
+                    <p><strong>Risk Areas:</strong> Red particles show where knowledge is being lost.</p>
+                    <p><strong>Decomposition:</strong> Weak bonds can break, isolating micro-modules.</p>
+                    <p><strong>Energy Efficiency:</strong> Lower energy loss = better knowledge retention.</p>
+                </div>
+            </div>
+            
+            <div class="legend-section" style="border-left-color: #9b59b6;">
+                <div class="legend-title">🔬 NDA Diagnostic Dimensions</div>
+                <div style="font-size: 12px; line-height: 1.4;">
+                    <p><strong>🎯 Actor Autonomy:</strong> Degree of independent operation</p>
+                    <p><strong>📚 Partitioned Knowledge:</strong> Knowledge siloing across modules</p>
+                    <p><strong>🎲 Emergent Outputs:</strong> Shifting/undefined project goals</p>
+                    <p><strong>⏰ Temporal Misalignment:</strong> Timing differences across modules</p>
+                    <p><strong>💰 Integration Cost:</strong> Coordination effort required</p>
+                    <p><strong>🔗 Coupling Degradation:</strong> Weakening relationships over time</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-panel" id="infoPanel">
+            <h3 id="infoTitle"></h3>
+            <p id="infoContent"></p>
+        </div>
+    </div>
+
+    <script src="/static/api.js"></script>
+    <script>
+        // Helper: load full state from server and update UI
+        async function loadStateFromServer() {
+            if (typeof FramesAPI === 'undefined') return false;
+            try {
+                const state = await FramesAPI.getState();
+                teams = state.teams || [];
+                faculty = state.faculty || [];
+                projects = state.projects || [];
+                interfaces = state.interfaces || [];
+                updateTeamList();
+                updateFacultyList();
+                updateProjectList();
+                updateInterfaceList();
+                updateInterfaceTargets();
+                console.log('Loaded state from server.');
+                return true;
+            } catch (e) {
+                console.warn('Could not load state from server, falling back to local sample data.', e);
+                return false;
+            }
+        }
+
+        // -------------------------
+        // Play Mode / Sandbox helpers
+        // -------------------------
+        const SAMPLE_UNIVERSITY_ID = 'SAMPLE_UNIVERSITY';
+        let playMode = false;
+        let currentSandboxId = null;
+
+        // Create or reuse a sandbox for the sample university and load it into the UI
+        async function enablePlayMode() {
+            if (typeof FramesAPI === 'undefined') return;
+            try {
+                const list = await FramesAPI.listSandboxes(SAMPLE_UNIVERSITY_ID);
+                let sb = (list && list.length) ? list[0] : null;
+                if (!sb) {
+                    sb = await FramesAPI.createSandbox({ university_id: SAMPLE_UNIVERSITY_ID, name: 'Play Sandbox' });
+                    // copy live data into the new sandbox
+                    await FramesAPI.copyLiveToSandbox(sb.id);
+                    sb = await FramesAPI.getSandbox(sb.id);
+                }
+                currentSandboxId = sb.id;
+                playMode = true;
+                const activeLabel = document.getElementById('activeSandboxLabel');
+                if (activeLabel) activeLabel.textContent = `Sandbox: ${sb.name}`;
+                // load sandbox data
+                const data = sb.data || {};
+                teams = data.teams || [];
+                faculty = data.faculty || [];
+                projects = data.projects || [];
+                interfaces = data.interfaces || [];
+                updateTeamList();
+                updateFacultyList();
+                updateProjectList();
+                updateInterfaceList();
+                updateInterfaceTargets();
+                document.getElementById('playToggleBtn').classList.add('active');
+                console.log('Play Mode enabled, sandbox loaded:', currentSandboxId);
+            } catch (e) {
+                console.error('Could not enable Play Mode (sandbox):', e);
+            }
+        }
+
+        async function disablePlayMode() {
+            playMode = false;
+            currentSandboxId = null;
+            document.getElementById('playToggleBtn').classList.remove('active');
+            const activeLabel = document.getElementById('activeSandboxLabel');
+            if (activeLabel) activeLabel.textContent = 'Live';
+            await loadStateFromServer();
+            console.log('Play Mode disabled, live state restored.');
+        }
+
+        function togglePlayMode() {
+            if (playMode) {
+                disablePlayMode();
+            } else {
+                enablePlayMode();
+            }
+        }
+
+        // -------------------------
+        // Sandbox Manager UI logic
+        // -------------------------
+        async function refreshSandboxList() {
+            if (typeof FramesAPI === 'undefined') return;
+            const listContainer = document.getElementById('sandboxList');
+            if (!listContainer) return;
+            listContainer.innerHTML = '<div style="color:#b0bec5;padding:8px">Loading...</div>';
+            try {
+                const list = await FramesAPI.listSandboxes(SAMPLE_UNIVERSITY_ID);
+                if (!list || list.length === 0) {
+                    listContainer.innerHTML = '<div style="color:#b0bec5;padding:8px">No sandboxes found.</div>';
+                    return;
+                }
+                listContainer.innerHTML = '';
+                list.forEach(sb => {
+                    const row = document.createElement('div');
+                    row.style.display = 'flex';
+                    row.style.justifyContent = 'space-between';
+                    row.style.alignItems = 'center';
+                    row.style.padding = '8px';
+                    row.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+
+                    const left = document.createElement('div');
+                    left.innerHTML = `<div style="font-weight:600;color:#64ffda">${sb.name}</div><div style="font-size:12px;color:#b0bec5">id: ${sb.id}</div>`;
+
+                    const right = document.createElement('div');
+                    right.style.display = 'flex';
+                    right.style.gap = '8px';
+
+                    const loadBtn = document.createElement('button');
+                    loadBtn.textContent = 'Select';
+                    loadBtn.style.padding = '6px 8px';
+                    loadBtn.style.borderRadius = '6px';
+                    loadBtn.onclick = async () => { await loadSandboxById(sb.id); closeSandboxManager(); };
+
+                    const delBtn = document.createElement('button');
+                    delBtn.textContent = 'Delete';
+                    delBtn.style.padding = '6px 8px';
+                    delBtn.style.borderRadius = '6px';
+                    delBtn.style.background = '#ff4757';
+                    delBtn.style.color = '#fff';
+                    delBtn.onclick = async () => { if (confirm('Delete sandbox "'+sb.name+'"?')) { await FramesAPI.deleteSandbox(sb.id); await refreshSandboxList(); } };
+
+                    right.appendChild(loadBtn);
+                    right.appendChild(delBtn);
+
+                    row.appendChild(left);
+                    row.appendChild(right);
+                    listContainer.appendChild(row);
+                });
+            } catch (e) {
+                listContainer.innerHTML = '<div style="color:#ffcc00;padding:8px">Error loading sandboxes.</div>';
+                console.error('refreshSandboxList error', e);
+            }
+        }
+
+        function openSandboxManager() {
+            const modal = document.getElementById('sandboxManagerModal');
+            if (!modal) return;
+            modal.style.display = 'flex';
+            const nameIn = document.getElementById('newSandboxName'); if (nameIn) nameIn.value = '';
+            refreshSandboxList();
+        }
+
+        function closeSandboxManager() {
+            const modal = document.getElementById('sandboxManagerModal');
+            if (!modal) return;
+            modal.style.display = 'none';
+        }
+
+        async function createSandboxUI() {
+            const nameEl = document.getElementById('newSandboxName');
+            const name = nameEl ? (nameEl.value.trim() || 'Play Sandbox') : 'Play Sandbox';
+            try {
+                const sb = await FramesAPI.createSandbox({ university_id: SAMPLE_UNIVERSITY_ID, name });
+                // copy live into sandbox for convenience
+                await FramesAPI.copyLiveToSandbox(sb.id);
+                await refreshSandboxList();
+                // auto-select newly created sandbox
+                await loadSandboxById(sb.id);
+                closeSandboxManager();
+            } catch (e) {
+                alert('Could not create sandbox: ' + (e.message || e));
+            }
+        }
+
+        async function loadSandboxById(sandboxId) {
+            try {
+                const sb = await FramesAPI.getSandbox(sandboxId);
+                if (!sb) { alert('Sandbox not found'); return; }
+                currentSandboxId = sb.id;
+                playMode = true;
+                const data = sb.data || {};
+                teams = data.teams || [];
+                faculty = data.faculty || [];
+                projects = data.projects || [];
+                interfaces = data.interfaces || [];
+                updateTeamList();
+                updateFacultyList();
+                updateProjectList();
+                updateInterfaceList();
+                updateInterfaceTargets();
+                const playBtn = document.getElementById('playToggleBtn'); if (playBtn) playBtn.classList.add('active');
+                const saveBtn = document.getElementById('saveSandboxBtn'); if (saveBtn) { saveBtn.disabled = false; saveBtn.classList.add('active'); }
+                const activeLabel = document.getElementById('activeSandboxLabel'); if (activeLabel) activeLabel.textContent = `Sandbox: ${sb.name}`;
+                console.log('Loaded sandbox', sandboxId);
+            } catch (e) {
+                console.error('loadSandboxById error', e);
+            }
+        }
+
+        // Persist current client state to the selected sandbox
+        async function saveCurrentSandbox() {
+            if (!currentSandboxId) {
+                alert('No sandbox selected. Use Manage Sandboxes to create/select one first.');
+                return;
+            }
+            try {
+                const payload = {
+                    data: {
+                        teams: teams || [],
+                        faculty: faculty || [],
+                        projects: projects || [],
+                        interfaces: interfaces || []
+                    }
+                };
+                const result = await FramesAPI.updateSandbox(currentSandboxId, payload);
+                await refreshSandboxList();
+                alert('Sandbox saved.');
+                console.log('Saved sandbox', currentSandboxId, result);
+            } catch (e) {
+                console.error('saveCurrentSandbox error', e);
+                alert('Could not save sandbox: ' + (e.message || e));
+            }
+        }
+        let teams = [];
+        let faculty = [];
+        let projects = [];
+        let interfaces = [];
+        let molecules = [];
+        let bonds = [];
+        let energyParticles = [];
+        let energyLeaks = [];
+        let selectedInterfaceType = null;
+
+        // Initialize interface type selection
+        document.addEventListener('DOMContentLoaded', async function() {
+            const interfaceTypes = document.querySelectorAll('.interface-type');
+            interfaceTypes.forEach(type => {
+                type.addEventListener('click', function() {
+                    interfaceTypes.forEach(t => t.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedInterfaceType = this.dataset.type;
+                    console.log('Selected interface type:', selectedInterfaceType);
+                });
+            });
+
+            // Initialize interface targets
+            updateInterfaceTargets();
+
+            // Try loading state from server; if unavailable, fall back to sample data
+            const ok = await loadStateFromServer();
+            if (!ok) {
+                addSampleData();
+            }
+        });
+
+        function addSampleData() {
+            // Add sample teams based on Bronco Space Lab structure
+            teams = [
+                { id: 'team_1', discipline: 'electrical', lifecycle: 'established', name: 'Power Systems', size: 4, experience: 18, description: 'Power and avionics systems - experienced team' },
+                { id: 'team_2', discipline: 'electrical', lifecycle: 'incoming', name: 'Electrical Beta', size: 3, experience: 6, description: 'New electrical team in training phase' },
+                { id: 'team_3', discipline: 'software', lifecycle: 'established', name: 'Flight Software', size: 5, experience: 24, description: 'Flight software and data processing' },
+                { id: 'team_4', discipline: 'software', lifecycle: 'outgoing', name: 'Software Legacy', size: 2, experience: 36, description: 'Graduating software team with critical knowledge' },
+                { id: 'team_5', discipline: 'mission-ops', lifecycle: 'incoming', name: 'Mission Ops New', size: 3, experience: 3, description: 'New mission operations team' },
+                { id: 'team_6', discipline: 'mission-ops', lifecycle: 'established', name: 'Mission Ops Core', size: 4, experience: 15, description: 'Established operations team' },
+                { id: 'team_7', discipline: 'mechanical', lifecycle: 'established', name: 'Mechanical Systems', size: 3, experience: 12, description: 'Mechanical systems and structures' },
+                { id: 'team_8', discipline: 'communications', lifecycle: 'incoming', name: 'Comm Systems', size: 2, experience: 4, description: 'New communications team' }
+            ];
+            
+            // Add sample faculty based on Bronco Space Lab structure
+            faculty = [
+                { id: 'faculty_1', name: 'Dr. Principal Investigator', role: 'Principal Investigator', description: 'Project oversight and coordination, institutional interface' },
+                { id: 'faculty_2', name: 'Dr. Technical Lead', role: 'Technical Lead', description: 'Technical guidance and mentoring, knowledge transfer' },
+                { id: 'faculty_3', name: 'Program Director', role: 'Program Director', description: 'Program continuity and institutional support' }
+            ];
+            
+            // Add sample projects based on Bronco Space Lab structure
+            projects = [
+                { id: 'project_1', name: 'JPL CubeSat Mission', type: 'jpl-contract', duration: 3, description: 'Primary satellite mission with JPL contract' },
+                { id: 'project_2', name: 'Multi-University Research', type: 'multiversity', duration: 2, description: 'Multi-university collaborative research project' },
+                { id: 'project_3', name: 'Contract Pursuit', type: 'contract-pursuit', duration: 1, description: 'New contract opportunity being pursued' }
+            ];
+            
+            // Add sample interfaces reflecting codified vs institutional knowledge
+            interfaces = [
+                // Codified interfaces (stronger bonds)
+                { id: 'interface_1', from: 'team_1', to: 'faculty_1', interfaceType: 'team-to-faculty', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_2', from: 'team_3', to: 'faculty_2', interfaceType: 'team-to-faculty', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_3', from: 'team_6', to: 'faculty_3', interfaceType: 'team-to-faculty', bondType: 'codified-moderate', energyLoss: 15 },
+                
+                // Institutional knowledge interfaces (weaker bonds)
+                { id: 'interface_4', from: 'team_4', to: 'team_3', interfaceType: 'team-to-team', bondType: 'institutional-weak', energyLoss: 35 },
+                { id: 'interface_5', from: 'team_2', to: 'team_1', interfaceType: 'team-to-team', bondType: 'institutional-weak', energyLoss: 35 },
+                { id: 'interface_6', from: 'team_5', to: 'team_6', interfaceType: 'team-to-team', bondType: 'institutional-weak', energyLoss: 35 },
+                
+                // Project interfaces
+                { id: 'interface_7', from: 'team_1', to: 'project_1', interfaceType: 'team-to-project', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_8', from: 'team_3', to: 'project_1', interfaceType: 'team-to-project', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_9', from: 'team_6', to: 'project_2', interfaceType: 'team-to-project', bondType: 'codified-moderate', energyLoss: 15 },
+                { id: 'interface_10', from: 'team_7', to: 'project_2', interfaceType: 'team-to-project', bondType: 'codified-moderate', energyLoss: 15 },
+                { id: 'interface_11', from: 'team_8', to: 'project_3', interfaceType: 'team-to-project', bondType: 'fragile-temporary', energyLoss: 60 }
+            ];
+            
+            // Update displays
+            updateTeamList();
+            updateFacultyList();
+            updateProjectList();
+            updateInterfaceList();
+            updateInterfaceTargets();
+        }
+
+        function addComprehensiveInterfaces() {
+            // Clear existing interfaces
+            interfaces = [];
+            
+            // Add comprehensive interfaces connecting all entities
+            const newInterfaces = [
+                // Faculty connections (codified interfaces)
+                { id: 'interface_1', from: 'team_1', to: 'faculty_1', interfaceType: 'team-to-faculty', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_2', from: 'team_2', to: 'faculty_2', interfaceType: 'team-to-faculty', bondType: 'codified-moderate', energyLoss: 15 },
+                { id: 'interface_3', from: 'team_3', to: 'faculty_1', interfaceType: 'team-to-faculty', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_4', from: 'team_4', to: 'faculty_2', interfaceType: 'team-to-faculty', bondType: 'codified-moderate', energyLoss: 15 },
+                { id: 'interface_5', from: 'team_5', to: 'faculty_3', interfaceType: 'team-to-faculty', bondType: 'institutional-weak', energyLoss: 35 },
+                { id: 'interface_6', from: 'team_6', to: 'faculty_1', interfaceType: 'team-to-faculty', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_7', from: 'team_7', to: 'faculty_2', interfaceType: 'team-to-faculty', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_8', from: 'team_8', to: 'faculty_3', interfaceType: 'team-to-faculty', bondType: 'fragile-temporary', energyLoss: 60 },
+                
+                // Team-to-team connections (institutional knowledge interfaces)
+                { id: 'interface_9', from: 'team_1', to: 'team_2', interfaceType: 'team-to-team', bondType: 'institutional-weak', energyLoss: 35 },
+                { id: 'interface_10', from: 'team_3', to: 'team_4', interfaceType: 'team-to-team', bondType: 'institutional-weak', energyLoss: 35 },
+                { id: 'interface_11', from: 'team_5', to: 'team_6', interfaceType: 'team-to-team', bondType: 'institutional-weak', energyLoss: 35 },
+                { id: 'interface_12', from: 'team_1', to: 'team_7', interfaceType: 'team-to-team', bondType: 'codified-moderate', energyLoss: 15 },
+                { id: 'interface_13', from: 'team_3', to: 'team_6', interfaceType: 'team-to-team', bondType: 'codified-moderate', energyLoss: 15 },
+                
+                // Project connections
+                { id: 'interface_14', from: 'team_1', to: 'project_1', interfaceType: 'team-to-project', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_15', from: 'team_3', to: 'project_1', interfaceType: 'team-to-project', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_16', from: 'team_6', to: 'project_1', interfaceType: 'team-to-project', bondType: 'codified-moderate', energyLoss: 15 },
+                { id: 'interface_17', from: 'team_2', to: 'project_2', interfaceType: 'team-to-project', bondType: 'institutional-weak', energyLoss: 35 },
+                { id: 'interface_18', from: 'team_4', to: 'project_2', interfaceType: 'team-to-project', bondType: 'codified-moderate', energyLoss: 15 },
+                { id: 'interface_19', from: 'team_7', to: 'project_2', interfaceType: 'team-to-project', bondType: 'codified-strong', energyLoss: 5 },
+                { id: 'interface_20', from: 'team_8', to: 'project_3', interfaceType: 'team-to-project', bondType: 'fragile-temporary', energyLoss: 60 }
+            ];
+            
+            interfaces = newInterfaces;
+            updateInterfaceList();
+            
+            alert(`Added ${newInterfaces.length} comprehensive interfaces!\n\nThis connects:\n• All teams to faculty\n• Teams within same disciplines\n• Teams to projects\n\nNow try generating the visualization to see all the bonds!`);
+        }
+
+        async function addTeam() {
+            const discipline = document.getElementById('teamDiscipline').value;
+            const lifecycle = document.getElementById('teamLifecycle').value;
+            const name = document.getElementById('teamName').value.trim();
+            const size = parseInt(document.getElementById('teamSize').value);
+            const experience = parseInt(document.getElementById('teamExperience').value);
+            const description = document.getElementById('teamDescription').value.trim();
+
+            if (!name) {
+                alert('Please enter a team name/identifier');
+                return;
+            }
+            // Optimistic update: push locally immediately
+            const tempId = 'tmp_team_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            const localTeam = {
+                id: tempId,
+                discipline: discipline,
+                lifecycle: lifecycle,
+                name: name,
+                size: size,
+                experience: experience,
+                description: description
+            };
+
+            teams.push(localTeam);
+            updateTeamList();
+            updateInterfaceTargets();
+
+            // Clear form immediately for snappy UX
+            document.getElementById('teamName').value = '';
+            document.getElementById('teamSize').value = '5';
+            document.getElementById('teamExperience').value = '12';
+            document.getElementById('teamDescription').value = '';
+
+            // Background save to server; on failure revert
+            if (typeof FramesAPI !== 'undefined') {
+                try {
+                    const teamData = {
+                        discipline: discipline,
+                        lifecycle: lifecycle,
+                        name: name,
+                        size: size,
+                        experience: experience,
+                        description: description
+                    };
+                    const created = await FramesAPI.createTeam(teamData);
+                    // Replace temp item with authoritative server copy
+                    const idx = teams.findIndex(t => t.id === tempId);
+                    if (idx !== -1) {
+                        teams[idx] = created;
+                        updateTeamList();
+                        updateInterfaceTargets();
+                    } else {
+                        // If not found, reload full state to be safe
+                        await loadStateFromServer();
+                    }
+                } catch (err) {
+                    // Revert optimistic add
+                    teams = teams.filter(t => t.id !== tempId);
+                    updateTeamList();
+                    updateInterfaceTargets();
+                    console.error('Failed to save team to server, reverted local change:', err);
+                    alert('Failed to save team to server. Change has been reverted.');
+                }
+            }
+        }
+
+        async function addFaculty() {
+            const name = document.getElementById('facultyName').value.trim();
+            const role = document.getElementById('facultyRole').value.trim();
+            const description = document.getElementById('facultyDescription').value.trim();
+
+            if (!name) {
+                alert('Please enter a faculty/staff name');
+                return;
+            }
+
+            // Optimistic update
+            const tempId = 'tmp_fac_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            const localFac = { id: tempId, name: name, role: role, description: description };
+
+            faculty.push(localFac);
+            updateFacultyList();
+            updateInterfaceTargets();
+
+            // Clear form
+            document.getElementById('facultyName').value = '';
+            document.getElementById('facultyRole').value = '';
+            document.getElementById('facultyDescription').value = '';
+
+            if (typeof FramesAPI !== 'undefined') {
+                try {
+                    const facultyData = { name: name, role: role, description: description };
+                    const created = await FramesAPI.createFaculty(facultyData);
+                    const idx = faculty.findIndex(f => f.id === tempId);
+                    if (idx !== -1) {
+                        faculty[idx] = created;
+                        updateFacultyList();
+                        updateInterfaceTargets();
+                    } else {
+                        await loadStateFromServer();
+                    }
+                } catch (err) {
+                    faculty = faculty.filter(f => f.id !== tempId);
+                    updateFacultyList();
+                    updateInterfaceTargets();
+                    console.error('Failed to save faculty to server, reverted local change:', err);
+                    alert('Failed to save faculty to server. Change has been reverted.');
+                }
+            }
+        }
+
+        // Note: addProject is implemented with optimistic updates below (async).
+
+        async function addProject() {
+            const name = document.getElementById('projectName').value.trim();
+            const type = document.getElementById('projectType').value;
+            const duration = parseInt(document.getElementById('projectDuration').value);
+            const description = document.getElementById('projectDescription').value.trim();
+
+            if (!name) {
+                alert('Please enter a project name');
+                return;
+            }
+
+            const tempId = 'tmp_proj_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            const localProj = { id: tempId, name: name, type: type, duration: duration, description: description };
+
+            projects.push(localProj);
+            updateProjectList();
+            updateInterfaceTargets();
+
+            // Clear form
+            document.getElementById('projectName').value = '';
+            document.getElementById('projectType').value = 'multiversity';
+            document.getElementById('projectDuration').value = '3';
+            document.getElementById('projectDescription').value = '';
+
+            if (typeof FramesAPI !== 'undefined') {
+                try {
+                    const projectData = { name: name, type: type, duration: duration, description: description };
+                    const created = await FramesAPI.createProject(projectData);
+                    const idx = projects.findIndex(p => p.id === tempId);
+                    if (idx !== -1) {
+                        projects[idx] = created;
+                        updateProjectList();
+                        updateInterfaceTargets();
+                    } else {
+                        await loadStateFromServer();
+                    }
+                } catch (err) {
+                    projects = projects.filter(p => p.id !== tempId);
+                    updateProjectList();
+                    updateInterfaceTargets();
+                    console.error('Failed to save project to server, reverted local change:', err);
+                    alert('Failed to save project to server. Change has been reverted.');
+                }
+            }
+        }
+
+        async function addInterface() {
+            const interfaceType = document.getElementById('interfaceType').value;
+            const fromSource = document.getElementById('interfaceFrom').value;
+            const toTarget = document.getElementById('interfaceTo').value;
+
+            if (!fromSource || !toTarget) {
+                alert('Please select both source and target');
+                return;
+            }
+
+            if (fromSource === toTarget) {
+                alert('Cannot create interface to the same entity');
+                return;
+            }
+
+            if (!selectedInterfaceType) {
+                alert('Please select an interface strength type (click on one of the bond types below)');
+                return;
+            }
+
+            // Check if interface already exists
+            const existingInterface = interfaces.find(i => 
+                (i.from === fromSource && i.to === toTarget) || 
+                (i.from === toTarget && i.to === fromSource)
+            );
+
+            if (existingInterface) {
+                alert('Interface already exists between these entities');
+                return;
+            }
+
+            const tempId = 'tmp_int_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            const energyLoss = parseInt(document.querySelector(`[data-type="${selectedInterfaceType}"]`).dataset.loss);
+            const localInterface = {
+                id: tempId,
+                from: fromSource,
+                to: toTarget,
+                interfaceType: interfaceType,
+                bondType: selectedInterfaceType,
+                energyLoss: energyLoss
+            };
+
+            interfaces.push(localInterface);
+            updateInterfaceList();
+
+            // Clear selection
+            document.getElementById('interfaceFrom').value = '';
+            document.getElementById('interfaceTo').value = '';
+            document.querySelectorAll('.interface-type').forEach(t => t.classList.remove('selected'));
+            selectedInterfaceType = null;
+
+            try {
+                if (typeof FramesAPI !== 'undefined') {
+                    const intData = { from: fromSource, to: toTarget, interfaceType: interfaceType, bondType: localInterface.bondType, energyLoss: localInterface.energyLoss };
+                    const created = await FramesAPI.createInterface(intData);
+                    const idx = interfaces.findIndex(i => i.id === tempId);
+                    if (idx !== -1) {
+                        interfaces[idx] = created;
+                        updateInterfaceList();
+                    } else {
+                        await loadStateFromServer();
+                    }
+                }
+            } catch (err) {
+                interfaces = interfaces.filter(i => i.id !== tempId);
+                updateInterfaceList();
+                console.error('Failed to save interface to server, reverted local change:', err);
+                alert('Failed to save interface to server. Change has been reverted.');
+            }
+        }
+
+        function updateTeamList() {
+            const teamList = document.getElementById('teamList');
+            teamList.innerHTML = '';
+            
+            // Group teams by discipline
+            const teamsByDiscipline = {};
+            teams.forEach(team => {
+                if (!teamsByDiscipline[team.discipline]) {
+                    teamsByDiscipline[team.discipline] = [];
+                }
+                teamsByDiscipline[team.discipline].push(team);
+            });
+            
+            // Display teams grouped by discipline
+            Object.keys(teamsByDiscipline).forEach(discipline => {
+                const disciplineTeams = teamsByDiscipline[discipline];
+                
+                // Create discipline header
+                const disciplineHeader = document.createElement('div');
+                disciplineHeader.style.cssText = 'color: #64ffda; font-weight: bold; margin: 15px 0 10px 0; padding: 5px 0; border-bottom: 1px solid rgba(100, 255, 218, 0.3);';
+                disciplineHeader.textContent = getDisciplineDisplayName(discipline);
+                teamList.appendChild(disciplineHeader);
+                
+                // Display teams in this discipline
+                disciplineTeams.forEach(team => {
+                    const teamItem = document.createElement('div');
+                    teamItem.className = 'team-item';
+                    
+                    const lifecycleIcon = getLifecycleIcon(team.lifecycle);
+                    const lifecycleColor = getLifecycleColor(team.lifecycle);
+                    
+                    teamItem.innerHTML = `
+                        <div class="item-info">
+                            <div class="item-name">
+                                ${lifecycleIcon} ${team.name}
+                                <span style="color: ${lifecycleColor}; font-size: 11px; margin-left: 8px;">
+                                    ${team.lifecycle.toUpperCase()}
+                                </span>
+                            </div>
+                            <div class="item-details">
+                                Size: ${team.size} | Experience: ${team.experience} months | ${team.description}
+                            </div>
+                        </div>
+                        <button class="remove-btn" onclick="removeTeam('${team.id}')">Remove</button>
+                    `;
+                    teamList.appendChild(teamItem);
+                });
+            });
+        }
+
+        function getDisciplineDisplayName(discipline) {
+            const names = {
+                'electrical': '⚡ Electrical Engineering',
+                'software': '💻 Software Engineering',
+                'mechanical': '⚙️ Mechanical Engineering',
+                'mission-ops': '🚀 Mission Operations',
+                'systems': '🔧 Systems Engineering',
+                'communications': '📡 Communications',
+                'payload': '📦 Payload Development',
+                'ground': '🏠 Ground Systems',
+                'other': '🔬 Other'
+            };
+            return names[discipline] || discipline;
+        }
+
+        function getLifecycleIcon(lifecycle) {
+            const icons = {
+                'incoming': '🆕',
+                'established': '✅',
+                'outgoing': '👋'
+            };
+            return icons[lifecycle] || '❓';
+        }
+
+        function getLifecycleColor(lifecycle) {
+            const colors = {
+                'incoming': '#3498db',
+                'established': '#2ecc71',
+                'outgoing': '#e74c3c'
+            };
+            return colors[lifecycle] || '#b0bec5';
+        }
+
+        function updateFacultyList() {
+            const facultyList = document.getElementById('facultyList');
+            facultyList.innerHTML = '';
+            
+            faculty.forEach(facultyMember => {
+                const facultyItem = document.createElement('div');
+                facultyItem.className = 'faculty-item';
+                facultyItem.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${facultyMember.name}</div>
+                        <div class="item-details">${facultyMember.role} | ${facultyMember.description}</div>
+                    </div>
+                    <button class="remove-btn" onclick="removeFaculty('${facultyMember.id}')">Remove</button>
+                `;
+                facultyList.appendChild(facultyItem);
+            });
+        }
+
+        function updateProjectList() {
+            const projectList = document.getElementById('projectList');
+            projectList.innerHTML = '';
+            
+            projects.forEach(project => {
+                const projectItem = document.createElement('div');
+                projectItem.className = 'project-item';
+                projectItem.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${project.name}</div>
+                        <div class="item-details">${project.type} | ${project.duration} years | ${project.description}</div>
+                    </div>
+                    <button class="remove-btn" onclick="removeProject('${project.id}')">Remove</button>
+                `;
+                projectList.appendChild(projectItem);
+            });
+        }
+
+        function updateInterfaceTargets() {
+            const interfaceType = document.getElementById('interfaceType').value;
+            const fromSelect = document.getElementById('interfaceFrom');
+            const toSelect = document.getElementById('interfaceTo');
+            
+            fromSelect.innerHTML = '<option value="">Select Source</option>';
+            toSelect.innerHTML = '<option value="">Select Target</option>';
+            
+            if (interfaceType === 'team-to-team') {
+                teams.forEach(team => {
+                    fromSelect.innerHTML += `<option value="${team.id}">${team.name}</option>`;
+                    toSelect.innerHTML += `<option value="${team.id}">${team.name}</option>`;
+                });
+            } else if (interfaceType === 'team-to-faculty') {
+                teams.forEach(team => {
+                    fromSelect.innerHTML += `<option value="${team.id}">${team.name}</option>`;
+                });
+                faculty.forEach(facultyMember => {
+                    toSelect.innerHTML += `<option value="${facultyMember.id}">${facultyMember.name}</option>`;
+                });
+            } else if (interfaceType === 'team-to-project') {
+                teams.forEach(team => {
+                    fromSelect.innerHTML += `<option value="${team.id}">${team.name}</option>`;
+                });
+                projects.forEach(project => {
+                    toSelect.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+                });
+            }
+        }
+
+        function updateInterfaceList() {
+            const interfaceList = document.getElementById('interfaceList');
+            interfaceList.innerHTML = '';
+            
+            interfaces.forEach(interfaceData => {
+                const fromEntity = teams.find(t => t.id === interfaceData.from) || 
+                                  faculty.find(f => f.id === interfaceData.from);
+                const toEntity = teams.find(t => t.id === interfaceData.to) || 
+                                faculty.find(f => f.id === interfaceData.to) ||
+                                projects.find(p => p.id === interfaceData.to);
+                
+                const interfaceItem = document.createElement('div');
+                interfaceItem.className = 'interface-item';
+                interfaceItem.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${fromEntity ? fromEntity.name : 'Unknown'} ↔ ${toEntity ? toEntity.name : 'Unknown'}</div>
+                        <div class="item-details">${interfaceData.interfaceType} | ${interfaceData.bondType} | Energy Loss: ${interfaceData.energyLoss}%</div>
+                    </div>
+                    <button class="remove-btn" onclick="removeInterface('${interfaceData.id}')">Remove</button>
+                `;
+                interfaceList.appendChild(interfaceItem);
+            });
+        }
+
+        function updateInterfaceSelects() {
+            const fromSelect = document.getElementById('interfaceFrom');
+            const toSelect = document.getElementById('interfaceTo');
+            
+            fromSelect.innerHTML = '<option value="">Select Team</option>';
+            toSelect.innerHTML = '<option value="">Select Team</option>';
+            
+            teams.forEach(team => {
+                fromSelect.innerHTML += `<option value="${team.id}">${team.name}</option>`;
+                toSelect.innerHTML += `<option value="${team.id}">${team.name}</option>`;
+            });
+        }
+
+        async function removeTeam(teamId) {
+            // Optimistic remove: snapshot state, remove locally, call API
+            const originalTeams = teams.slice();
+            const originalInterfaces = interfaces.slice();
+
+            teams = teams.filter(t => t.id !== teamId);
+            interfaces = interfaces.filter(i => i.from !== teamId && i.to !== teamId);
+            updateTeamList();
+            updateInterfaceList();
+            updateInterfaceSelects();
+
+            if (typeof FramesAPI !== 'undefined') {
+                try {
+                    await FramesAPI.deleteTeam(teamId);
+                    // success - nothing more to do
+                } catch (err) {
+                    // revert
+                    teams = originalTeams;
+                    interfaces = originalInterfaces;
+                    updateTeamList();
+                    updateInterfaceList();
+                    updateInterfaceSelects();
+                    console.error('Failed to delete team on server, reverted local change:', err);
+                    alert('Failed to delete team on server. Local change reverted.');
+                }
+            }
+        }
+
+        async function removeFaculty(facultyId) {
+            const originalFaculty = faculty.slice();
+            const originalInterfaces = interfaces.slice();
+
+            faculty = faculty.filter(f => f.id !== facultyId);
+            interfaces = interfaces.filter(i => i.to !== facultyId);
+            updateFacultyList();
+            updateInterfaceList();
+            updateInterfaceTargets();
+
+            if (typeof FramesAPI !== 'undefined') {
+                try {
+                    await FramesAPI.deleteFaculty(facultyId);
+                } catch (err) {
+                    faculty = originalFaculty;
+                    interfaces = originalInterfaces;
+                    updateFacultyList();
+                    updateInterfaceList();
+                    updateInterfaceTargets();
+                    console.error('Failed to delete faculty on server, reverted local change:', err);
+                    alert('Failed to delete faculty on server. Local change reverted.');
+                }
+            }
+        }
+
+        async function removeProject(projectId) {
+            const originalProjects = projects.slice();
+            const originalInterfaces = interfaces.slice();
+
+            projects = projects.filter(p => p.id !== projectId);
+            interfaces = interfaces.filter(i => i.to !== projectId);
+            updateProjectList();
+            updateInterfaceList();
+            updateInterfaceTargets();
+
+            if (typeof FramesAPI !== 'undefined') {
+                try {
+                    await FramesAPI.deleteProject(projectId);
+                } catch (err) {
+                    projects = originalProjects;
+                    interfaces = originalInterfaces;
+                    updateProjectList();
+                    updateInterfaceList();
+                    updateInterfaceTargets();
+                    console.error('Failed to delete project on server, reverted local change:', err);
+                    alert('Failed to delete project on server. Local change reverted.');
+                }
+            }
+        }
+
+        async function removeInterface(interfaceId) {
+            const originalInterfaces = interfaces.slice();
+            interfaces = interfaces.filter(i => i.id !== interfaceId);
+            updateInterfaceList();
+
+            if (typeof FramesAPI !== 'undefined') {
+                try {
+                    await FramesAPI.deleteInterface(interfaceId);
+                } catch (err) {
+                    interfaces = originalInterfaces;
+                    updateInterfaceList();
+                    console.error('Failed to delete interface on server, reverted local change:', err);
+                    alert('Failed to delete interface on server. Local change reverted.');
+                }
+            }
+        }
+
+        function generateVisualization() {
+            if (teams.length === 0) {
+                alert('Please add at least one team');
+                return;
+            }
+            
+            // Hide setup panel and show visualization
+            document.getElementById('setupPanel').classList.add('hidden');
+            document.getElementById('visualizationControls').classList.remove('hidden');
+            document.getElementById('statsPanel').classList.remove('hidden');
+            document.getElementById('legend').classList.remove('hidden');
+            document.getElementById('molecularStructure').classList.remove('hidden');
+            
+            createMolecules();
+            createBonds();
+            updateStats();
+            
+            // Show initial visualization
+            simulateEnergyFlow();
+        }
+
+        function generateVisualizationWithSample() {
+            // Hide setup panel and show visualization
+            document.getElementById('setupPanel').classList.add('hidden');
+            document.getElementById('visualizationControls').classList.remove('hidden');
+            document.getElementById('statsPanel').classList.remove('hidden');
+            document.getElementById('legend').classList.remove('hidden');
+            document.getElementById('molecularStructure').classList.remove('hidden');
+            
+            createMolecules();
+            createBonds();
+            updateStats();
+            
+            // Show initial visualization
+            simulateEnergyFlow();
+        }
+
+        function createMolecules() {
+            const structure = document.getElementById('molecularStructure');
+            structure.innerHTML = '';
+            molecules = [];
+            
+            // Calculate positions within the visible area
+            const centerX = 400;
+            const centerY = 300;
+            const radius = 200;
+            
+            console.log('Creating molecules for', teams.length, 'teams,', faculty.length, 'faculty,', projects.length, 'projects');
+            
+            // Position PROJECTS at the center as the primary interfaces
+            projects.forEach((project, index) => {
+                // Calculate cumulative knowledge flow for this project
+                const projectEffects = calculateProjectEffects(project);
+                
+                // Position projects in the center with slight offset based on project type
+                const x = centerX + (index - projects.length/2) * 120;
+                const y = centerY + (index - projects.length/2) * 80;
+                
+                const molecule = document.createElement('div');
+                molecule.className = 'molecule project-molecule';
+                molecule.dataset.id = project.id;
+                molecule.style.left = x + 'px';
+                molecule.style.top = y + 'px';
+                
+                // Add visual indicators of cumulative effects
+                const effectIndicator = getEffectIndicator(projectEffects);
+                molecule.innerHTML = `${project.name.replace(' ', '<br>')}${effectIndicator}`;
+                
+                // Add data attributes for effects
+                molecule.dataset.totalImpact = projectEffects.totalImpact;
+                molecule.dataset.knowledgeFlow = projectEffects.knowledgeFlow;
+                molecule.dataset.knowledgeLoss = projectEffects.knowledgeLoss;
+                
+                molecule.addEventListener('click', () => showProjectEffects(project, projectEffects));
+                
+                structure.appendChild(molecule);
+                molecules.push({...project, element: molecule, x, y, type: 'project', effects: projectEffects});
+                console.log('Created project molecule:', project.name, 'at', x, y, 'with effects:', projectEffects);
+            });
+            
+            // Position FACULTY as knowledge hubs around the projects
+            faculty.forEach((facultyMember, index) => {
+                const angle = (index / faculty.length) * 2 * Math.PI;
+                const x = centerX + (radius * 0.6) * Math.cos(angle);
+                const y = centerY + (radius * 0.6) * Math.sin(angle);
+                
+                const molecule = document.createElement('div');
+                molecule.className = 'molecule faculty-molecule';
+                molecule.dataset.id = facultyMember.id;
+                molecule.style.left = x + 'px';
+                molecule.style.top = y + 'px';
+                molecule.innerHTML = facultyMember.name.replace(' ', '<br>');
+                
+                molecule.addEventListener('click', () => showMoleculeInfo(facultyMember));
+                
+                structure.appendChild(molecule);
+                molecules.push({...facultyMember, element: molecule, x, y, type: 'faculty'});
+                console.log('Created faculty molecule:', facultyMember.name, 'at', x, y);
+            });
+            
+            // Position TEAMS by discipline and lifecycle, with distance from projects having meaning
+            const teamsByDiscipline = {};
+            teams.forEach(team => {
+                if (!teamsByDiscipline[team.discipline]) {
+                    teamsByDiscipline[team.discipline] = [];
+                }
+                teamsByDiscipline[team.discipline].push(team);
+            });
+            
+            let teamIndex = 0;
+            Object.keys(teamsByDiscipline).forEach((discipline, disciplineIndex) => {
+                const disciplineTeams = teamsByDiscipline[discipline];
+                
+                // Position teams in this discipline in a cluster
+                disciplineTeams.forEach((team, teamInDisciplineIndex) => {
+                    // Calculate position based on discipline and lifecycle
+                    const disciplineAngle = (disciplineIndex / Object.keys(teamsByDiscipline).length) * 2 * Math.PI;
+                    
+                    // Distance from center based on lifecycle - incoming teams closer (more dependent), outgoing teams further (more independent)
+                    let distanceFromCenter;
+                    if (team.lifecycle === 'incoming') {
+                        distanceFromCenter = radius * 0.8; // Closer to projects - more dependent
+                    } else if (team.lifecycle === 'established') {
+                        distanceFromCenter = radius * 1.0; // Standard distance
+                    } else { // outgoing
+                        distanceFromCenter = radius * 1.3; // Further from projects - more independent
+                    }
+                    
+                    const baseX = centerX + distanceFromCenter * Math.cos(disciplineAngle);
+                    const baseY = centerY + distanceFromCenter * Math.sin(disciplineAngle);
+                    
+                    // Offset within discipline cluster based on lifecycle
+                    const lifecycleOffset = getLifecycleOffset(team.lifecycle, teamInDisciplineIndex);
+                    const x = baseX + lifecycleOffset.x;
+                    const y = baseY + lifecycleOffset.y;
+                    
+                    const molecule = document.createElement('div');
+                    molecule.className = `molecule team-molecule ${team.lifecycle}`;
+                    molecule.dataset.id = team.id;
+                    molecule.style.left = x + 'px';
+                    molecule.style.top = y + 'px';
+                    
+                    // Add discipline icon and team info
+                    const disciplineIcon = getDisciplineIcon(team.discipline);
+                    molecule.innerHTML = `${disciplineIcon}<br>${team.name.replace(' ', '<br>')}`;
+                    
+                    molecule.addEventListener('click', () => showMoleculeInfo(team));
+                    
+                    structure.appendChild(molecule);
+                    molecules.push({...team, element: molecule, x, y, type: 'team'});
+                    console.log('Created team molecule:', team.name, 'at', x, y, 'lifecycle:', team.lifecycle, 'distance:', distanceFromCenter);
+                    
+                    teamIndex++;
+                });
+            });
+            
+            console.log('Total molecules created:', molecules.length);
+        }
+
+        function getLifecycleOffset(lifecycle, index) {
+            // Position teams within their discipline cluster based on lifecycle
+            const offsets = {
+                'incoming': { x: -30 + (index * 20), y: -20 },
+                'established': { x: 0 + (index * 20), y: 0 },
+                'outgoing': { x: 30 + (index * 20), y: 20 }
+            };
+            return offsets[lifecycle] || { x: 0, y: 0 };
+        }
+
+        function getDisciplineIcon(discipline) {
+            const icons = {
+                'electrical': '⚡',
+                'software': '💻',
+                'mechanical': '⚙️',
+                'mission-ops': '🚀',
+                'systems': '🔧',
+                'communications': '📡',
+                'payload': '📦',
+                'ground': '🏠',
+                'other': '🔬'
+            };
+            return icons[discipline] || '❓';
+        }
+
+        function calculateProjectEffects(project) {
+            let totalKnowledgeFlow = 0;
+            let totalKnowledgeLoss = 0;
+            let totalImpact = 0;
+            let interfaceCount = 0;
+            
+            // Find all interfaces that affect this project
+            const projectInterfaces = interfaces.filter(i => i.to === project.id);
+            
+            projectInterfaces.forEach(interfaceData => {
+                const fromMolecule = molecules.find(m => m.id === interfaceData.from);
+                if (fromMolecule) {
+                    // Calculate distance-based weighting - closer = higher impact
+                    const distance = calculateDistance(fromMolecule, project);
+                    const maxDistance = 400; // Maximum expected distance
+                    const distanceWeight = Math.max(0.1, 1 - (distance / maxDistance)); // Closer = higher weight
+                    
+                    // Calculate knowledge flow (inverse of energy loss)
+                    const knowledgeFlow = 100 - interfaceData.energyLoss;
+                    const weightedFlow = knowledgeFlow * distanceWeight;
+                    
+                    // Calculate knowledge loss
+                    const weightedLoss = interfaceData.energyLoss * distanceWeight;
+                    
+                    totalKnowledgeFlow += weightedFlow;
+                    totalKnowledgeLoss += weightedLoss;
+                    interfaceCount++;
+                    
+                    console.log(`Project ${project.name}: ${fromMolecule.name} at distance ${Math.round(distance)}px, weight ${distanceWeight.toFixed(2)}, flow ${weightedFlow.toFixed(1)}, loss ${weightedLoss.toFixed(1)}`);
+                }
+            });
+            
+            // Calculate total impact (net knowledge flow)
+            totalImpact = totalKnowledgeFlow - totalKnowledgeLoss;
+            
+            return {
+                totalKnowledgeFlow: Math.round(totalKnowledgeFlow),
+                totalKnowledgeLoss: Math.round(totalKnowledgeLoss),
+                totalImpact: Math.round(totalImpact),
+                interfaceCount: interfaceCount,
+                averageDistance: interfaceCount > 0 ? Math.round(calculateAverageDistance(project)) : 0
+            };
+        }
+
+        function calculateDistance(molecule1, molecule2) {
+            const dx = molecule1.x - molecule2.x;
+            const dy = molecule1.y - molecule2.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function calculateAverageDistance(project) {
+            const projectInterfaces = interfaces.filter(i => i.to === project.id);
+            let totalDistance = 0;
+            let count = 0;
+            
+            projectInterfaces.forEach(interfaceData => {
+                const fromMolecule = molecules.find(m => m.id === interfaceData.from);
+                if (fromMolecule) {
+                    // Estimate project position for distance calculation
+                    const projectX = 400 + (projects.findIndex(p => p.id === project.id) - projects.length/2) * 150;
+                    const projectY = 500; // Base position
+                    totalDistance += Math.sqrt((fromMolecule.x - projectX) ** 2 + (fromMolecule.y - projectY) ** 2);
+                    count++;
+                }
+            });
+            
+            return count > 0 ? totalDistance / count : 0;
+        }
+
+        function getEffectIndicator(effects) {
+            let indicator = '';
+            
+            if (effects.totalImpact > 50) {
+                indicator = '<br><span style="color: #2ecc71; font-size: 10px;">📈 High Flow</span>';
+            } else if (effects.totalImpact > 0) {
+                indicator = '<br><span style="color: #f39c12; font-size: 10px;">📊 Moderate Flow</span>';
+            } else if (effects.totalImpact > -50) {
+                indicator = '<br><span style="color: #e74c3c; font-size: 10px;">⚠️ Low Flow</span>';
+            } else {
+                indicator = '<br><span style="color: #c0392b; font-size: 10px;">🚨 Critical Loss</span>';
+            }
+            
+            return indicator;
+        }
+
+        function createBonds() {
+            bonds = [];
+            
+            console.log('Creating bonds for', interfaces.length, 'interfaces');
+            console.log('Available molecules:', molecules.map(m => ({ id: m.id, name: m.name, type: m.type })));
+            
+            interfaces.forEach(interfaceData => {
+                console.log('Processing interface:', interfaceData);
+                const fromMolecule = molecules.find(m => m.id === interfaceData.from);
+                const toMolecule = molecules.find(m => m.id === interfaceData.to);
+                
+                console.log('From molecule:', fromMolecule ? fromMolecule.name : 'NOT FOUND');
+                console.log('To molecule:', toMolecule ? toMolecule.name : 'NOT FOUND');
+                
+                if (fromMolecule && toMolecule) {
+                    // Calculate center points of molecules
+                    const fromX = fromMolecule.x + (fromMolecule.element.offsetWidth / 2);
+                    const fromY = fromMolecule.y + (fromMolecule.element.offsetHeight / 2);
+                    const toX = toMolecule.x + (toMolecule.element.offsetWidth / 2);
+                    const toY = toMolecule.y + (toMolecule.element.offsetHeight / 2);
+                    
+                    drawBond(fromX, fromY, toX, toY, interfaceData.bondType, interfaceData.energyLoss);
+                    console.log('Created bond from', fromMolecule.name || fromMolecule.id, 'to', toMolecule.name || toMolecule.id);
+                } else {
+                    console.log('Could not find molecules for interface:', interfaceData);
+                }
+            });
+            
+            console.log('Total bonds created:', bonds.length);
+        }
+
+        function drawBond(x1, y1, x2, y2, type, energyLoss) {
+            const bond = document.createElement('div');
+            bond.className = `bond ${type}-bond`;
+            
+            const length = Math.sqrt((x2-x1)**2 + (y2-y1)**2);
+            const angle = Math.atan2(y2-y1, x2-x1) * 180 / Math.PI;
+            
+            bond.style.left = x1 + 'px';
+            bond.style.top = y1 + 'px';
+            bond.style.width = length + 'px';
+            bond.style.transform = `rotate(${angle}deg)`;
+            
+            bonds.push({x1, y1, x2, y2, type, energyLoss, element: bond});
+            document.getElementById('molecularStructure').appendChild(bond);
+            
+            console.log('Drew bond:', type, 'from', x1, y1, 'to', x2, y2, 'length:', length, 'angle:', angle);
+        }
+
+        function simulateEnergyFlow() {
+            // Clear existing particles
+            document.querySelectorAll('.energy-particle, .energy-leak').forEach(particle => particle.remove());
+            energyParticles = [];
+            energyLeaks = [];
+            
+            // Create energy particles for each bond
+            bonds.forEach(bond => {
+                createEnergyParticle(bond);
+                
+                // Create energy leaks based on bond strength
+                if (bond.energyLoss > 10) {
+                    createEnergyLeak(bond.x1 + (bond.x2 - bond.x1) / 2, bond.y1 + (bond.y2 - bond.y1) / 2, bond.energyLoss);
+                }
+            });
+            
+            // Show cumulative effects on projects
+            showProjectCumulativeEffects();
+            
+            updateStats();
+        }
+
+        function showProjectCumulativeEffects() {
+            // Find all project molecules
+            const projectMolecules = molecules.filter(m => m.type === 'project');
+            
+            projectMolecules.forEach(project => {
+                if (project.effects) {
+                    // Create cumulative effect particles around the project
+                    const effectCount = Math.abs(project.effects.totalImpact) / 10;
+                    
+                    for (let i = 0; i < effectCount; i++) {
+                        if (project.effects.totalImpact > 0) {
+                            // Positive flow - green particles flowing into project
+                            createCumulativeEffectParticle(project, 'positive');
+                        } else {
+                            // Negative flow - red particles flowing out of project
+                            createCumulativeEffectParticle(project, 'negative');
+                        }
+                    }
+                }
+            });
+        }
+
+        function createCumulativeEffectParticle(project, type) {
+            const particle = document.createElement('div');
+            
+            if (type === 'positive') {
+                particle.className = 'energy-particle';
+                particle.style.background = '#2ecc71';
+                particle.style.boxShadow = '0 0 10px #2ecc71';
+            } else {
+                particle.className = 'energy-leak';
+                particle.style.background = '#e74c3c';
+                particle.style.boxShadow = '0 0 10px #e74c3c';
+            }
+            
+            // Position particles around the project
+            const angle = Math.random() * 2 * Math.PI;
+            const radius = 60 + Math.random() * 40;
+            const x = project.x + radius * Math.cos(angle);
+            const y = project.y + radius * Math.sin(angle);
+            
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            
+            document.getElementById('molecularStructure').appendChild(particle);
+        }
+
+        function createEnergyParticle(bond) {
+            const particle = document.createElement('div');
+            particle.className = 'energy-particle';
+            
+            // Position particle along the bond
+            const progress = Math.random();
+            const x = bond.x1 + (bond.x2 - bond.x1) * progress;
+            const y = bond.y1 + (bond.y2 - bond.y1) * progress;
+            
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.animationDelay = Math.random() * 3 + 's';
+            
+            energyParticles.push(particle);
+            document.getElementById('molecularStructure').appendChild(particle);
+        }
+
+        function createEnergyLeak(x, y, energyLoss) {
+            const leakCount = Math.floor(energyLoss / 10); // More leaks for higher energy loss
+            
+            for (let i = 0; i < leakCount; i++) {
+                const leak = document.createElement('div');
+                leak.className = 'energy-leak';
+                leak.style.left = (x + Math.random() * 40 - 20) + 'px';
+                leak.style.top = (y + Math.random() * 40 - 20) + 'px';
+                leak.style.animationDelay = Math.random() * 2 + 's';
+                
+                energyLeaks.push(leak);
+                document.getElementById('molecularStructure').appendChild(leak);
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalMolecules').textContent = molecules.length;
+            document.getElementById('totalBonds').textContent = bonds.length;
+            
+            // Calculate energy flow efficiency (based on codified bonds vs total bonds)
+            const codifiedBonds = bonds.filter(bond => bond.type.includes('codified')).length;
+            const efficiency = bonds.length > 0 ? Math.round((codifiedBonds / bonds.length) * 100) : 0;
+            document.getElementById('energyFlow').textContent = efficiency + '%';
+            
+            // Calculate decomposition risk (based on institutional and fragile bonds)
+            const weakBonds = bonds.filter(bond => bond.type.includes('institutional') || bond.type.includes('fragile')).length;
+            const risk = bonds.length > 0 ? Math.round((weakBonds / bonds.length) * 100) : 0;
+            document.getElementById('decompositionRisk').textContent = risk + '%';
+            
+            // Calculate total energy loss
+            const totalLoss = bonds.reduce((sum, bond) => sum + bond.energyLoss, 0);
+            const avgLoss = bonds.length > 0 ? Math.round(totalLoss / bonds.length) : 0;
+            document.getElementById('totalEnergyLoss').textContent = avgLoss + '%';
+        }
+
+        function showMoleculeInfo(molecule) {
+            const panel = document.getElementById('infoPanel');
+            const title = document.getElementById('infoTitle');
+            const content = document.getElementById('infoContent');
+            
+            if (molecule.role) {
+                // Faculty member
+                title.textContent = `Faculty/Staff: ${molecule.name}`;
+                content.textContent = `Role: ${molecule.role}\n\n${molecule.description}`;
+            } else if (molecule.type && molecule.type !== 'project') {
+                // Project type but not a project molecule
+                title.textContent = `Project: ${molecule.name}`;
+                content.textContent = `Type: ${molecule.type}\nDuration: ${molecule.duration} years\n\n${molecule.description}`;
+            } else if (molecule.type === 'project') {
+                // Project molecule with effects
+                showProjectEffects(molecule, molecule.effects);
+                return;
+            } else if (molecule.discipline) {
+                // Team with new structure
+                const lifecycleStatus = getLifecycleStatus(molecule.lifecycle);
+                title.textContent = `Team: ${molecule.name}`;
+                content.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <strong>${lifecycleStatus}</strong>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div style="background: rgba(100, 255, 218, 0.1); padding: 10px; border-radius: 5px;">
+                            <strong>Discipline:</strong> ${getDisciplineDisplayName(molecule.discipline)}
+                        </div>
+                        <div style="background: rgba(100, 255, 218, 0.1); padding: 10px; border-radius: 5px;">
+                            <strong>Lifecycle:</strong> ${molecule.lifecycle.toUpperCase()}
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div style="background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 5px;">
+                            <strong>Team Size:</strong> ${molecule.size} members
+                        </div>
+                        <div style="background: rgba(243, 156, 18, 0.1); padding: 10px; border-radius: 5px;">
+                            <strong>Experience:</strong> ${molecule.experience} months
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px;">
+                        <strong>Description:</strong> ${molecule.description}
+                    </div>
+                    
+                    <div style="margin-top: 15px; font-size: 12px; color: #64ffda;">
+                        <strong>Knowledge Flow Impact:</strong> ${getTeamKnowledgeImpact(molecule)}
+                    </div>
+                `;
+            } else {
+                // Legacy team
+                title.textContent = `Team: ${molecule.name}`;
+                content.textContent = `Team Size: ${molecule.size}\n\n${molecule.description}`;
+            }
+            
+            panel.style.display = 'block';
+        }
+
+        function getLifecycleStatus(lifecycle) {
+            const statuses = {
+                'incoming': '🆕 INCOMING - New team, learning phase',
+                'established': '✅ ESTABLISHED - Stable, experienced team',
+                'outgoing': '👋 OUTGOING - Graduating/transitioning team'
+            };
+            return statuses[lifecycle] || 'Unknown Status';
+        }
+
+        function getTeamKnowledgeImpact(team) {
+            if (team.lifecycle === 'incoming') {
+                return "This team is in learning mode and may require more knowledge input than output.";
+            } else if (team.lifecycle === 'established') {
+                return "This team is a knowledge hub, both receiving and contributing knowledge effectively.";
+            } else if (team.lifecycle === 'outgoing') {
+                return "This team is transitioning out and may have reduced knowledge flow capacity.";
+            }
+            return "Team knowledge flow impact varies based on lifecycle state.";
+        }
+
+        function showProjectEffects(project, effects) {
+            const panel = document.getElementById('infoPanel');
+            const title = document.getElementById('infoTitle');
+            const content = document.getElementById('infoContent');
+            
+            title.textContent = `Project Impact Analysis: ${project.name}`;
+            
+            let impactStatus = '';
+            if (effects.totalImpact > 50) {
+                impactStatus = '🟢 EXCELLENT - High knowledge flow, low loss';
+            } else if (effects.totalImpact > 0) {
+                impactStatus = '🟡 GOOD - Positive knowledge flow';
+            } else if (effects.totalImpact > -50) {
+                impactStatus = '🟠 WARNING - Knowledge loss detected';
+            } else {
+                impactStatus = '🔴 CRITICAL - Significant knowledge loss';
+            }
+            
+            content.innerHTML = `
+                <div style="margin-bottom: 15px;">
+                    <strong>${impactStatus}</strong>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div style="background: rgba(46, 204, 113, 0.2); padding: 10px; border-radius: 5px;">
+                        <strong>Knowledge Flow:</strong> ${effects.totalKnowledgeFlow}%
+                    </div>
+                    <div style="background: rgba(231, 76, 60, 0.2); padding: 10px; border-radius: 5px;">
+                        <strong>Knowledge Loss:</strong> ${effects.totalKnowledgeLoss}%
+                    </div>
+                </div>
+                
+                <div style="background: rgba(100, 255, 218, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                    <strong>Net Impact:</strong> ${effects.totalImpact}%
+                </div>
+                
+                <div style="font-size: 12px; color: #b0bec5;">
+                    <strong>Interfaces:</strong> ${effects.interfaceCount}<br>
+                    <strong>Average Distance:</strong> ${effects.averageDistance}px<br>
+                    <strong>Project Type:</strong> ${project.type}<br>
+                    <strong>Duration:</strong> ${project.duration} years
+                </div>
+                
+                <div style="margin-top: 15px; font-size: 12px; color: #64ffda;">
+                    <strong>Analysis:</strong> ${getProjectAnalysis(effects)}
+                </div>
+            `;
+            
+            panel.style.display = 'block';
+        }
+
+        function getProjectAnalysis(effects) {
+            if (effects.totalImpact > 50) {
+                return "This project benefits from strong knowledge flow with minimal loss. The system is resilient and well-connected.";
+            } else if (effects.totalImpact > 0) {
+                return "This project has positive knowledge flow but could benefit from strengthening interfaces to reduce loss.";
+            } else if (effects.totalImpact > -50) {
+                return "This project is experiencing knowledge loss. Consider strengthening interfaces or reducing distance to knowledge sources.";
+            } else {
+                return "This project is at risk of significant knowledge loss. Immediate intervention needed to strengthen interfaces and reduce isolation.";
+            }
+        }
+
+        function showBondStrength() {
+            const codifiedStrongBonds = bonds.filter(bond => bond.type === 'codified-strong').length;
+            const codifiedModerateBonds = bonds.filter(bond => bond.type === 'codified-moderate').length;
+            const institutionalWeakBonds = bonds.filter(bond => bond.type === 'institutional-weak').length;
+            const fragileTemporaryBonds = bonds.filter(bond => bond.type === 'fragile-temporary').length;
+            
+            alert(`Bond Strength Analysis:\n\nCodified Strong Bonds: ${codifiedStrongBonds} (5% energy loss)\nCodified Moderate Bonds: ${codifiedModerateBonds} (15% energy loss)\nInstitutional Knowledge Bonds: ${institutionalWeakBonds} (35% energy loss)\nFragile Temporary Bonds: ${fragileTemporaryBonds} (60% energy loss)\n\nCodified bonds maintain better knowledge flow with lower energy loss. Institutional knowledge bonds are vulnerable to turnover.`);
+        }
+
+        function showEnergyFlow() {
+            const totalLoss = bonds.reduce((sum, bond) => sum + bond.energyLoss, 0);
+            const avgLoss = bonds.length > 0 ? Math.round(totalLoss / bonds.length) : 0;
+            
+            alert(`Energy Flow Analysis:\n\nAverage Energy Loss: ${avgLoss}%\nTotal Bonds: ${bonds.length}\n\nKnowledge energy flows through bonds but is lost based on interface strength. Stronger bonds (green) maintain better flow, while weaker bonds (red) cause significant energy leaks.`);
+        }
+
+        function showDecomposition() {
+            const weakBonds = bonds.filter(bond => bond.type === 'weak' || bond.type === 'fragile').length;
+            const risk = bonds.length > 0 ? Math.round((weakBonds / bonds.length) * 100) : 0;
+            
+            alert(`Decomposition Risk Analysis:\n\nCurrent Risk Level: ${risk}%\nWeak/Fragile Bonds: ${weakBonds}\n\nRed particles show energy leaks where molecular bonds are breaking down. These are critical points where institutional knowledge is lost. Consider strengthening these interfaces through institutional support or additional funding.`);
+        }
+
+        function showTeamLifecycleAnalysis() {
+            const teamsByLifecycle = {};
+            teams.forEach(team => {
+                if (!teamsByLifecycle[team.lifecycle]) {
+                    teamsByLifecycle[team.lifecycle] = [];
+                }
+                teamsByLifecycle[team.lifecycle].push(team);
+            });
+            
+            let analysis = 'Team Lifecycle Analysis:\n\n';
+            
+            Object.keys(teamsByLifecycle).forEach(lifecycle => {
+                const lifecycleTeams = teamsByLifecycle[lifecycle];
+                const icon = getLifecycleIcon(lifecycle);
+                
+                analysis += `${icon} ${lifecycle.toUpperCase()} TEAMS (${lifecycleTeams.length}):\n`;
+                lifecycleTeams.forEach(team => {
+                    analysis += `   • ${getDisciplineIcon(team.discipline)} ${team.name} (${team.size} members, ${team.experience} months exp)\n`;
+                });
+                analysis += '\n';
+            });
+            
+            analysis += 'KNOWLEDGE FLOW IMPACT:\n';
+            analysis += '🆕 Incoming: Require knowledge input, learning phase\n';
+            analysis += '✅ Established: Knowledge hubs, stable contributors\n';
+            analysis += '👋 Outgoing: Reduced capacity, knowledge transfer out\n\n';
+            analysis += 'Resilience depends on maintaining established teams while training incoming teams.';
+            
+            alert(analysis);
+        }
+
+        function showCumulativeEffects() {
+            const projectMolecules = molecules.filter(m => m.type === 'project');
+            let analysis = 'Cumulative Effects Analysis:\n\n';
+            
+            projectMolecules.forEach(project => {
+                if (project.effects) {
+                    const status = project.effects.totalImpact > 0 ? '🟢' : '🔴';
+                    analysis += `${status} ${project.name}:\n`;
+                    analysis += `   Net Impact: ${project.effects.totalImpact}%\n`;
+                    analysis += `   Knowledge Flow: ${project.effects.totalKnowledgeFlow}%\n`;
+                    analysis += `   Knowledge Loss: ${project.effects.totalKnowledgeLoss}%\n`;
+                    analysis += `   Interfaces: ${project.effects.interfaceCount}\n`;
+                    analysis += `   Avg Distance: ${project.effects.averageDistance}px\n\n`;
+                }
+            });
+            
+            analysis += 'Distance-based weighting: Closer interfaces have stronger impact on projects. Projects positioned lower have higher cumulative effects.';
+            
+            alert(analysis);
+        }
+
+        function resetVisualization() {
+            // Show setup panel and hide visualization
+            document.getElementById('setupPanel').classList.remove('hidden');
+            document.getElementById('visualizationControls').classList.add('hidden');
+            document.getElementById('statsPanel').classList.add('hidden');
+            document.getElementById('legend').classList.add('hidden');
+            document.getElementById('molecularStructure').classList.add('hidden');
+            document.getElementById('infoPanel').style.display = 'none';
+            
+            // Clear data
+            teams = [];
+            faculty = [];
+            projects = [];
+            interfaces = [];
+            molecules = [];
+            bonds = [];
+            energyParticles = [];
+            energyLeaks = [];
+            
+            // Update displays
+            updateTeamList();
+            updateFacultyList();
+            updateProjectList();
+            updateInterfaceList();
+            updateInterfaceTargets();
+        }
+
+        function toggleVisualization() {
+            const structure = document.getElementById('molecularStructure');
+            if (structure.style.display === 'none') {
+                structure.style.display = 'block';
+                createMolecules();
+                createBonds();
+                simulateEnergyFlow();
+            } else {
+                structure.style.display = 'none';
+            }
+        }
+
+        function toggleLegend() {
+            const legend = document.getElementById('legend');
+            if (legend.style.display === 'none' || legend.classList.contains('hidden')) {
+                legend.style.display = 'grid';
+                legend.classList.remove('hidden');
+                alert('Legend shown! This explains all the colors and elements in the visualization.');
+            } else {
+                legend.style.display = 'none';
+                legend.classList.add('hidden');
+                alert('Legend hidden. Use this button to show it again when needed.');
+            }
+        }
+
+        function forceVisualization() {
+            console.log('Force showing visualization...');
+            
+            // Show all visualization components
+            document.getElementById('setupPanel').classList.add('hidden');
+            document.getElementById('visualizationControls').classList.remove('hidden');
+            document.getElementById('statsPanel').classList.remove('hidden');
+            document.getElementById('legend').classList.remove('hidden');
+            
+            // Ensure molecular structure is visible
+            const structure = document.getElementById('molecularStructure');
+            structure.style.display = 'block';
+            structure.style.visibility = 'visible';
+            structure.style.opacity = '1';
+            
+            // Clear and recreate everything
+            structure.innerHTML = '';
+            molecules = [];
+            bonds = [];
+            energyParticles = [];
+            energyLeaks = [];
+            
+            // Recreate molecules and bonds
+            createMolecules();
+            createBonds();
+            simulateEnergyFlow();
+            
+            // Show helpful message
+            alert('Visualization activated! Here\'s what you\'re seeing:\n\n' +
+                  '🔵 Blue circles = Teams (micro-modules)\n' +
+                  '🟠 Orange circles = Faculty/Staff hubs\n' +
+                  '🟣 Purple circles = Projects\n' +
+                  '🟢 Green lines = Strong bonds (5% energy loss)\n' +
+                  '🟡 Orange lines = Moderate bonds (15% energy loss)\n' +
+                  '🔴 Red lines = Weak bonds (35% energy loss)\n' +
+                  '💚 Cyan particles = Knowledge energy flowing\n' +
+                  '🔴 Red particles = Energy leaks (knowledge loss)\n\n' +
+                  'Check the legend below for detailed explanations!');
+            
+            console.log('Visualization forced to show with legend');
+        }
+
+        function showProjectInterfaceAnalysis() {
+            const projectMolecules = molecules.filter(m => m.type === 'project');
+            let analysis = 'Project Interface Analysis:\n\n';
+            
+            projectMolecules.forEach(project => {
+                if (project.effects) {
+                    analysis += `🔗 PROJECT INTERFACE: ${project.name}\n`;
+                    analysis += `📊 Interface Status: ${getProjectInterfaceStatus(project.effects)}\n`;
+                    analysis += `🔌 Active Portals: ${project.effects.interfaceCount}\n`;
+                    analysis += `📏 Average Distance: ${project.effects.averageDistance}px\n\n`;
+                    
+                    // Show individual interfaces as "portals"
+                    const projectInterfaces = interfaces.filter(i => i.to === project.id);
+                    projectInterfaces.forEach(interfaceData => {
+                        const fromMolecule = molecules.find(m => m.id === interfaceData.from);
+                        if (fromMolecule) {
+                            const distance = calculateDistance(fromMolecule, project);
+                            const portalType = getPortalType(interfaceData.bondType, distance);
+                            analysis += `   ${portalType} ${fromMolecule.name} → ${project.name}\n`;
+                            analysis += `      Distance: ${Math.round(distance)}px | Bond: ${interfaceData.bondType} | Loss: ${interfaceData.energyLoss}%\n`;
+                        }
+                    });
+                    analysis += '\n';
+                }
+            });
+            
+            analysis += 'CONCEPTUAL NOTES:\n';
+            analysis += '• Projects act as central interfaces/APIs\n';
+            analysis += '• Teams feed knowledge energy through these portals\n';
+            analysis += '• Distance affects interface efficiency\n';
+            analysis += '• Strong bonds = high-bandwidth connections\n';
+            analysis += '• Weak bonds = low-bandwidth, lossy connections\n';
+            
+            alert(analysis);
+        }
+
+        function getProjectInterfaceStatus(effects) {
+            if (effects.totalImpact > 50) {
+                return '🟢 HIGH-BANDWIDTH - Excellent knowledge flow';
+            } else if (effects.totalImpact > 0) {
+                return '🟡 MODERATE-BANDWIDTH - Good knowledge flow';
+            } else if (effects.totalImpact > -50) {
+                return '🟠 LOW-BANDWIDTH - Knowledge flow issues';
+            } else {
+                return '🔴 CRITICAL - Interface failure risk';
+            }
+        }
+
+        function getPortalType(bondType, distance) {
+            if (bondType === 'strong' && distance < 200) {
+                return '🔌'; // High-bandwidth portal
+            } else if (bondType === 'strong') {
+                return '🔋'; // Strong but distant portal
+            } else if (bondType === 'moderate') {
+                return '📡'; // Moderate portal
+            } else {
+                return '📶'; // Weak portal
+            }
+        }
+
+        function showNDADiagnosticAnalysis() {
+            let analysis = '🔬 NDA DIAGNOSTIC DIMENSIONS ANALYSIS\n\n';
+            
+            // Analyze each dimension based on current system state
+            const dimensions = [
+                {
+                    name: 'Actor Autonomy',
+                    description: 'Degree of independent operation',
+                    analysis: analyzeActorAutonomy(),
+                    icon: '🎯'
+                },
+                {
+                    name: 'Partitioned Knowledge Domains',
+                    description: 'Knowledge siloing across modules',
+                    analysis: analyzePartitionedKnowledge(),
+                    icon: '📚'
+                },
+                {
+                    name: 'Emergent or Ambiguous Outputs',
+                    description: 'Shifting/undefined project goals',
+                    analysis: analyzeEmergentOutputs(),
+                    icon: '🎲'
+                },
+                {
+                    name: 'Temporal Misalignment',
+                    description: 'Timing differences across modules',
+                    analysis: analyzeTemporalMisalignment(),
+                    icon: '⏰'
+                },
+                {
+                    name: 'Integration Cost',
+                    description: 'Coordination effort required',
+                    analysis: analyzeIntegrationCost(),
+                    icon: '💰'
+                },
+                {
+                    name: 'Coupling Degradation',
+                    description: 'Weakening relationships over time',
+                    analysis: analyzeCouplingDegradation(),
+                    icon: '🔗'
+                }
+            ];
+            
+            dimensions.forEach(dimension => {
+                analysis += `${dimension.icon} ${dimension.name.toUpperCase()}\n`;
+                analysis += `   ${dimension.description}\n`;
+                analysis += `   ${dimension.analysis}\n\n`;
+            });
+            
+            analysis += '📊 DIAGNOSTIC SUMMARY:\n';
+            analysis += '• High scores indicate potential stress points\n';
+            analysis += '• Focus on dimensions with scores > 70%\n';
+            analysis += '• Consider interface strengthening for high-risk areas\n';
+            
+            alert(analysis);
+        }
+
+        function analyzeActorAutonomy() {
+            const teamCount = teams.length;
+            const facultyCount = faculty.length;
+            const projectCount = projects.length;
+            
+            // Calculate autonomy based on team-to-faculty ratios and interface types
+            const teamFacultyRatio = teamCount / Math.max(facultyCount, 1);
+            const codifiedInterfaces = interfaces.filter(i => i.bondType.includes('codified')).length;
+            const institutionalInterfaces = interfaces.filter(i => i.bondType.includes('institutional')).length;
+            
+            let autonomyScore = 0;
+            let analysis = '';
+            
+            if (teamFacultyRatio > 3) {
+                autonomyScore += 30;
+                analysis += 'High team-to-faculty ratio suggests independent operation. ';
+            }
+            
+            if (institutionalInterfaces > codifiedInterfaces) {
+                autonomyScore += 40;
+                analysis += 'More institutional than codified interfaces indicates high autonomy. ';
+            }
+            
+            const outgoingTeams = teams.filter(t => t.lifecycle === 'outgoing').length;
+            if (outgoingTeams > teamCount * 0.3) {
+                autonomyScore += 30;
+                analysis += 'High proportion of outgoing teams suggests independent operation. ';
+            }
+            
+            return `Score: ${autonomyScore}% - ${analysis}`;
+        }
+
+        function analyzePartitionedKnowledge() {
+            const disciplines = [...new Set(teams.map(t => t.discipline))];
+            const disciplineCount = disciplines.length;
+            const crossDisciplineInterfaces = interfaces.filter(i => {
+                const fromTeam = teams.find(t => t.id === i.from);
+                const toTeam = teams.find(t => t.id === i.to);
+                return fromTeam && toTeam && fromTeam.discipline !== toTeam.discipline;
+            }).length;
+            
+            let partitionScore = 0;
+            let analysis = '';
+            
+            if (disciplineCount > 4) {
+                partitionScore += 25;
+                analysis += 'High number of disciplines suggests knowledge siloing. ';
+            }
+            
+            if (crossDisciplineInterfaces < disciplineCount * 2) {
+                partitionScore += 35;
+                analysis += 'Limited cross-discipline interfaces indicate knowledge partitioning. ';
+            }
+            
+            const institutionalInterfaces = interfaces.filter(i => i.bondType.includes('institutional')).length;
+            if (institutionalInterfaces > interfaces.length * 0.5) {
+                partitionScore += 40;
+                analysis += 'High proportion of institutional knowledge interfaces suggests tacit knowledge silos. ';
+            }
+            
+            return `Score: ${partitionScore}% - ${analysis}`;
+        }
+
+        function analyzeEmergentOutputs() {
+            const multiversityProjects = projects.filter(p => p.type === 'multiversity').length;
+            const contractProjects = projects.filter(p => p.type === 'jpl-contract').length;
+            const researchProjects = projects.filter(p => p.type === 'research').length;
+            
+            let emergentScore = 0;
+            let analysis = '';
+            
+            if (multiversityProjects > 0) {
+                emergentScore += 30;
+                analysis += 'Multi-university projects often have emergent goals. ';
+            }
+            
+            if (researchProjects > contractProjects) {
+                emergentScore += 40;
+                analysis += 'Research-focused projects more likely to have shifting objectives. ';
+            }
+            
+            const incomingTeams = teams.filter(t => t.lifecycle === 'incoming').length;
+            if (incomingTeams > teamCount * 0.4) {
+                emergentScore += 30;
+                analysis += 'High proportion of incoming teams may lead to goal ambiguity. ';
+            }
+            
+            return `Score: ${emergentScore}% - ${analysis}`;
+        }
+
+        function analyzeTemporalMisalignment() {
+            const incomingTeams = teams.filter(t => t.lifecycle === 'incoming').length;
+            const outgoingTeams = teams.filter(t => t.lifecycle === 'outgoing').length;
+            const establishedTeams = teams.filter(t => t.lifecycle === 'established').length;
+            
+            let temporalScore = 0;
+            let analysis = '';
+            
+            if (incomingTeams > outgoingTeams) {
+                temporalScore += 25;
+                analysis += 'More incoming than outgoing teams suggests temporal misalignment. ';
+            }
+            
+            if (outgoingTeams > establishedTeams * 0.5) {
+                temporalScore += 35;
+                analysis += 'High proportion of outgoing teams indicates turnover timing issues. ';
+            }
+            
+            const projectDurations = projects.map(p => p.duration);
+            const avgDuration = projectDurations.reduce((a, b) => a + b, 0) / projectDurations.length;
+            if (avgDuration > 3) {
+                temporalScore += 40;
+                analysis += 'Long project durations increase temporal misalignment risk. ';
+            }
+            
+            return `Score: ${temporalScore}% - ${analysis}`;
+        }
+
+        function analyzeIntegrationCost() {
+            const totalInterfaces = interfaces.length;
+            const totalMolecules = teams.length + faculty.length + projects.length;
+            const interfaceDensity = totalInterfaces / Math.max(totalMolecules, 1);
+            
+            let integrationScore = 0;
+            let analysis = '';
+            
+            if (interfaceDensity > 2) {
+                integrationScore += 30;
+                analysis += 'High interface density suggests high integration cost. ';
+            }
+            
+            const weakInterfaces = interfaces.filter(i => i.energyLoss > 30).length;
+            if (weakInterfaces > totalInterfaces * 0.5) {
+                integrationScore += 40;
+                analysis += 'High proportion of weak interfaces increases coordination effort. ';
+            }
+            
+            const crossDisciplineInterfaces = interfaces.filter(i => {
+                const fromTeam = teams.find(t => t.id === i.from);
+                const toTeam = teams.find(t => t.id === i.to);
+                return fromTeam && toTeam && fromTeam.discipline !== toTeam.discipline;
+            }).length;
+            
+            if (crossDisciplineInterfaces > totalInterfaces * 0.3) {
+                integrationScore += 30;
+                analysis += 'High cross-discipline integration requires significant coordination. ';
+            }
+            
+            return `Score: ${integrationScore}% - ${analysis}`;
+        }
+
+        function analyzeCouplingDegradation() {
+            const fragileInterfaces = interfaces.filter(i => i.bondType === 'fragile-temporary').length;
+            const institutionalInterfaces = interfaces.filter(i => i.bondType.includes('institutional')).length;
+            const outgoingTeams = teams.filter(t => t.lifecycle === 'outgoing').length;
+            
+            let couplingScore = 0;
+            let analysis = '';
+            
+            if (fragileInterfaces > interfaces.length * 0.2) {
+                couplingScore += 35;
+                analysis += 'High proportion of fragile interfaces indicates coupling degradation risk. ';
+            }
+            
+            if (institutionalInterfaces > interfaces.length * 0.4) {
+                couplingScore += 30;
+                analysis += 'High proportion of institutional knowledge interfaces vulnerable to degradation. ';
+            }
+            
+            if (outgoingTeams > teams.length * 0.3) {
+                couplingScore += 35;
+                analysis += 'High proportion of outgoing teams suggests imminent coupling degradation. ';
+            }
+            
+            return `Score: ${couplingScore}% - ${analysis}`;
+        }
+
+        function showBackwardTracingAnalysis() {
+            let analysis = '🔍 BACKWARD TRACING ANALYSIS\n\n';
+            analysis += 'This analysis traces knowledge transfer failures backward to identify interface vulnerabilities:\n\n';
+            
+            // Simulate backward tracing scenarios based on current system state
+            const scenarios = [
+                {
+                    failure: 'Students repeating completed work',
+                    cause: 'Missing documentation interface',
+                    solution: 'Strengthen codified knowledge interfaces',
+                    risk: calculateBackwardTracingRisk('documentation')
+                },
+                {
+                    failure: 'Teams unaware of prior technical choices',
+                    cause: 'Weak cross-team communication interfaces',
+                    solution: 'Establish formal design review processes',
+                    risk: calculateBackwardTracingRisk('communication')
+                },
+                {
+                    failure: 'Integration problems from undocumented rationale',
+                    cause: 'Institutional knowledge not codified',
+                    solution: 'Convert tacit knowledge to structured documentation',
+                    risk: calculateBackwardTracingRisk('rationale')
+                },
+                {
+                    failure: 'New cohorts unable to operate systems',
+                    cause: 'Outgoing teams left incomplete handoffs',
+                    solution: 'Implement structured onboarding and handoff procedures',
+                    risk: calculateBackwardTracingRisk('handoff')
+                }
+            ];
+            
+            scenarios.forEach((scenario, index) => {
+                const riskLevel = scenario.risk > 70 ? '🔴 HIGH' : scenario.risk > 40 ? '🟡 MEDIUM' : '🟢 LOW';
+                analysis += `${index + 1}. ${scenario.failure}\n`;
+                analysis += `   Cause: ${scenario.cause}\n`;
+                analysis += `   Solution: ${scenario.solution}\n`;
+                analysis += `   Risk Level: ${riskLevel} (${scenario.risk}%)\n\n`;
+            });
+            
+            analysis += '📋 BACKWARD TRACING METHODOLOGY:\n';
+            analysis += '1. Identify observable failures\n';
+            analysis += '2. Trace backward to knowledge transfer points\n';
+            analysis += '3. Identify interface mechanism responsible\n';
+            analysis += '4. Determine why transfer failed\n';
+            analysis += '5. Design interventions to strengthen interfaces\n';
+            
+            alert(analysis);
+        }
+
+        function calculateBackwardTracingRisk(failureType) {
+            let risk = 0;
+            
+            switch(failureType) {
+                case 'documentation':
+                    const codifiedInterfaces = interfaces.filter(i => i.bondType.includes('codified')).length;
+                    risk = 100 - (codifiedInterfaces / interfaces.length * 100);
+                    break;
+                case 'communication':
+                    const crossTeamInterfaces = interfaces.filter(i => {
+                        const fromTeam = teams.find(t => t.id === i.from);
+                        const toTeam = teams.find(t => t.id === i.to);
+                        return fromTeam && toTeam && fromTeam.discipline !== toTeam.discipline;
+                    }).length;
+                    risk = 100 - (crossTeamInterfaces / teams.length * 50);
+                    break;
+                case 'rationale':
+                    const institutionalInterfaces = interfaces.filter(i => i.bondType.includes('institutional')).length;
+                    risk = institutionalInterfaces / interfaces.length * 100;
+                    break;
+                case 'handoff':
+                    const outgoingTeams = teams.filter(t => t.lifecycle === 'outgoing').length;
+                    const incomingTeams = teams.filter(t => t.lifecycle === 'incoming').length;
+                    risk = Math.max(outgoingTeams, incomingTeams) / teams.length * 100;
+                    break;
+            }
+            
+            return Math.round(Math.min(100, Math.max(0, risk)));
+        }
+    </script>
+    <!-- Shim: debounced autosave, periodic save, and wrapper helper -->
+    <script>
+    (function () {
+        // Debounce utility
+        function debounce(fn, wait = 1500) {
+            let t;
+            return function (...args) {
+                clearTimeout(t);
+                t = setTimeout(() => fn.apply(this, args), wait);
+            };
+        }
+
+        // Debounced save that calls FramesAPI.setState when available
+        const saveStateToServer = debounce(async function () {
+            if (typeof FramesAPI === 'undefined') return;
+            try {
+                await FramesAPI.setState({
+                    teams: window.teams || [],
+                    faculty: window.faculty || [],
+                    projects: window.projects || [],
+                    interfaces: window.interfaces || []
+                });
+                console.log('FRAMES: Auto-saved state to server.');
+            } catch (err) {
+                console.warn('FRAMES: Auto-save failed:', err);
+            }
+        }, 1500);
+
+        // Periodic safety-net save every 10s
+        const periodicId = setInterval(() => { try { saveStateToServer(); } catch (e) {} }, 10000);
+
+        // Expose a notifier for legacy code to call after mutating state
+        window.FRAMES_notifyStateChanged = function () {
+            try { window.dispatchEvent(new Event('frames:stateChanged')); } catch (e) {}
+        };
+
+        // Listen to custom event and trigger debounced save
+        window.addEventListener('frames:stateChanged', saveStateToServer);
+
+        // beforeunload fallback using sendBeacon (best-effort)
+        window.addEventListener('beforeunload', function () {
+            try {
+                const payload = JSON.stringify({
+                    teams: window.teams || [],
+                    faculty: window.faculty || [],
+                    projects: window.projects || [],
+                    interfaces: window.interfaces || []
+                });
+                if (navigator.sendBeacon) {
+                    const blob = new Blob([payload], { type: 'application/json' });
+                    navigator.sendBeacon('/api/state', blob);
+                } else {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/api/state', false);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(payload);
+                }
+            } catch (e) {
+                // swallow errors - best-effort
+            }
+        });
+
+        // Helper: wrap an existing global function to auto-notify state changes after it runs
+        window.wrapWithStateNotify = function (fnName) {
+            try {
+                const orig = window[fnName];
+                if (typeof orig !== 'function') return false;
+                window[fnName] = function (...args) {
+                    const res = orig.apply(this, args);
+                    try { window.FRAMES_notifyStateChanged(); } catch (e) {}
+                    return res;
+                };
+                return true;
+            } catch (e) {
+                console.warn('wrapWithStateNotify failed for', fnName, e);
+                return false;
+            }
+        };
+
+        // Optionally auto-wrap common mutation functions if they exist
+        const toWrap = ['addTeam','removeTeam','addFaculty','removeFaculty','addProject','removeProject','addInterface','removeInterface'];
+        toWrap.forEach(name => { try { window.wrapWithStateNotify(name); } catch (e) {} });
+
+        // Cleanup when page unloads (clear periodic interval)
+        window.addEventListener('unload', function () { try { clearInterval(periodicId); } catch (e) {} });
+    })();
+    </script>
+    <!-- Active Sandbox Label (clickable: opens Sandbox Manager) -->
+    <div id="activeSandboxLabel" onclick="openSandboxManager()" role="button" title="Open Sandbox Manager" style="cursor:pointer;position:fixed;right:18px;bottom:170px;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,0.6);border:1px solid rgba(100,255,218,0.15);color:#64ffda;z-index:9999;font-weight:600;">Live</div>
+
+    <!-- Play Mode Toggle -->
+    <button id="playToggleBtn" onclick="togglePlayMode()" style="position:fixed;right:18px;bottom:18px;padding:12px 16px;border-radius:12px;border:2px solid #64ffda;background:transparent;color:#64ffda;z-index:9999;cursor:pointer;">
+        Play Mode
+    </button>
+    <!-- Manage Sandboxes Toggle -->
+    <button id="manageSandboxesBtn" onclick="openSandboxManager()" style="position:fixed;right:18px;bottom:72px;padding:10px 14px;border-radius:12px;border:2px solid #64ffda;background:transparent;color:#64ffda;z-index:9999;cursor:pointer;">
+        Manage Sandboxes
+    </button>
+    <!-- Save Sandbox Button -->
+    <button id="saveSandboxBtn" onclick="saveCurrentSandbox()" disabled style="position:fixed;right:18px;bottom:126px;padding:10px 14px;border-radius:12px;border:2px solid #64ffda;background:transparent;color:#64ffda;z-index:9999;cursor:pointer;opacity:0.9;">
+        Save Sandbox
+    </button>
+
+    <!-- Sandbox Manager Modal (hidden by default) -->
+    <div id="sandboxManagerModal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;align-items:center;justify-content:center;">
+        <div style="background:#0f1419;color:white;padding:18px;border-radius:10px;min-width:360px;max-width:720px;margin:40px auto;box-shadow:0 10px 30px rgba(0,0,0,0.6);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h3 style="margin:0;color:#64ffda;">Sandbox Manager</h3>
+                <button onclick="closeSandboxManager()" style="background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:6px 8px;border-radius:6px;">Close</button>
+            </div>
+
+            <div style="margin-bottom:10px;">
+                <label style="display:block;margin-bottom:6px;color:#b0bec5;">Create new sandbox</label>
+                <div style="display:flex;gap:8px;">
+                    <input id="newSandboxName" placeholder="Sandbox name" style="flex:1;padding:8px;border-radius:6px;border:1px solid rgba(100,255,218,0.15);background:rgba(255,255,255,0.02);color:#fff;" />
+                    <button onclick="createSandboxUI()" style="padding:8px 12px;border-radius:6px;border:1px solid #64ffda;background:#64ffda;color:#0f1419;">Create</button>
+                </div>
+            </div>
+
+            <div>
+                <label style="display:block;margin-bottom:6px;color:#b0bec5;">Sandboxes for SAMPLE_UNIVERSITY</label>
+                <div id="sandboxList" style="max-height:320px;overflow:auto;background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;border:1px solid rgba(100,255,218,0.06);"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

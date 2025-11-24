@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparative Analysis - FRAMES</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
+    <link rel="stylesheet" href="/static/comparative_dashboard.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="javascript:history.back()" class="back-link"><span class="lucide" data-lucide="arrow-left"></span> Back</a>
+        <h2>Comparative Analysis</h2>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>📊 Multi-University Comparative Analysis</h1>
+            <p class="subtitle">Side-by-side comparison of program metrics across all institutions</p>
+        </div>
+
+        <div class="card active" style="padding: 1.5rem; margin-bottom: 1rem;">
+            <nav style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button id="viewAllBtn" class="btn-glow active" style="min-width: 150px;">All Universities</button>
+                <button id="viewProvesBtn" class="btn-glow" style="min-width: 150px;">PROVES Collaboration</button>
+                <button id="viewOutcomesBtn" class="btn-glow" style="min-width: 150px;">Outcomes</button>
+            </nav>
+        </div>
+
+        <main id="dashboardContent">
+            <!-- This section will show all 8 universities side-by-side -->
+            <section id="allUniversitiesView" class="card active">
+                <h2 class="section-title">All Universities Overview</h2>
+
+                <div class="universities-grid">
+                <!-- Repeat this card 8 times, one per university -->
+                <!-- University 1: Cal Poly Pomona -->
+                <div class="university-card" data-university-id="CalPolyPomona">
+                    <div class="university-header lead">
+                        <h3>Cal Poly Pomona</h3>
+                        <span class="lead-badge">Lead Institution</span>
+                    </div>
+                    <div class="university-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Teams</span>
+                            <span class="metric-value" id="cpp-teams">4</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Faculty</span>
+                            <span class="metric-value" id="cpp-faculty">2</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Projects</span>
+                            <span class="metric-value" id="cpp-projects">2</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Interfaces</span>
+                            <span class="metric-value" id="cpp-interfaces">7</span>
+                        </div>
+                    </div>
+                    <div class="university-visualization">
+                        <!-- Placeholder for molecular visualization -->
+                        <div class="viz-placeholder">Molecular Visualization</div>
+                    </div>
+                    <div class="university-actions">
+                        <button class="btn-view-detail">View Details</button>
+                    </div>
+                </div>
+
+                <!-- University 2: Texas State -->
+                <div class="university-card" data-university-id="TexasState">
+                    <div class="university-header">
+                        <h3>Texas State</h3>
+                    </div>
+                    <div class="university-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Teams</span>
+                            <span class="metric-value" id="texas-teams">4</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Faculty</span>
+                            <span class="metric-value" id="texas-faculty">2</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Projects</span>
+                            <span class="metric-value" id="texas-projects">2</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Interfaces</span>
+                            <span class="metric-value" id="texas-interfaces">6</span>
+                        </div>
+                    </div>
+                    <div class="university-visualization">
+                        <div class="viz-placeholder">Molecular Visualization</div>
+                    </div>
+                    <div class="university-actions">
+                        <button class="btn-view-detail">View Details</button>
+                    </div>
+                </div>
+
+                <!-- University 3: Columbia -->
+                <div class="university-card" data-university-id="Columbia">
+                    <div class="university-header">
+                        <h3>Columbia</h3>
+                    </div>
+                    <div class="university-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Teams</span>
+                            <span class="metric-value" id="columbia-teams">4</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Faculty</span>
+                            <span class="metric-value" id="columbia-faculty">2</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Projects</span>
+                            <span class="metric-value" id="columbia-projects">2</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Interfaces</span>
+                            <span class="metric-value" id="columbia-interfaces">6</span>
+                        </div>
+                    </div>
+                    <div class="university-visualization">
+                        <div class="viz-placeholder">Molecular Visualization</div>
+                    </div>
+                    <div class="university-actions">
+                        <button class="btn-view-detail">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Universities 4-8: Placeholders -->
+                <div class="university-card" data-university-id="Uni_D">
+                    <div class="university-header">
+                        <h3>University D</h3>
+                    </div>
+                    <div class="university-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Teams</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Faculty</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Projects</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Interfaces</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                    </div>
+                    <div class="university-visualization">
+                        <div class="viz-placeholder">Molecular Visualization</div>
+                    </div>
+                    <div class="university-actions">
+                        <button class="btn-view-detail">View Details</button>
+                    </div>
+                </div>
+                <div class="university-card" data-university-id="Uni_E">
+                    <div class="university-header">
+                        <h3>University E</h3>
+                    </div>
+                    <div class="university-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Teams</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Faculty</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Projects</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Interfaces</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                    </div>
+                    <div class="university-visualization">
+                        <div class="viz-placeholder">Molecular Visualization</div>
+                    </div>
+                    <div class="university-actions">
+                        <button class="btn-view-detail">View Details</button>
+                    </div>
+                </div>
+                <div class="university-card" data-university-id="Uni_F">
+                    <div class="university-header">
+                        <h3>University F</h3>
+                    </div>
+                    <div class="university-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Teams</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Faculty</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Projects</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Interfaces</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                    </div>
+                    <div class="university-visualization">
+                        <div class="viz-placeholder">Molecular Visualization</div>
+                    </div>
+                    <div class="university-actions">
+                        <button class="btn-view-detail">View Details</button>
+                    </div>
+                </div>
+                <div class="university-card" data-university-id="Uni_G">
+                    <div class="university-header">
+                        <h3>University G</h3>
+                    </div>
+                    <div class="university-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Teams</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Faculty</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Projects</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Interfaces</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                    </div>
+                    <div class="university-visualization">
+                        <div class="viz-placeholder">Molecular Visualization</div>
+                    </div>
+                    <div class="university-actions">
+                        <button class="btn-view-detail">View Details</button>
+                    </div>
+                </div>
+                <div class="university-card" data-university-id="Uni_H">
+                    <div class="university-header">
+                        <h3>University H</h3>
+                    </div>
+                    <div class="university-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Teams</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Faculty</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Projects</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Interfaces</span>
+                            <span class="metric-value">-</span>
+                        </div>
+                    </div>
+                    <div class="university-visualization">
+                        <div class="viz-placeholder">Molecular Visualization</div>
+                    </div>
+                    <div class="university-actions">
+                        <button class="btn-view-detail">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <p class="footer-title">FRAMES Comparative Analysis</p>
+        <p class="footer-desc">Framework for Resilience Assessment in Modular Engineering Systems</p>
+    </footer>
+
+    <!-- JavaScript for API integration -->
+    <script src="/static/comparative_dashboard.js"></script>
+    <script>lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });</script>
+</body>
+</html>

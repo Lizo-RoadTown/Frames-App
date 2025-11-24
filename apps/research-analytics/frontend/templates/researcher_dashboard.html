@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Dashboard - FRAMES</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="javascript:history.back()" class="back-link"><span class="lucide" data-lucide="arrow-left"></span> Back</a>
+        <h2>Bronco Star Research Team</h2>
+    </nav>
+
+    <div class="hero" style="padding: 3rem 1.5rem;">
+        <div class="hero-content">
+            <h1><span class="lucide" data-lucide="star" style="width: 48px; height: 48px; vertical-align: middle;"></span> Bronco Star Research Team</h1>
+            <p class="tagline">Multi-University Data Analysis & Network Visualization</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="card active">
+            <h2 class="section-title">Research Tools & Analysis</h2>
+            <p class="hint">Select a research tool to analyze multi-university collaboration data</p>
+
+            <div class="options-grid">
+                <!-- Multi-University 3D Network -->
+                <div class="option-card" onclick="window.location.href='/multi-university-network?researcher=true'">
+                    <div class="option-icon"><span class="lucide" data-lucide="globe"></span></div>
+                    <div class="option-content">
+                        <h3>Multi-University Network (3D)</h3>
+                        <p>Visualize all universities orbiting Cal Poly Pomona. Drag and reposition nodes to test collaboration scenarios.</p>
+                    </div>
+                </div>
+
+                <!-- Comparative Analysis Table -->
+                <div class="option-card" onclick="window.location.href='/comparative'">
+                    <div class="option-icon"><span class="lucide" data-lucide="table"></span></div>
+                    <div class="option-content">
+                        <h3>Comparative Analysis (Table)</h3>
+                        <p>View side-by-side metrics and statistics across all participating universities.</p>
+                    </div>
+                </div>
+
+                <!-- Energy Loss Analysis -->
+                <div class="option-card" onclick="alert('Coming soon: Energy loss patterns and interface strength metrics')">
+                    <div class="option-icon"><span class="lucide" data-lucide="activity"></span></div>
+                    <div class="option-content">
+                        <h3>Energy Loss Analysis</h3>
+                        <p>Analyze knowledge transfer efficiency and interface strength across institutions.</p>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">(Coming Soon)</span>
+                    </div>
+                </div>
+
+                <!-- Network Equilibrium Testing -->
+                <div class="option-card" onclick="alert('Coming soon: Test network configurations for mission success equilibrium')">
+                    <div class="option-icon"><span class="lucide" data-lucide="target"></span></div>
+                    <div class="option-content">
+                        <h3>Equilibrium Testing</h3>
+                        <p>Test different network configurations to find optimal collaboration patterns for mission success.</p>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">(Coming Soon)</span>
+                    </div>
+                </div>
+
+                <!-- Time-Series Analysis -->
+                <div class="option-card" onclick="alert('Coming soon: Visualize how networks evolve over cohorts')">
+                    <div class="option-icon"><span class="lucide" data-lucide="trending-up"></span></div>
+                    <div class="option-content">
+                        <h3>Time-Series Analysis</h3>
+                        <p>Track how collaboration networks and knowledge transfer evolve across student cohorts.</p>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">(Coming Soon)</span>
+                    </div>
+                </div>
+
+                <!-- Export & Reports -->
+                <div class="option-card" onclick="alert('Coming soon: Export research data and generate reports')">
+                    <div class="option-icon"><span class="lucide" data-lucide="file-text"></span></div>
+                    <div class="option-content">
+                        <h3>Export & Reports</h3>
+                        <p>Generate research reports and export data for external analysis tools.</p>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">(Coming Soon)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Access to Individual Universities -->
+        <section class="card active" style="margin-top: 2rem;">
+            <h2 class="section-title">Individual University Networks</h2>
+            <p class="hint">Access detailed network visualizations for specific institutions</p>
+
+            <div class="university-grid">
+                <button class="university-btn" onclick="window.location.href='/dashboard?university=CalPolyPomona&researcher=true'">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/calpoly.png" alt="Cal Poly Pomona" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">Cal Poly Pomona</div>
+                        <div class="uni-location">Lead Institution</div>
+                    </div>
+                </button>
+                <button class="university-btn" onclick="window.location.href='/dashboard?university=TexasState&researcher=true'">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/texasstate.png" alt="Texas State University" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">Texas State University</div>
+                        <div class="uni-location">San Marcos, TX</div>
+                    </div>
+                </button>
+                <button class="university-btn" onclick="window.location.href='/dashboard?university=Columbia&researcher=true'">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/columbia.png" alt="Columbia University" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">Columbia University</div>
+                        <div class="uni-location">New York, NY</div>
+                    </div>
+                </button>
+                <button class="university-btn" onclick="window.location.href='/dashboard?university=UniversityD&researcher=true'">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universityd.png" alt="University D" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University D</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+                <button class="university-btn" onclick="window.location.href='/dashboard?university=UniversityE&researcher=true'">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universitye.png" alt="University E" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University E</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+                <button class="university-btn" onclick="window.location.href='/dashboard?university=UniversityF&researcher=true'">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universityf.png" alt="University F" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University F</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+                <button class="university-btn" onclick="window.location.href='/dashboard?university=UniversityG&researcher=true'">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universityg.png" alt="University G" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University G</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+                <button class="university-btn" onclick="window.location.href='/dashboard?university=UniversityH&researcher=true'">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universityh.png" alt="University H" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University H</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <footer class="main-footer">
+        <p class="footer-title">Bronco Star Research Team</p>
+        <p class="footer-desc">Framework for Resilience Assessment in Modular Engineering Systems</p>
+    </footer>
+
+    <script>
+        lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });
+    </script>
+</body>
+</html>

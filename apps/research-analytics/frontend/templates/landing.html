@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAMES - Space Program Knowledge Network</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>FRAMES</h1>
+            <p class="tagline">Space Program Knowledge Network</p>
+            <p class="subtitle">Track teams, mentors, and projects to strengthen continuity across student cohorts</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Main Landing: Portal Selection -->
+        <section id="mainLanding" class="card active">
+            <h3 class="section-subtitle" style="text-align: center; margin-bottom: var(--space-6);">Select Portal</h3>
+            
+            <div class="portals-grid">
+                <div class="portal-card research-portal" onclick="openResearchDashboard()">
+                    <span class="lucide portal-icon" data-lucide="star"></span>
+                    <h2>Bronco Star Research Portal</h2>
+                    <p>Access the collaborative research network</p>
+                </div>
+                
+                <div class="portal-card university-portal" onclick="showUniversitySelection()">
+                    <span class="lucide portal-icon" data-lucide="graduation-cap"></span>
+                    <h2>University Program Management Portal</h2>
+                    <p>Manage university research programs</p>
+                </div>
+                
+                <div class="portal-card student-portal" onclick="showStudentCodeEntry()">
+                    <span class="lucide portal-icon" data-lucide="users"></span>
+                    <h2>Student Portal</h2>
+                    <p>Student team access (code required)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Student Code Entry Section -->
+        <section id="studentCodeEntry" class="card hidden">
+            <button class="btn-back" onclick="backToPortals()">
+                <span class="lucide" data-lucide="arrow-left"></span> Back to Portals
+            </button>
+            
+            <div class="code-entry-container">
+                <span class="lucide" data-lucide="shield-check" style="width: 64px; height: 64px; color: var(--cyan); margin: 0 auto var(--space-4); display: block;"></span>
+                <h2 style="text-align: center; margin-bottom: var(--space-2);">Student Portal Access</h2>
+                <p style="color: var(--text-secondary); text-align: center; margin-bottom: var(--space-6);">Enter your access code to continue</p>
+                
+                <div class="code-input-group">
+                    <input type="text" id="studentCode" class="code-input" placeholder="Enter access code" maxlength="20">
+                    <button onclick="validateStudentCode()" class="btn-primary">
+                        Submit <span class="lucide" data-lucide="arrow-right"></span>
+                    </button>
+                </div>
+                
+                <p id="codeError" class="error-message" style="display: none; margin-top: var(--space-3); color: #EF4444; text-align: center;"></p>
+            </div>
+        </section>
+
+        <!-- University Selection Section -->
+        <section id="universitySelection" class="card hidden">
+            <button class="btn-back" onclick="backToPortals()">
+                <span class="lucide" data-lucide="arrow-left"></span> Back to Portals
+            </button>
+            
+            <h3 class="section-subtitle" style="text-align: center; margin-bottom: var(--space-4);">Select Your University</h3>
+            <p class="hint" style="text-align: center; margin-bottom: var(--space-4);">Choose your institution to manage teams, faculty, and projects</p>
+            <div class="university-grid">
+                <button class="university-btn" data-id="CalPolyPomona">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/calpoly.png" alt="Cal Poly Pomona" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">Cal Poly Pomona</div>
+                        <div class="uni-location">Lead Institution</div>
+                    </div>
+                </button>
+                <button class="university-btn" data-id="TexasState">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/texasstate.png" alt="Texas State University" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">Texas State University</div>
+                        <div class="uni-location">San Marcos, TX</div>
+                    </div>
+                </button>
+                <button class="university-btn" data-id="Columbia">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/columbia.png" alt="Columbia University" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">Columbia University</div>
+                        <div class="uni-location">New York, NY</div>
+                    </div>
+                </button>
+                <button class="university-btn" data-id="UniversityD">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universityd.png" alt="University D" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University D</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+                <button class="university-btn" data-id="UniversityE">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universitye.png" alt="University E" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University E</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+                <button class="university-btn" data-id="UniversityF">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universityf.png" alt="University F" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University F</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+                <button class="university-btn" data-id="UniversityG">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universityg.png" alt="University G" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University G</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+                <button class="university-btn" data-id="UniversityH">
+                    <div class="uni-logo-placeholder">
+                        <img src="/static/logos/universityh.png" alt="University H" class="uni-logo-img" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <div class="uni-name">University H</div>
+                        <div class="uni-location">Location TBD</div>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Step 2: Role Selection (shown after university selection) -->
+        <section id="roleSelection" class="card hidden">
+            <div class="dashboard-header">
+                <h2 id="selectedUniNameRole">Cal Poly Pomona</h2>
+                <button class="btn-glow" onclick="changeUniversity()"><span class="lucide" data-lucide="globe"></span> Change University</button>
+            </div>
+            <h3 class="section-subtitle">Select Your Role</h3>
+            <p class="hint">Choose your role to access the appropriate tools and data</p>
+            <div class="options-grid">
+                <div class="option-card" onclick="selectRole('faculty')">
+                    <div class="option-icon"><span class="lucide" data-lucide="briefcase"></span></div>
+                    <div class="option-content">
+                        <h3>Faculty / Staff</h3>
+                        <p>Full access to all program management tools</p>
+                    </div>
+                </div>
+                <div class="option-card" onclick="selectRole('teamlead')">
+                    <div class="option-icon"><span class="lucide" data-lucide="user-check"></span></div>
+                    <div class="option-content">
+                        <h3>Team Lead</h3>
+                        <p>Manage student teams and view program health</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 3: Dashboard Options (shown after role selection) -->
+        <section id="dashboardOptions" class="card hidden">
+            <div class="dashboard-header">
+                <h2 id="selectedUniName">Cal Poly Pomona</h2>
+                <button class="btn-glow" onclick="changeUniversity()"><span class="lucide" data-lucide="globe"></span> Change University</button>
+            </div>
+            <div class="options-grid">
+                <div class="option-card" onclick="manageTeams()">
+                    <div class="option-icon"><span class="lucide" data-lucide="users"></span></div>
+                    <div class="option-content">
+                        <h3>Student Teams</h3>
+                        <p>Add or update your student team structure and expertise areas</p>
+                    </div>
+                </div>
+                <div class="option-card" onclick="manageFaculty()">
+                    <div class="option-icon"><span class="lucide" data-lucide="graduation-cap"></span></div>
+                    <div class="option-content">
+                        <h3>Faculty & Mentors</h3>
+                        <p>Add or update faculty advisors, staff, and expert involvement</p>
+                    </div>
+                </div>
+                <div class="option-card" onclick="manageProjects()">
+                    <div class="option-icon"><span class="lucide" data-lucide="rocket"></span></div>
+                    <div class="option-content">
+                        <h3>Missions & Projects</h3>
+                        <p>Add your active missions, including PROVES and local projects</p>
+                    </div>
+                </div>
+                <div class="option-card" onclick="viewConnections()">
+                    <div class="option-icon"><span class="lucide" data-lucide="link"></span></div>
+                    <div class="option-content">
+                        <h3>Connections</h3>
+                        <p>Track your program's connections between teams, mentors, and other universities</p>
+                    </div>
+                </div>
+                <div class="option-card" onclick="viewAnalytics()">
+                    <div class="option-icon"><span class="lucide" data-lucide="bar-chart-2"></span></div>
+                    <div class="option-content">
+                        <h3>Program Health</h3>
+                        <p>View your program's overall health and data analytics</p>
+                    </div>
+                </div>
+                <div class="option-card" onclick="comparePrograms()">
+                    <div class="option-icon"><span class="lucide" data-lucide="table"></span></div>
+                    <div class="option-content">
+                        <h3>Compare with Others</h3>
+                        <p>See comparison metrics and statistics across universities</p>
+                    </div>
+                </div>
+                <div class="option-card" onclick="openResearchDashboard()" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(192, 38, 211, 0.1) 100%); border: 2px solid rgba(124, 58, 237, 0.3);">
+                    <div class="option-icon" style="color: #c084fc;"><span class="lucide" data-lucide="star"></span></div>
+                    <div class="option-content">
+                        <h3 style="color: #c084fc;">Bronco Star Research Team</h3>
+                        <p>Access advanced multi-university analysis and network visualization tools</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="main-footer">
+        <p class="footer-title">FRAMES</p>
+        <p class="footer-desc">Framework for Resilience Assessment in Modular Engineering Systems</p>
+    </footer>
+
+        <script src="/static/api.js"></script>
+        <script src="/static/landing.js"></script>
+        <script>
+            lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });
+        </script>
+</body>
+</html>

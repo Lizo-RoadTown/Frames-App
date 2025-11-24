@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Roster - FRAMES</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="javascript:history.back()" class="back-link"><span class="lucide" data-lucide="arrow-left"></span> Back</a>
+        <h2 id="universityName">Your University</h2>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>👥 Student Roster</h1>
+            <p class="subtitle">Manage your student roster - we'll track rotations automatically</p>
+        </div>
+
+        <!-- Student Summary -->
+        <section class="card">
+            <div class="student-summary-row">
+                <h2>Active Students</h2>
+                <div id="studentSummary" class="student-summary-badges">
+                    <div class="stat-badge incoming">
+                        <span class="stat-number" id="incomingCount">0</span>
+                        <span class="stat-label">Incoming</span>
+                    </div>
+                    <div class="stat-badge established">
+                        <span class="stat-number" id="establishedCount">0</span>
+                        <span class="stat-label">Established</span>
+                    </div>
+                    <div class="stat-badge outgoing">
+                        <span class="stat-number" id="outgoingCount">0</span>
+                        <span class="stat-label">Outgoing</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter by team -->
+            <div class="student-filter-row">
+                <label for="filterTeam" class="visually-hidden">Filter by Team</label>
+                <select id="filterTeam" class="filter-select" onchange="filterStudents()" title="Filter by Team">
+                    <option value="">All Teams</option>
+                </select>
+            </div>
+
+            <div id="studentsList" class="items-list">
+                <p class="empty-state">No students yet. Add your first student below!</p>
+            </div>
+        </section>
+
+        <!-- Add New Student Form -->
+        <section class="card">
+            <h2>Add a New Student</h2>
+            <form id="addStudentForm" class="form">
+                <div class="form-group">
+                    <label for="studentName">Student Name *</label>
+                    <input type="text" id="studentName" name="name" required
+                           placeholder="e.g., Jane Smith">
+                    <span class="hint">Full name of the student</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="teamId">Team *</label>
+                    <select id="teamId" name="team_id" required>
+                        <option value="">Select team...</option>
+                    </select>
+                    <span class="hint">Which team are they on? (Project is determined by team)</span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expertiseArea">Expertise Area</label>
+                        <select id="expertiseArea" name="expertise_area">
+                            <option value="">Select area...</option>
+                            <option value="Electrical">Electrical Engineering</option>
+                            <option value="Software">Software Engineering</option>
+                            <option value="Mechanical">Mechanical Engineering</option>
+                            <option value="Mission Ops">Mission Operations</option>
+                            <option value="Communications">Communications</option>
+                            <option value="Systems">Systems Engineering</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="termsRemaining">Terms Until Graduation *</label>
+                        <input type="number" id="termsRemaining" name="terms_remaining" min="0" max="20" value="4" required>
+                        <span class="hint">How many semesters/quarters until they graduate?</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="isLead" name="is_lead">
+                        <span>Team Lead</span>
+                    </label>
+                    <span class="hint">Check if this student is a team lead (grants additional dashboard access)</span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Add Student</button>
+                    <button type="reset" class="btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="/static/api.js"></script>
+    <script src="/static/students.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Teams - FRAMES</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="javascript:history.back()" class="back-link"><span class="lucide" data-lucide="arrow-left"></span> Back</a>
+        <h2 id="universityName">Your University</h2>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>👥 Student Teams</h1>
+            <p class="subtitle">Add and manage your student teams</p>
+        </div>
+
+        <!-- Existing Teams List -->
+        <section class="card">
+            <h2>Your Teams</h2>
+            <div id="teamsList" class="items-list">
+                <p class="empty-state">No teams yet. Add your first team below!</p>
+            </div>
+        </section>
+
+        <!-- Add New Team Form -->
+        <section class="card">
+            <h2>Add a New Team</h2>
+            <p class="hint">Teams belong to projects - select which project this team will work on</p>
+            <form id="addTeamForm" class="form">
+                <div class="form-group">
+                    <label for="project_id">Project *</label>
+                    <select id="project_id" name="project_id" required>
+                        <option value="">Select project...</option>
+                    </select>
+                    <span class="hint">Which project does this team belong to?</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="teamName">Team Name *</label>
+                    <input type="text" id="teamName" name="name" required
+                           placeholder="e.g., Software Team, Power Systems">
+                    <span class="hint">Give your team a descriptive name</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="discipline">Expertise Area</label>
+                    <select id="discipline" name="discipline">
+                        <option value="">Select area...</option>
+                        <option value="electrical">Electrical Engineering</option>
+                        <option value="software">Software Engineering</option>
+                        <option value="mechanical">Mechanical Engineering</option>
+                        <option value="mission-ops">Mission Operations</option>
+                        <option value="communications">Communications</option>
+                        <option value="systems">Systems Engineering</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">What does this team do?</label>
+                    <textarea id="description" name="description" rows="3"
+                              placeholder="Brief description of their role and responsibilities..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Add Team</button>
+                    <button type="reset" class="btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="/static/api.js"></script>
+    <script src="/static/teams.js"></script>
+</body>
+</html>

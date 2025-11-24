@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Analytics - FRAMES</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
+    <style>
+        .analytics-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .controls-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .control-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-select:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+        }
+
+        .control-hint {
+            font-size: 0.8125rem;
+            color: var(--text-tertiary);
+            font-style: italic;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-subtle);
+            min-height: 500px;
+            position: relative;
+        }
+
+        .chart-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            color: var(--cyan);
+            margin-bottom: 1rem;
+        }
+
+        .chart-subtitle {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .chart-canvas {
+            max-height: 450px;
+        }
+
+        .btn-update {
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--electric-blue) 100%);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9375rem;
+            box-shadow: 0 0 20px var(--cyan-glow);
+        }
+
+        .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--cyan-glow);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #EF4444;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="javascript:history.back()" class="back-link"><span class="lucide" data-lucide="arrow-left"></span> Back</a>
+        <h2 id="universityName">Program Analytics</h2>
+    </nav>
+
+    <div class="container analytics-container">
+        <div class="page-header">
+            <h1>📊 Program Analytics Dashboard</h1>
+            <p class="subtitle">Explore relationships between variables to understand your program health</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div id="quickStats" class="stats-grid" style="display:none;">
+            <!-- Populated dynamically -->
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message"></div>
+
+        <!-- Controls Panel -->
+        <section class="controls-panel">
+            <h2 style="margin-bottom: 1.5rem; color: var(--cyan);">Configure Your Analysis</h2>
+
+            <div class="control-row">
+                <div class="control-group">
+                    <label class="control-label" for="metricSelect">What do you want to measure?</label>
+                    <select id="metricSelect" class="control-select">
+                        <option value="">Select a metric...</option>
+                    </select>
+                    <span class="control-hint" id="metricHint"></span>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="groupBySelect">How do you want to group it?</label>
+                    <select id="groupBySelect" class="control-select">
+                        <option value="">No grouping (total only)</option>
+                    </select>
+                    <span class="control-hint">Group data by a dimension to compare categories</span>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="chartTypeSelect">How do you want to see it?</label>
+                    <select id="chartTypeSelect" class="control-select">
+                        <option value="bar">Bar Chart</option>
+                        <option value="line">Line Chart</option>
+                        <option value="pie">Pie Chart</option>
+                        <option value="doughnut">Doughnut Chart</option>
+                        <option value="radar">Radar Chart</option>
+                    </select>
+                    <span class="control-hint">Choose the best visualization for your data</span>
+                </div>
+            </div>
+
+            <div class="control-row">
+                <div class="control-group">
+                    <label class="control-label" for="filterUniversity">Filter by University</label>
+                    <select id="filterUniversity" class="control-select">
+                        <option value="">All Universities</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="filterProject">Filter by Project</label>
+                    <select id="filterProject" class="control-select">
+                        <option value="">All Projects</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="filterTeam">Filter by Team</label>
+                    <select id="filterTeam" class="control-select">
+                        <option value="">All Teams</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button id="updateChartBtn" class="btn-update">
+                    <span class="lucide" data-lucide="bar-chart-2" style="display:inline-block; vertical-align: middle; margin-right: 0.5rem;"></span>
+                    Update Visualization
+                </button>
+            </div>
+        </section>
+
+        <!-- Chart Display -->
+        <section class="chart-container">
+            <h2 id="chartTitle" class="chart-title">Select a metric to begin</h2>
+            <p id="chartSubtitle" class="chart-subtitle"></p>
+
+            <div id="loadingSpinner" class="loading-spinner">
+                <p>Loading data...</p>
+            </div>
+
+            <canvas id="analyticsChart" class="chart-canvas"></canvas>
+        </section>
+
+        <!-- Future: Add explanation panel -->
+        <section class="card" style="margin-top: 2rem;">
+            <h2>💡 Understanding Your Data</h2>
+            <div id="insightsPanel">
+                <p class="hint">Select a metric and visualization to see insights and recommendations based on your data.</p>
+            </div>
+        </section>
+    </div>
+
+    <footer class="main-footer">
+        <p class="footer-title">FRAMES</p>
+        <p class="footer-desc">Framework for Resilience Assessment in Modular Engineering Systems</p>
+    </footer>
+
+    <script src="/static/api.js"></script>
+    <script src="/static/analytics.js"></script>
+    <script>
+        lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });
+    </script>
+</body>
+</html>

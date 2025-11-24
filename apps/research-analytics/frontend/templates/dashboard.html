@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAMES Dashboard - Relationships</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
+    <!-- Three.js from cdnjs (more reliable) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Define OrbitControls inline to avoid CDN issues
+        THREE.OrbitControls = function(camera, domElement) {
+            this.object = camera;
+            this.domElement = domElement;
+            this.enabled = true;
+            this.enableDamping = false;
+            this.dampingFactor = 0.05;
+            this.minDistance = 0;
+            this.maxDistance = Infinity;
+            this.autoRotate = false;
+            this.autoRotateSpeed = 2.0;
+            
+            var scope = this;
+            var rotateStart = new THREE.Vector2();
+            var rotateEnd = new THREE.Vector2();
+            var rotateDelta = new THREE.Vector2();
+            var spherical = new THREE.Spherical();
+            var sphericalDelta = new THREE.Spherical();
+            var scale = 1;
+            var panOffset = new THREE.Vector3();
+            var zoomChanged = false;
+            var state = -1;
+            var EPS = 0.000001;
+            
+            this.update = function() {
+                var offset = new THREE.Vector3();
+                var quat = new THREE.Quaternion().setFromUnitVectors(camera.up, new THREE.Vector3(0, 1, 0));
+                var quatInverse = quat.clone().invert();
+                var lastPosition = new THREE.Vector3();
+                var lastQuaternion = new THREE.Quaternion();
+                
+                return function update() {
+                    var position = scope.object.position;
+                    offset.copy(position).sub(new THREE.Vector3(0, 0, 0));
+                    offset.applyQuaternion(quat);
+                    
+                    spherical.setFromVector3(offset);
+                    
+                    if (scope.autoRotate) {
+                        spherical.theta -= scope.autoRotateSpeed * 2 * Math.PI / 60 / 60;
+                    }
+                    
+                    spherical.theta += sphericalDelta.theta;
+                    spherical.phi += sphericalDelta.phi;
+                    spherical.theta = Math.max(0, Math.min(Math.PI, spherical.theta));
+                    spherical.makeSafe();
+                    spherical.radius *= scale;
+                    spherical.radius = Math.max(scope.minDistance, Math.min(scope.maxDistance, spherical.radius));
+                    
+                    offset.setFromSpherical(spherical);
+                    offset.applyQuaternion(quatInverse);
+                    position.copy(new THREE.Vector3(0, 0, 0)).add(offset);
+                    scope.object.lookAt(new THREE.Vector3(0, 0, 0));
+                    
+                    if (scope.enableDamping === true) {
+                        sphericalDelta.theta *= (1 - scope.dampingFactor);
+                        sphericalDelta.phi *= (1 - scope.dampingFactor);
+                    } else {
+                        sphericalDelta.set(0, 0, 0);
+                    }
+                    
+                    scale = 1;
+                    panOffset.set(0, 0, 0);
+                    
+                    if (zoomChanged || lastPosition.distanceToSquared(scope.object.position) > EPS || 
+                        8 * (1 - lastQuaternion.dot(scope.object.quaternion)) > EPS) {
+                        lastPosition.copy(scope.object.position);
+                        lastQuaternion.copy(scope.object.quaternion);
+                        zoomChanged = false;
+                        return true;
+                    }
+                    return false;
+                };
+            }();
+        };
+        
+        window.OrbitControls = THREE.OrbitControls;
+    </script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="javascript:history.back()" class="back-link"><span class="lucide" data-lucide="arrow-left"></span> Back</a>
+        <h2 id="universityName">Program Health Dashboard</h2>
+    </nav>
+
+    <div class="container" style="max-width: 100%; padding: 0;">
+        <div class="page-header">
+            <h1>🌌 Knowledge Transfer Network</h1>
+            <p class="subtitle">Visualize project, team, and student relationships</p>
+        </div>
+
+        <div class="dashboard-flex" style="margin-top: 1rem;">
+            <div id="network" class="dashboard-network"></div>
+            <aside id="infoPanel" class="dashboard-info-panel">
+                <h2 class="dashboard-info-title">Node Details</h2>
+                <div style="margin-bottom: 15px;">
+                    <button onclick="loadComprehensiveSampleData()" style="
+                        background: linear-gradient(135deg, #00f0ff 0%, #8b5cf6 100%);
+                        border: none;
+                        color: #0a0a0f;
+                        padding: 10px 20px;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        width: 100%;
+                        font-size: 14px;
+                    ">Load Sample Data (with Students)</button>
+                </div>
+                <div id="nodeDetails" class="dashboard-node-details">
+                    <p>Loading 3D visualization...</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <script src="/static/dashboard-standalone.js?v=3"></script>
+    <script>lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });</script>
+</body>
+</html>

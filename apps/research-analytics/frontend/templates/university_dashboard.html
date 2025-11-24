@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Dashboard - FRAMES</title>
+    <!-- Google Fonts: Space Grotesk, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Space Tech CSS -->
+    <link rel="stylesheet" href="/static/space-tech.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="back-link"><span class="lucide" data-lucide="arrow-left"></span> Back to Portal Selection</a>
+        <h2 id="universityName">University Dashboard</h2>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 id="universityTitle">University Program Management</h1>
+            <p class="subtitle">Manage your program's teams, faculty, projects, and connections</p>
+        </div>
+
+        <div class="card">
+            <div class="options-grid" id="toolsGrid">
+                <!-- Will be populated by JavaScript based on role -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <p class="footer-title">FRAMES</p>
+        <p class="footer-desc">Framework for Resilience Assessment in Modular Engineering Systems</p>
+    </footer>
+
+    <script src="/static/university_dashboard.js"></script>
+    <script>
+        lucide.createIcons({ color: '#00f0ff', class: 'lucide-glow' });
+    </script>
+</body>
+</html>

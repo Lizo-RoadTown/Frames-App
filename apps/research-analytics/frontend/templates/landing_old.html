@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAMES - Space Program Knowledge Network</title>
+    <link rel="stylesheet" href="/static/landing.css">
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Welcome to FRAMES</h1>
+            <p class="tagline">Map your space program's knowledge network</p>
+            <p class="subtitle">Track your teams, mentors, and projects to strengthen continuity across student cohorts</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Step 1: Select University -->
+        <section id="universitySelection" class="card active">
+            <h2>Which university are you from?</h2>
+            <p class="hint">Select your institution to view and manage your program data</p>
+
+            <div class="university-grid">
+                <button class="university-btn" data-id="CalPolyPomona">
+                    <span class="uni-icon">🚀</span>
+                    <span class="uni-name">Cal Poly Pomona</span>
+                    <span class="uni-badge">Lead Institution</span>
+                </button>
+                <button class="university-btn" data-id="TexasState">
+                    <span class="uni-icon">🛰️</span>
+                    <span class="uni-name">Texas State University</span>
+                </button>
+                <button class="university-btn" data-id="Columbia">
+                    <span class="uni-icon">🌌</span>
+                    <span class="uni-name">Columbia University</span>
+                </button>
+                <button class="university-btn" data-id="Uni_D">
+                    <span class="uni-icon">⭐</span>
+                    <span class="uni-name">University D</span>
+                </button>
+                <button class="university-btn" data-id="Uni_E">
+                    <span class="uni-icon">🌠</span>
+                    <span class="uni-name">University E</span>
+                </button>
+                <button class="university-btn" data-id="Uni_F">
+                    <span class="uni-icon">🪐</span>
+                    <span class="uni-name">University F</span>
+                </button>
+                <button class="university-btn" data-id="Uni_G">
+                    <span class="uni-icon">☄️</span>
+                    <span class="uni-name">University G</span>
+                </button>
+                <button class="university-btn" data-id="Uni_H">
+                    <span class="uni-icon">🌙</span>
+                    <span class="uni-name">University H</span>
+                </button>
+            </div>
+
+            <div class="or-divider">
+                <span>or</span>
+            </div>
+
+            <button class="secondary-btn" onclick="viewAllUniversities()">
+                View All Programs (Comparison Dashboard)
+            </button>
+        </section>
+
+        <!-- Step 2: Dashboard Options (shown after university selection) -->
+        <section id="dashboardOptions" class="card hidden">
+            <div class="selected-uni-header">
+                <h2 id="selectedUniName">Cal Poly Pomona</h2>
+                <button class="change-btn" onclick="changeUniversity()">Change University</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-option" onclick="manageTeams()">
+                    <div class="option-icon">👥</div>
+                    <h3>Student Teams</h3>
+                    <p>Add or update your student team structure and expertise areas</p>
+                    <span class="arrow">→</span>
+                </div>
+
+                <div class="dashboard-option" onclick="manageFaculty()">
+                    <div class="option-icon">👨‍🏫</div>
+                    <h3>Faculty & Mentors</h3>
+                    <p>Add or update faculty advisors, staff, and expert involvement</p>
+                    <span class="arrow">→</span>
+                </div>
+
+                <div class="dashboard-option" onclick="manageProjects()">
+                    <div class="option-icon">🛸</div>
+                    <h3>Missions & Projects</h3>
+                    <p>Add your active missions, including PROVES and local projects</p>
+                    <span class="arrow">→</span>
+                </div>
+
+                <div class="dashboard-option" onclick="viewConnections()">
+                    <div class="option-icon">🔗</div>
+                    <h3>Connections</h3>
+                    <p>Track your program's connections between teams, mentors, and other universities</p>
+                    <span class="arrow">→</span>
+                </div>
+
+                <div class="dashboard-option" onclick="viewAnalytics()">
+                    <div class="option-icon">📊</div>
+                    <h3>Program Health</h3>
+                    <p>View your program's overall health and data analytics</p>
+                    <span class="arrow">→</span>
+                </div>
+
+                <div class="dashboard-option" onclick="comparePrograms()">
+                    <div class="option-icon">🌐</div>
+                    <h3>Compare with Others</h3>
+                    <p>See how other universities structure their programs</p>
+                    <span class="arrow">→</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>FRAMES - Framework for Resilience Assessment in Modular Engineering Systems</p>
+        <p class="small">A collaborative tool for multi-university space mission knowledge transfer research</p>
+    </footer>
+
+    <script src="/static/api.js"></script>
+    <script src="/static/landing.js"></script>
+</body>
+</html>

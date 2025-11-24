@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAMES: A Structural Diagnostic for Resilience in Modular University Space Programs</title>
+    <style>
+        /* Minimal styling for quick test - copy full styles from index_original.html later */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: radial-gradient(circle at 50% 50%, #0f1419, #1a1f2e);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0,0,0,0.3);
+            padding: 30px;
+            border-radius: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #64ffda;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: 2px solid #64ffda;
+            border-radius: 25px;
+            background: #64ffda;
+            color: #0f1419;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #4ecdc4;
+        }
+        .status {
+            background: rgba(100, 255, 218, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        #output {
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FRAMES - Flask + Python Backend Test</h1>
+
+        <div class="status">
+            <h3 style="color: #64ffda;">Quick Start Guide:</h3>
+            <p>1. Make sure Flask backend is running (cd backend && python app.py)</p>
+            <p>2. Click "Load Sample Data" to populate the system</p>
+            <p>3. Try the API test buttons below</p>
+            <p>4. Check browser console (F12) for detailed logs</p>
+            <p>5. Once working, migrate your full HTML from <code>index_original.html</code></p>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="testConnection()">Test Backend Connection</button>
+            <button class="btn" onclick="loadSampleData()">Load Sample Data</button>
+            <button class="btn" onclick="getTeams()">Get Teams</button>
+            <button class="btn" onclick="getFaculty()">Get Faculty</button>
+            <button class="btn" onclick="getProjects()">Get Projects</button>
+            <button class="btn" onclick="getInterfaces()">Get Interfaces</button>
+            <button class="btn" onclick="getStatistics()">Get Statistics</button>
+            <button class="btn" onclick="getNDADiagnostic()">Get NDA Diagnostic</button>
+            <button class="btn" onclick="clearOutput()">Clear Output</button>
+            <button class="btn" onclick="addDemoTeam()">Add Demo Team</button>
+            <button class="btn" onclick="deleteLastTeam()">Delete Last Team</button>
+        </div>
+
+        <div id="output">Waiting for commands...</div>
+
+        <div class="status" style="margin-top: 30px;">
+            <h3 style="color: #64ffda;">Next Steps:</h3>
+            <ol>
+                <li>Once API tests work, copy styles from <code>index_original.html</code> to replace minimal styles above</li>
+                <li>Copy the HTML structure (forms, panels, etc.) from <code>index_original.html</code></li>
+                <li>Copy the JavaScript functions and modify them to use <code>FramesAPI</code> (see MIGRATION_GUIDE.md)</li>
+                <li>Test each function as you migrate it</li>
+                <li>Add drag-and-drop library for inverse mapping</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- API Client -->
+    <script src="/static/api.js"></script>
+
+    <!-- Test Functions -->
+    <script>
+        const output = document.getElementById('output');
+
+        function log(message, data = null) {
+            console.log(message, data);
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            if (data) {
+                output.textContent += JSON.stringify(data, null, 2) + '\n';
+            }
+            output.textContent += '\n';
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            output.textContent = 'Output cleared.\n\n';
+        }
+
+        async function testConnection() {
+            try {
+                log('Testing backend connection...');
+                const response = await fetch('/api/state');
+                if (response.ok) {
+                    log('✅ Backend connection successful!');
+                    const data = await response.json();
+                    log('Current state:', data);
+                } else {
+                    log('❌ Backend returned error:', await response.text());
+                }
+            } catch (error) {
+                log('❌ Failed to connect to backend. Make sure Flask is running on port 5000.', error.message);
+            }
+        }
+
+        async function loadSampleData() {
+            try {
+                log('Loading sample data...');
+                const result = await FramesAPI.loadSampleData();
+                log('✅ Sample data loaded!', result);
+            } catch (error) {
+                log('❌ Error loading sample data:', error.message);
+            }
+        }
+
+        async function getTeams() {
+            try {
+                log('Fetching teams...');
+                const teams = await FramesAPI.getTeams();
+                log(`✅ Found ${teams.length} teams:`, teams);
+            } catch (error) {
+                log('❌ Error fetching teams:', error.message);
+            }
+        }
+
+        async function getFaculty() {
+            try {
+                log('Fetching faculty...');
+                const faculty = await FramesAPI.getFaculty();
+                log(`✅ Found ${faculty.length} faculty members:`, faculty);
+            } catch (error) {
+                log('❌ Error fetching faculty:', error.message);
+            }
+        }
+
+        async function getProjects() {
+            try {
+                log('Fetching projects...');
+                const projects = await FramesAPI.getProjects();
+                log(`✅ Found ${projects.length} projects:`, projects);
+            } catch (error) {
+                log('❌ Error fetching projects:', error.message);
+            }
+        }
+
+        async function getInterfaces() {
+            try {
+                log('Fetching interfaces...');
+                const interfaces = await FramesAPI.getInterfaces();
+                log(`✅ Found ${interfaces.length} interfaces:`, interfaces);
+            } catch (error) {
+                log('❌ Error fetching interfaces:', error.message);
+            }
+        }
+
+        async function getStatistics() {
+            try {
+                log('Fetching statistics...');
+                const stats = await FramesAPI.getStatistics();
+                log('✅ System statistics:', stats);
+            } catch (error) {
+                log('❌ Error fetching statistics:', error.message);
+            }
+        }
+
+        async function getNDADiagnostic() {
+            try {
+                log('Fetching NDA diagnostic...');
+                const diagnostic = await FramesAPI.getNDADiagnostic();
+                log('✅ NDA Diagnostic Analysis:', diagnostic);
+            } catch (error) {
+                log('❌ Error fetching NDA diagnostic:', error.message);
+            }
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', async () => {
+            log('🚀 FRAMES Test Page Loaded');
+            log('Attempting automatic backend connection test...');
+            await testConnection();
+        });
+    </script>
+
+        <!-- Shim + Demo migrated functions -->
+        <script>
+        (async function () {
+            // Debounce helper
+            function debounce(fn, wait = 1500) {
+                let t;
+                return function (...args) {
+                    clearTimeout(t);
+                    t = setTimeout(() => fn.apply(this, args), wait);
+                };
+            }
+
+            // Debounced save to server using FramesAPI.setState
+            const saveStateToServer = debounce(async () => {
+                try {
+                    await FramesAPI.setState({
+                        teams: window.teams || [],
+                        faculty: window.faculty || [],
+                        projects: window.projects || [],
+                        interfaces: window.interfaces || []
+                    });
+                    console.log('Auto-saved FRAMES state to server.');
+                    log('Auto-saved FRAMES state to server.');
+                } catch (err) {
+                    console.warn('Auto-save failed:', err);
+                    log('Auto-save failed:', err.message || err);
+                }
+            }, 1500);
+
+            // Periodic autosave as safety net
+            const periodicSave = () => setInterval(saveStateToServer, 10000);
+
+            // Load state from server and update UI
+            async function loadStateFromServer() {
+                try {
+                    const state = await FramesAPI.getState();
+                    window.teams = state.teams || [];
+                    window.faculty = state.faculty || [];
+                    window.projects = state.projects || [];
+                    window.interfaces = state.interfaces || [];
+                    if (typeof updateAllDisplays === 'function') updateAllDisplays();
+                    console.log('Loaded FRAMES state from server.');
+                    log('Loaded FRAMES state from server.');
+                } catch (err) {
+                    console.error('Failed to load state:', err);
+                    log('Failed to load state:', err.message || err);
+                }
+            }
+
+            // Expose helper for legacy functions to call after mutating local arrays
+            window.FRAMES_notifyStateChanged = function notify() {
+                window.dispatchEvent(new Event('frames:stateChanged'));
+            };
+
+            // Listen for state-changed events
+            window.addEventListener('frames:stateChanged', saveStateToServer);
+
+            // Start periodic save
+            const periodicId = periodicSave();
+
+            // beforeunload fallback using sendBeacon when possible
+            window.addEventListener('beforeunload', (ev) => {
+                try {
+                    const payload = JSON.stringify({
+                        teams: window.teams || [],
+                        faculty: window.faculty || [],
+                        projects: window.projects || [],
+                        interfaces: window.interfaces || []
+                    });
+                    if (navigator.sendBeacon) {
+                        const blob = new Blob([payload], { type: 'application/json' });
+                        navigator.sendBeacon('/api/state', blob);
+                    } else {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', '/api/state', false);
+                        xhr.setRequestHeader('Content-Type', 'application/json');
+                        xhr.send(payload);
+                    }
+                } catch (e) {
+                    // best-effort
+                }
+            });
+
+            // Bootstrap load
+            await loadStateFromServer();
+
+            // Demo migrated function: addDemoTeam -> creates a team via API then reloads state
+            window.addDemoTeam = async function addDemoTeam() {
+                try {
+                    log('Creating demo team...');
+                    const demo = {
+                        discipline: 'demo-discipline',
+                        lifecycle: 'incoming',
+                        name: `Demo Team ${Date.now() % 10000}`,
+                        size: 3,
+                        experience: 6,
+                        description: 'Automatically created demo team'
+                    };
+                    const created = await FramesAPI.createTeam(demo);
+                    log('Created team:', created);
+
+                    // Option A: reload entire state from server for simplicity
+                    await loadStateFromServer();
+                } catch (err) {
+                    console.error('addDemoTeam failed', err);
+                    log('addDemoTeam failed:', err.message || err);
+                }
+            };
+
+            // Demo migrated function: deleteLastTeam -> deletes last team via API then reloads state
+            window.deleteLastTeam = async function deleteLastTeam() {
+                try {
+                    if (!window.teams || window.teams.length === 0) {
+                        log('No teams to delete.');
+                        return;
+                    }
+                    const last = window.teams[window.teams.length - 1];
+                    log(`Deleting team ${last.id}...`);
+                    const res = await FramesAPI.deleteTeam(last.id);
+                    log('Delete response:', res);
+                    await loadStateFromServer();
+                } catch (err) {
+                    console.error('deleteLastTeam failed', err);
+                    log('deleteLastTeam failed:', err.message || err);
+                }
+            };
+
+            // Optional: helper to wrap legacy functions automatically (non-destructive)
+            window.wrapWithStateNotify = function wrapWithStateNotify(fnName) {
+                const orig = window[fnName];
+                if (typeof orig !== 'function') return false;
+                window[fnName] = function (...args) {
+                    const res = orig.apply(this, args);
+                    try { window.FRAMES_notifyStateChanged(); } catch (e) {}
+                    return res;
+                };
+                return true;
+            };
+
+            // Example: if the original page has functions named addTeam/removeTeam, we can wrap them
+            // wrapWithStateNotify('addTeam');
+            // wrapWithStateNotify('removeTeam');
+
+        })();
+        </script>
+</body>
+</html>
