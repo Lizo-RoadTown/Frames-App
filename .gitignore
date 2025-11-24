@@ -37,3 +37,7 @@ Thumbs.db
 # PostgreSQL
 *.sql.backup
 *.dump
+
+# External repos/folders
+vision-ui-dashboard-react/
+get-pip.py
