@@ -293,13 +293,13 @@ If you use FRAMES in your research, please cite:
 - Columbia University
 - [5 additional universities]
 
-**Principal Investigator:** [Your Name]
+**Principal Investigator:** Liz Osborn
 
 ---
 
 ## 📞 Contact
 
-- **Project Lead:** [Your Email]
+- **Project Lead:** eosborn@cpp.edu
 - **Issues:** [GitHub Issues](https://github.com/yourusername/frames-python/issues)
 - **Discussions:** [GitHub Discussions](https://github.com/yourusername/frames-python/discussions)
 - **Discord:** [Join our Discord server](#)
