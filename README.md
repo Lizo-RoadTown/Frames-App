@@ -241,22 +241,11 @@ We welcome contributions! See our [Contributing Guide](docs/shared/CONTRIBUTING.
 
 ---
 
-## 💰 Cost
+## 📞 Contact
 
-**Total:** ~$0-20/year for complete platform!
-
-- **Database:** $0/month (Azure for Students free tier - 750 hours)
-- **Hosting:** $0/month (Azure App Service & Static Web Apps free tiers)
-- **AI API:** ~$5-10 one-time (initial module generation)
-- **Domain:** $12/year (optional)
-
----
-
-## 📞 Contact & Support
-
+- **Project Lead:** eosborn@cpp.edu
 - **GitHub Issues:** [Report bugs or request features](https://github.com/Lizo-RoadTown/Frames-App/issues)
 - **Documentation:** [docs/](docs/)
-- **Project Lead:** _(Your contact info)_
 
 ---
 
