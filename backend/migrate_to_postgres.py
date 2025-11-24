@@ -21,6 +21,7 @@ import json
 # Load environment variables from parent directory
 env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path=env_path)
+from backend.db_connection import get_engine
 
 # Import models
 from db_models import (
@@ -70,7 +71,7 @@ class PostgreSQLMigration:
 
         # Create engines
         self.sqlite_engine = create_engine(self.sqlite_url)
-        self.postgres_engine = create_engine(self.postgres_url)
+        self.postgres_engine = get_engine()
 
         # Create sessions
         SqliteSession = sessionmaker(bind=self.sqlite_engine)

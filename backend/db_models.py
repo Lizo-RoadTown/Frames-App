@@ -5,7 +5,7 @@ These models mirror the lightweight dataclasses in `models.py` and are
 intended for use by the migration CLI and future DB-backed endpoints.
 """
 from datetime import datetime
-from database import db
+from backend.database import db
 
 
 class TeamModel(db.Model):
