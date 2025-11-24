@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-316192.svg)](https://www.postgresql.org/)
-[![Azure](https://img.shields.io/badge/Azure-Free_Tier-0078D4.svg)](https://azure.microsoft.com/free/students/)
+[![Neon](https://img.shields.io/badge/Neon-PostgreSQL-00E599.svg)](https://neon.tech/)
 
 > **A comprehensive platform combining AI-powered student onboarding, research analytics, and predictive modeling for multi-university space mission programs.**
 
@@ -56,11 +56,11 @@ Machine learning engine for mission success prediction
 
 ## 🏗️ Shared Infrastructure
 
-All three applications connect to a **single PostgreSQL database** hosted on Azure (free tier):
+All three applications connect to a **single PostgreSQL database** hosted on Neon (free tier):
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│              Azure PostgreSQL Database (FREE)                 │
+│              Neon PostgreSQL Database (FREE)                  │
 │  Universities │ Teams │ Students │ Modules │ Interfaces      │
 └─────┬────────────────────┬───────────────────┬───────────────┘
       │                    │                   │
@@ -81,13 +81,13 @@ All three applications connect to a **single PostgreSQL database** hosted on Azu
 
 - Python 3.11+
 - Node.js 18+ (for React frontends)
-- Azure for Students account (free tier)
+- Neon account (free tier)
 
 ### Get Started in 3 Steps
 
-1. **[Get Started Guide](GETTING_STARTED.md)** - Complete setup instructions
-2. **[Azure Database Setup](docs/shared/AZURE_SETUP.md)** - Set up free PostgreSQL database
-3. **[Project Roadmap](docs/shared/PROJECT_ROADMAP.md)** - Understand the development plan
+1. **[Monorepo Structure](MONOREPO_STRUCTURE.md)** - Understand the repository organization
+2. **[Setup Complete](SETUP_COMPLETE.md)** - Quick start commands
+3. **[Project Roadmap](docs/shared/PROJECT_ROADMAP.md)** - Development plan
 
 ### For Developers
 
@@ -103,7 +103,7 @@ pip install -r requirements.txt
 
 # Configure database connection
 cp .env.example .env
-# Edit .env with your Azure PostgreSQL connection string
+# Edit .env with your Neon PostgreSQL connection string
 
 # Run Flask backend
 python backend/app.py
@@ -122,8 +122,8 @@ python backend/app.py
 
 ### Shared Resources
 - **[Project Roadmap](docs/shared/PROJECT_ROADMAP.md)** - Development timeline
-- **[Azure Setup Guide](docs/shared/AZURE_SETUP.md)** - Database configuration
-- **[Contributing Guide](docs/shared/CONTRIBUTING.md)** - How to contribute
+- **[Monorepo Structure](MONOREPO_STRUCTURE.md)** - Repository organization
+- **[Setup Guide](SETUP_COMPLETE.md)** - Quick start
 
 ### Full Documentation Index
 See **[docs/README.md](docs/README.md)** for complete documentation overview.
@@ -156,7 +156,7 @@ See **[docs/README.md](docs/README.md)** for complete documentation overview.
 
 ### Backend
 - **Python 3.11+** with Flask
-- **PostgreSQL 15+** (Azure hosted)
+- **PostgreSQL 15+** (Neon hosted)
 - **SQLAlchemy** ORM
 - **Anthropic Claude API** (AI assistant)
 
@@ -166,9 +166,8 @@ See **[docs/README.md](docs/README.md)** for complete documentation overview.
 - **Chart.js** (Data visualization)
 
 ### Infrastructure
-- **Azure PostgreSQL** (Database - FREE tier)
-- **Azure App Service** (Backend hosting - FREE tier)
-- **Azure Static Web Apps** (Frontend hosting - FREE tier)
+
+- **Neon PostgreSQL** (Database - FREE tier)
 - **GitHub** (Version control & CI/CD)
 
 ### Machine Learning (Planned)
@@ -303,7 +302,7 @@ If you use FRAMES in your research, please cite:
 
 <div align="center">
 
-**[Documentation](docs/)** • **[Getting Started](GETTING_STARTED.md)** • **[Project Roadmap](docs/shared/PROJECT_ROADMAP.md)** • **[Contributing](docs/shared/CONTRIBUTING.md)**
+**[Documentation](docs/)** • **[Monorepo Structure](MONOREPO_STRUCTURE.md)** • **[Setup Guide](SETUP_COMPLETE.md)** • **[Project Roadmap](docs/shared/PROJECT_ROADMAP.md)**
 
 Built for space mission research and student success 🚀
 
