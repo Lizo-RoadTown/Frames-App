@@ -266,6 +266,43 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+## 🎓 Academic Citation
+
+If you use FRAMES in your research, please cite:
+
+```bibtex
+@software{frames2025,
+  title={FRAMES: Framework for Resilience Assessment in Modular Engineering Systems},
+  author={Elizabeth Osborn, California State Polytechnic University, Pomona},
+  year={2025},
+  url={https://github.com/Lizo-RoadTown/Frames-App}
+}
+```
+
+---
+
+## 👥 Team
+
+**Lead Institution:** California State Polytechnic University, Pomona
+
+**Participating Universities:**
+- Cal Poly Pomona (Lead)
+- Texas State University
+- Columbia University
+- _(5 additional universities)_
+
+**Principal Investigator:** Liz Osborn
+
+---
+
+## 📞 Contact
+
+- **Project Lead:** eosborn@cpp.edu
+- **GitHub Issues:** [Report bugs or request features](https://github.com/Lizo-RoadTown/Frames-App/issues)
+- **Documentation:** [docs/](docs/)
+
+---
+
 ## 🙏 Acknowledgments
 
 - **NASA** - Research funding
