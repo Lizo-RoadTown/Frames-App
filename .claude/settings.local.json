@@ -19,7 +19,9 @@
       "Bash(gh auth refresh:*)",
       "Bash(rsync:*)",
       "Bash(tree:*)",
-      "Bash(python backend/test_endpoints.py:*)"
+      "Bash(python backend/test_endpoints.py:*)",
+      "Bash(python shared/database/bootstrap_db.py:*)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []

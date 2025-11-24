@@ -3,13 +3,14 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-# Add backend to path
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+# Add project root to path
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from backend import db_models  # Ensure models are registered with metadata
-from backend.db_connection import get_engine
+# Import from shared database (models are defined here)
+import shared.database.db_models as db_models  # Ensure models are registered with metadata
+from shared.database.db_connection import get_engine
 from backend.database import db
 
 Base = db.Model

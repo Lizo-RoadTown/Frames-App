@@ -443,3 +443,222 @@ class ModelValidation(db.Model):
         }
 
 
+# ============================================================================
+# LMS Module Models (Student Onboarding System)
+# ============================================================================
+
+class Module(db.Model):
+    """Training modules for student onboarding"""
+    __tablename__ = 'modules'
+
+    id = db.Column(db.Integer, primary_key=True)
+    module_id = db.Column(db.String(100), unique=True, nullable=False, index=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
+    category = db.Column(db.String(100), index=True)
+    estimated_minutes = db.Column(db.Integer, default=10)
+
+    # Ownership
+    created_by_id = db.Column(db.String, db.ForeignKey('faculty.id'))
+    university_id = db.Column(db.String, db.ForeignKey('universities.id'))
+
+    # Status
+    status = db.Column(db.String(50), default='draft', index=True)
+
+    # Organization (JSON fields)
+    prerequisites = db.Column(db.JSON, default=list)
+    related_modules = db.Column(db.JSON, default=list)
+    tags = db.Column(db.JSON, default=list)
+
+    # Metadata
+    target_audience = db.Column(db.String(100), default='incoming_students')
+    revision = db.Column(db.Integer, default=1)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    published_at = db.Column(db.DateTime)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'module_id': self.module_id,
+            'title': self.title,
+            'description': self.description,
+            'category': self.category,
+            'estimated_minutes': self.estimated_minutes,
+            'created_by_id': self.created_by_id,
+            'university_id': self.university_id,
+            'status': self.status,
+            'prerequisites': self.prerequisites or [],
+            'related_modules': self.related_modules or [],
+            'tags': self.tags or [],
+            'target_audience': self.target_audience,
+            'revision': self.revision,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'published_at': self.published_at.isoformat() if self.published_at else None,
+        }
+
+
+class ModuleSection(db.Model):
+    """Content sections within a module"""
+    __tablename__ = 'module_sections'
+
+    id = db.Column(db.Integer, primary_key=True)
+    module_id = db.Column(db.Integer, db.ForeignKey('modules.id', ondelete='CASCADE'), nullable=False, index=True)
+    section_number = db.Column(db.Integer, nullable=False)
+    section_type = db.Column(db.String(50), nullable=False)  # text, video, image, checklist, etc.
+    title = db.Column(db.String(255))
+    content = db.Column(db.Text, nullable=False)
+    media_url = db.Column(db.String(500))
+    duration_seconds = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'module_id': self.module_id,
+            'section_number': self.section_number,
+            'section_type': self.section_type,
+            'title': self.title,
+            'content': self.content,
+            'media_url': self.media_url,
+            'duration_seconds': self.duration_seconds,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class ModuleAssignment(db.Model):
+    """Assignment of modules to students"""
+    __tablename__ = 'module_assignments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    module_id = db.Column(db.Integer, db.ForeignKey('modules.id', ondelete='CASCADE'), nullable=False, index=True)
+    student_id = db.Column(db.String, db.ForeignKey('students.id', ondelete='CASCADE'), nullable=False, index=True)
+    assigned_at = db.Column(db.DateTime, default=datetime.utcnow)
+    due_date = db.Column(db.DateTime)
+    required = db.Column(db.Boolean, default=True)
+    assigned_by_id = db.Column(db.String, db.ForeignKey('faculty.id'))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'module_id': self.module_id,
+            'student_id': self.student_id,
+            'assigned_at': self.assigned_at.isoformat() if self.assigned_at else None,
+            'due_date': self.due_date.isoformat() if self.due_date else None,
+            'required': self.required,
+            'assigned_by_id': self.assigned_by_id,
+        }
+
+
+class ModuleProgress(db.Model):
+    """Student progress through modules"""
+    __tablename__ = 'module_progress'
+
+    id = db.Column(db.Integer, primary_key=True)
+    module_id = db.Column(db.Integer, db.ForeignKey('modules.id', ondelete='CASCADE'), nullable=False, index=True)
+    student_id = db.Column(db.String, db.ForeignKey('students.id', ondelete='CASCADE'), nullable=False, index=True)
+
+    # Progress tracking
+    status = db.Column(db.String(50), default='not_started')  # not_started, in_progress, completed
+    progress_percent = db.Column(db.Integer, default=0)
+    current_section = db.Column(db.Integer, default=1)
+
+    # Time tracking
+    started_at = db.Column(db.DateTime)
+    completed_at = db.Column(db.DateTime)
+    total_time_seconds = db.Column(db.Integer, default=0)
+    last_accessed_at = db.Column(db.DateTime)
+
+    # Analytics
+    pause_count = db.Column(db.Integer, default=0)
+    resume_count = db.Column(db.Integer, default=0)
+    completed_sections = db.Column(db.JSON, default=list)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'module_id': self.module_id,
+            'student_id': self.student_id,
+            'status': self.status,
+            'progress_percent': self.progress_percent,
+            'current_section': self.current_section,
+            'started_at': self.started_at.isoformat() if self.started_at else None,
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None,
+            'total_time_seconds': self.total_time_seconds,
+            'last_accessed_at': self.last_accessed_at.isoformat() if self.last_accessed_at else None,
+            'pause_count': self.pause_count,
+            'resume_count': self.resume_count,
+            'completed_sections': self.completed_sections or [],
+        }
+
+
+class ModuleAnalyticsEvent(db.Model):
+    """Detailed analytics events for module usage"""
+    __tablename__ = 'module_analytics_events'
+
+    id = db.Column(db.Integer, primary_key=True)
+    module_id = db.Column(db.Integer, db.ForeignKey('modules.id', ondelete='CASCADE'), nullable=False, index=True)
+    student_id = db.Column(db.String, db.ForeignKey('students.id', ondelete='CASCADE'), nullable=False, index=True)
+
+    event_type = db.Column(db.String(50), nullable=False, index=True)  # start, pause, resume, section_complete, complete
+    section_number = db.Column(db.Integer)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+    # Additional context
+    scroll_depth_percent = db.Column(db.Integer)
+    time_on_section_seconds = db.Column(db.Integer)
+    device_type = db.Column(db.String(50))
+    meta = db.Column(db.JSON)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'module_id': self.module_id,
+            'student_id': self.student_id,
+            'event_type': self.event_type,
+            'section_number': self.section_number,
+            'timestamp': self.timestamp.isoformat() if self.timestamp else None,
+            'scroll_depth_percent': self.scroll_depth_percent,
+            'time_on_section_seconds': self.time_on_section_seconds,
+            'device_type': self.device_type,
+            'meta': self.meta,
+        }
+
+
+class ModuleFeedback(db.Model):
+    """Student feedback on modules"""
+    __tablename__ = 'module_feedback'
+
+    id = db.Column(db.Integer, primary_key=True)
+    module_id = db.Column(db.Integer, db.ForeignKey('modules.id', ondelete='CASCADE'), nullable=False, index=True)
+    student_id = db.Column(db.String, db.ForeignKey('students.id', ondelete='CASCADE'), nullable=False)
+
+    # Ratings
+    rating = db.Column(db.Integer)  # 1-5 stars
+    difficulty = db.Column(db.String(50))  # too_easy, just_right, too_hard
+    clarity = db.Column(db.Integer)  # 1-5
+    usefulness = db.Column(db.Integer)  # 1-5
+
+    # Comments
+    feedback_text = db.Column(db.Text)
+    suggestions = db.Column(db.Text)
+
+    # Metadata
+    submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'module_id': self.module_id,
+            'student_id': self.student_id,
+            'rating': self.rating,
+            'difficulty': self.difficulty,
+            'clarity': self.clarity,
+            'usefulness': self.usefulness,
+            'feedback_text': self.feedback_text,
+            'suggestions': self.suggestions,
+            'submitted_at': self.submitted_at.isoformat() if self.submitted_at else None,
+        }
+
+
