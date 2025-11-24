@@ -275,7 +275,7 @@ If you use FRAMES in your research, please cite:
 ```bibtex
 @software{frames2025,
   title={FRAMES: Framework for Resilience Assessment in Modular Engineering Systems},
-  author={[Your Name/Institution]},
+  author={Elizabeth Osborn, California Statue Polytechnic University, Pomona},
   year={2025},
   url={https://github.com/yourusername/frames-python}
 }
