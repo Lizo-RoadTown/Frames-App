@@ -111,6 +111,22 @@ python backend/app.py
 # Open browser: http://localhost:5000
 ```
 
+### GitHub MCP Server Integration (for VS Code)
+
+This repository includes configuration for the GitHub MCP (Model Context Protocol) Server, enabling AI-assisted development with Claude and GitHub integration.
+
+**Setup:**
+1. Set your GitHub Personal Access Token:
+   ```bash
+   export GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_token_here
+   ```
+2. The MCP configuration is in `.vscode/mcp.json`
+3. VS Code will automatically connect to the GitHub MCP Server
+
+**Token Requirements:**
+- Generate at: https://github.com/settings/tokens
+- Required scopes: `repo`, `read:org` (minimum for repository access)
+
 ---
 
 ## 📚 Documentation

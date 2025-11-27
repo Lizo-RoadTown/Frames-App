@@ -19,7 +19,8 @@ frames_data.json
 frames_data.json.bak*
 
 # IDE
-.vscode/
+.vscode/*
+!.vscode/mcp.json
 .idea/
 
 # OS
