@@ -56,6 +56,29 @@ This LMS will provide:
 - **AI Integration:** Claude API for module generation and assistant
 - **Database:** Neon PostgreSQL (shared with other FRAMES apps)
 - **Mobile:** PWA with service workers
+- **Adaptive Tutoring:** [OATutor](./OATutor) - Open-source Adaptive Tutoring System
+
+## OATutor Integration
+
+This LMS integrates [OATutor](https://github.com/Lizo-RoadTown/OATutor) as a submodule for adaptive tutoring capabilities:
+
+- **Bayesian Knowledge Tracing (BKT)** for skill mastery estimation
+- **Adaptive problem selection** based on student performance
+- **Scaffolding/hint system** for step-by-step guidance
+- **Section 508 accessibility** compliant
+
+### Setting up OATutor
+
+After cloning this repository, initialize the OATutor submodule:
+
+```bash
+git submodule update --init --recursive
+cd apps/onboarding-lms/OATutor
+npm install
+npm run start
+```
+
+For more information, see the [OATutor README](./OATutor/README.md).
 
 ## Database Schema (Planned)
 

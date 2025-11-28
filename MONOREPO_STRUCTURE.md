@@ -9,6 +9,7 @@ FRAMES-App/
 ├── apps/
 │   ├── research-analytics/    # Faculty/researcher analytics (ACTIVE)
 │   ├── onboarding-lms/        # Student onboarding LMS (IN DEVELOPMENT)
+│   │   └── OATutor/           # Adaptive tutoring system (SUBMODULE)
 │   └── ai-core/               # AI prediction engine (PLANNED)
 │
 ├── shared/
@@ -16,7 +17,22 @@ FRAMES-App/
 │
 ├── docs/                      # Documentation by application
 ├── .env                       # Environment variables (not in git)
+├── .gitmodules                # Git submodule configuration
 └── README.md
+```
+
+## Git Submodules
+
+This repository includes the following submodules:
+
+### OATutor (Adaptive Tutoring System)
+- **Location:** `apps/onboarding-lms/OATutor`
+- **Repository:** [Lizo-RoadTown/OATutor](https://github.com/Lizo-RoadTown/OATutor)
+- **Purpose:** Provides adaptive tutoring capabilities with Bayesian Knowledge Tracing (BKT) for skill mastery estimation
+
+To initialize submodules after cloning:
+```bash
+git submodule update --init --recursive
 ```
 
 ## Quick Start

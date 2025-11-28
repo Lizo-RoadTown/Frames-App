@@ -22,6 +22,7 @@ AI-powered learning management system for training incoming students
 - AI assistant for team leads to manage content
 - Comprehensive usage analytics
 - Self-paced learning with progress tracking
+- **Adaptive tutoring via [OATutor](https://github.com/Lizo-RoadTown/OATutor)** - Bayesian Knowledge Tracing for skill mastery
 
 **Status:** 🚧 Active Development | **Launch:** Next cohort
 **Docs:** [Onboarding LMS Documentation](docs/onboarding-lms/)

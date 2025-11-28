@@ -1,0 +1,3 @@
+[submodule "apps/onboarding-lms/OATutor"]
+	path = apps/onboarding-lms/OATutor
+	url = https://github.com/Lizo-RoadTown/OATutor.git
