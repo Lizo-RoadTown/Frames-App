@@ -1,6 +1,68 @@
 # FRAMES Documentation
 
-Welcome to the FRAMES documentation! This guide will help you navigate the documentation for all three applications.
+Welcome to the FRAMES documentation! This guide will help you navigate the comprehensive documentation for the entire platform.
+
+---
+
+## 🚨 Start Here
+
+### For New Developers
+
+1. **[DEVELOPER_ONBOARDING.md](DEVELOPER_ONBOARDING.md)** - Complete setup guide (2-3 hours)
+2. **[COMPLETE_SYSTEM_ARCHITECTURE.md](COMPLETE_SYSTEM_ARCHITECTURE.md)** - Understand how FRAMES works
+3. **[API_REFERENCE.md](API_REFERENCE.md)** - Backend API endpoints
+
+### For AI Agents
+
+1. **[COMPLETE_SYSTEM_ARCHITECTURE.md](COMPLETE_SYSTEM_ARCHITECTURE.md)** - Canonical system reference
+2. **[CADENCE_SPEC_COMPLIANCE.md](CADENCE_SPEC_COMPLIANCE.md)** - Agent behavior contracts
+3. **[DEVELOPER_ONBOARDING.md](DEVELOPER_ONBOARDING.md)** - Environment setup
+
+---
+
+## 📖 Core Documentation
+
+### System Architecture & Design
+
+- **[COMPLETE_SYSTEM_ARCHITECTURE.md](COMPLETE_SYSTEM_ARCHITECTURE.md)** - Complete system overview
+  - Three-layer architecture (Authoring → Transformation → Runtime)
+  - CADENCE integration (68 training modules)
+  - Educational framework (OAtutor patterns)
+  - Component architecture and data flow
+
+- **[CADENCE_SPEC_COMPLIANCE.md](CADENCE_SPEC_COMPLIANCE.md)** - Specification compliance
+  - Data intent compliance (5 canonical tables)
+  - Data mapping (Postgres ↔ Notion)
+  - Agent behavior contracts
+  - Workflow compliance (7-step sync)
+
+### Technical References
+
+- **[API_REFERENCE.md](API_REFERENCE.md)** - Flask REST API documentation
+  - All endpoints (teams, students, faculty, modules, analytics)
+  - Request/response formats
+  - Error handling
+  - Code examples (cURL, Python, JavaScript)
+
+- **[DATABASE_SCHEMA_REFERENCE.md](DATABASE_SCHEMA_REFERENCE.md)** - PostgreSQL schema
+  - Existing tables (teams, faculty, projects, etc.)
+  - CADENCE canonical tables (people, projects, tasks, meetings, documents)
+  - Module & progress tables
+  - Relationships and indexes
+
+- **[NOTION_API_INTEGRATION.md](NOTION_API_INTEGRATION.md)** - Notion integration guide
+  - Authentication and setup
+  - Database and page operations
+  - 7-step sync workflow
+  - Rate limiting and error handling
+
+### Developer Guides
+
+- **[DEVELOPER_ONBOARDING.md](DEVELOPER_ONBOARDING.md)** - New developer setup
+  - Prerequisites and environment setup
+  - Understanding the codebase
+  - Running locally (backend + frontend)
+  - Common tasks and troubleshooting
 
 ---
 

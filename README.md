@@ -9,6 +9,36 @@
 
 ---
 
+## 📖 Quick Start
+
+### 🚨 NEW TO FRAMES? START HERE
+
+**For Developers:**
+
+1. [DEVELOPER_ONBOARDING.md](docs/DEVELOPER_ONBOARDING.md) - Complete setup guide (2-3 hours)
+2. [COMPLETE_SYSTEM_ARCHITECTURE.md](docs/COMPLETE_SYSTEM_ARCHITECTURE.md) - Understand how FRAMES works
+3. [API_REFERENCE.md](docs/API_REFERENCE.md) - Backend endpoints reference
+
+**For New AI Agents:**
+
+1. [COMPLETE_SYSTEM_ARCHITECTURE.md](docs/COMPLETE_SYSTEM_ARCHITECTURE.md) - Canonical reference for how FRAMES works
+2. [CADENCE_SPEC_COMPLIANCE.md](docs/CADENCE_SPEC_COMPLIANCE.md) - Agent behavior contracts
+3. [DEVELOPER_ONBOARDING.md](docs/DEVELOPER_ONBOARDING.md) - Environment setup
+
+**Key Concepts You Must Understand:**
+
+- **Layer 1 (Authoring):** Notion = Content creation by team leads
+- **Layer 2 (Transformation):** Postgres (Neon) = Canonical source of truth
+- **Layer 3 (Runtime):** React = Student-facing app with dark theme
+
+**Critical Files - DO NOT DELETE:**
+
+- `react-notion-x-master.zip` - Essential for Notion rendering
+- `modules/exports/*.json` - Deployed module content with recordMaps
+- `.notion_db_id` - Module Library database ID
+
+---
+
 ## 🎯 What is FRAMES?
 
 FRAMES (Framework for Resilience Assessment in Modular Engineering Systems) is a multi-application platform serving 8 universities collaborating on space missions. It provides:
@@ -115,17 +145,30 @@ python backend/app.py
 
 ## 📚 Documentation
 
+### Core Documentation
+
+- **[Complete System Architecture](docs/COMPLETE_SYSTEM_ARCHITECTURE.md)** - How FRAMES works end-to-end
+- **[Developer Onboarding](docs/DEVELOPER_ONBOARDING.md)** - Setup guide for new developers
+- **[API Reference](docs/API_REFERENCE.md)** - Flask backend endpoints
+- **[Database Schema Reference](docs/DATABASE_SCHEMA_REFERENCE.md)** - PostgreSQL tables and relationships
+- **[Notion API Integration](docs/NOTION_API_INTEGRATION.md)** - Notion sync workflow
+- **[CADENCE Spec Compliance](docs/CADENCE_SPEC_COMPLIANCE.md)** - Agent behavior contracts
+
 ### By Application
+
 - **[Onboarding LMS](docs/onboarding-lms/)** - Student training system
 - **[Research Analytics](docs/research-analytics/)** - Faculty/researcher tools
 - **[AI Prediction Core](docs/ai-prediction-core/)** - ML prediction engine (planned)
 
 ### Shared Resources
+
 - **[Project Roadmap](docs/shared/PROJECT_ROADMAP.md)** - Development timeline
-- **[Monorepo Structure](MONOREPO_STRUCTURE.md)** - Repository organization
-- **[Setup Guide](SETUP_COMPLETE.md)** - Quick start
+- **[Backend README](backend/README.md)** - API server documentation
+- **[Scripts README](scripts/README.md)** - Available automation scripts
+- **[Modules README](modules/README.md)** - Training module library
 
 ### Full Documentation Index
+
 See **[docs/README.md](docs/README.md)** for complete documentation overview.
 
 ---
