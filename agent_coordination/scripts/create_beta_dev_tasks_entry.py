@@ -5,9 +5,10 @@ Log deployment status in Notion for tracking.
 
 import requests
 from datetime import datetime
+from notion_config import NOTION_TOKEN
 
 # Notion Configuration
-NOTION_TOKEN = "<YOUR_NOTION_TOKEN>"
+NOTION_TOKEN = NOTION_TOKEN
 DEV_TASKS_DB = "662cbb0c-1cca-4c12-9991-c566f220eb0c"
 
 headers = {
@@ -107,7 +108,5 @@ def create_deployment_entry():
             print(f"Response: {e.response.text}")
         return False
 
-
 if __name__ == "__main__":
     create_deployment_entry()
-

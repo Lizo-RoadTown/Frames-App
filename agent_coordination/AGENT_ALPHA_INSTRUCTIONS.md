@@ -4,20 +4,21 @@
 
 ---
 
-## CRITICAL: Use Notion Token Directly
+## CRITICAL: Configure the Notion Token
 
-**DO NOT USE MCP.** Use the Notion API with this token:
+**DO NOT USE MCP.** Use the Notion REST API with the integration token Liz shares.
 
-```
-NOTION_TOKEN=<YOUR_NOTION_TOKEN>
-```
+1. Create `secrets/notion_token.txt`
+2. Paste your token on the first line (no quotes)
+3. Keep the file local—Git ignores it automatically
 
-**Python Example:**
+**Python Example (auto-loads the token):**
 ```python
 import requests
+from notion_config import NOTION_TOKEN
 
 headers = {
-    "Authorization": "Bearer <YOUR_NOTION_TOKEN>",
+    "Authorization": f"Bearer {NOTION_TOKEN}",
     "Content-Type": "application/json",
     "Notion-Version": "2022-06-28"
 }

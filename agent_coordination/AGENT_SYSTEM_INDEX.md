@@ -6,6 +6,8 @@
 
 ---
 
+> 🔐 **Token Handling:** Store your Notion integration token in `secrets/notion_token.txt` (git-ignored) or export `NOTION_TOKEN`. Every `<YOUR_NOTION_TOKEN>` placeholder refers to that local value—never commit the secret.
+
 ## 🚀 START HERE FOR LIZ
 
 **New system for agent coordination:**
@@ -176,7 +178,7 @@ python scripts/gamma_tasks.py weekly-report --parent-id <db_id>
 ## 🔧 Configuration Files
 
 ### Notion API
-- **Token:** `<YOUR_NOTION_TOKEN>`
+- **Token:** `<YOUR_NOTION_TOKEN>` (store in `secrets/notion_token.txt`)
 - **Module Library DB:** `eac1ce58-6169-4dc3-a821-29858ae59e76`
 - **Development Tasks DB:** `662cbb0c-1cca-4c12-9991-c566f220eb0c`
 - **Technical Decisions DB:** `48623dd2-4f8a-4226-be4c-6e7255abbf7e`

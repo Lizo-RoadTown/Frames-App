@@ -6,9 +6,10 @@ Simple rule: Every Monday at 9 AM, count modules and create summary.
 import requests
 from datetime import datetime
 import os
+from notion_config import NOTION_TOKEN
 
 # Notion Configuration
-NOTION_TOKEN = "<YOUR_NOTION_TOKEN>"
+NOTION_TOKEN = NOTION_TOKEN
 MODULE_LIBRARY_DB = "eac1ce58-6169-4dc3-a821-29858ae59e76"
 DEV_TASKS_DB = "662cbb0c-1cca-4c12-9991-c566f220eb0c"
 
@@ -21,7 +22,6 @@ headers = {
 # File paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATUS_LOG = os.path.join(BASE_DIR, "logs", "status_updates.log")
-
 
 def weekly_notification():
     """Create weekly module status summary notification."""
@@ -157,7 +157,5 @@ def weekly_notification():
     print(f"\n{'=' * 50}")
     print(f"📝 Log written to: {STATUS_LOG}")
 
-
 if __name__ == "__main__":
     weekly_notification()
-
