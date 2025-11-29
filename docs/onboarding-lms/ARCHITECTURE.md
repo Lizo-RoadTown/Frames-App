@@ -36,7 +36,7 @@
          ▼
 ┌─────────────────┐
 │  PostgreSQL     │ ← Modules, progress, analytics
-│  (Azure)        │ ← 32GB free tier
+│  (Neon)        │ ← 32GB free tier
 └─────────────────┘
 
 ┌─────────────────┐
@@ -902,7 +902,7 @@ export const ScrollTracker = ({ sectionId }) => {
 
 ## Next Steps
 
-1. **Database Setup:** Use Azure PostgreSQL (already covered in AZURE_DATABASE_SETUP.md)
+1. **Database Setup:** Use Neon PostgreSQL (see NEON_DATABASE_SETUP.md)
 2. **Create Migration:** Add these tables to your database
 3. **API Development:** Implement endpoints in Flask
 4. **Frontend:** Start with simple React module viewer

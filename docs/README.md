@@ -39,8 +39,8 @@ Machine learning engine for mission success prediction _(Coming soon)_.
 
 ## 🔧 Shared Resources
 
-### [Azure Setup](shared/AZURE_SETUP.md)
-Complete guide to setting up free Azure PostgreSQL database.
+### [Neon Database Setup](shared/NEON_DATABASE_SETUP.md)
+How to provision our Neon PostgreSQL instance and capture the connection string.
 
 ### [Project Roadmap](shared/PROJECT_ROADMAP.md)
 10-week development timeline and project milestones.
@@ -54,7 +54,7 @@ How to contribute to the FRAMES project.
 
 ### Getting Started
 - [Main Getting Started Guide](../GETTING_STARTED.md)
-- [Azure Database Setup](shared/AZURE_SETUP.md)
+- [Neon Database Setup](shared/NEON_DATABASE_SETUP.md)
 - [Environment Configuration](../env.example)
 
 ### For Developers
@@ -95,7 +95,7 @@ Historical documentation and planning materials are stored in [archive/](archive
 - [AI Prediction Core](ai-prediction-core/)
 
 ### Shared Documentation
-- [Azure Setup](shared/AZURE_SETUP.md)
+- [Neon Database Setup](shared/NEON_DATABASE_SETUP.md)
 - [Project Roadmap](shared/PROJECT_ROADMAP.md)
 - [Contributing Guide](shared/CONTRIBUTING.md)
 

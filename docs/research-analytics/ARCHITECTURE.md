@@ -32,7 +32,7 @@ FRAMES is a **multi-university research platform** that:
 - ✅ **AI/ML Integration:** Better Python ecosystem integration
 - ✅ **Scalability:** Used by Instagram, Spotify, Reddit (proven at scale)
 - ✅ **Extensions:** PostGIS (spatial), pg_vector (AI embeddings), TimescaleDB (time-series)
-- ✅ **Cloud:** Supported everywhere (AWS RDS, Google Cloud SQL, Azure, Heroku)
+- ✅ **Cloud:** Supported everywhere (AWS RDS, Google Cloud SQL, Neon, Heroku)
 
 ### **Recommended Database Stack**
 
@@ -475,7 +475,7 @@ CREATE INDEX ON embeddings USING ivfflat (embedding vector_cosine_ops);
 - **Heroku** (classic, $7-25/month)
 - **AWS** (most flexible, varies)
 - **Google Cloud** (good ML support, varies)
-- **Azure** (if you need SQL Server compatibility, varies)
+- **Neon** (specialized Postgres, free tier)
 
 ---
 
@@ -555,7 +555,7 @@ CREATE INDEX ON embeddings USING ivfflat (embedding vector_cosine_ops);
 ---
 
 **Questions to Answer:**
-1. Do you have a Microsoft/Azure relationship that makes SQL Server free/cheap?
+1. Do you have an existing Neon project/branch ready for analytics?
 2. Which project management tool(s) are you using?
 3. When do you need Discord integration live?
 4. What's your timeline for AI model training?

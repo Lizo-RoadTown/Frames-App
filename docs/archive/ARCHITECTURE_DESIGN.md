@@ -14,7 +14,7 @@
 - **Frontend:** Single-page JS client (`frontend/static/api.js`) that uses REST; later adds WebSocket handlers for real-time events.
 - **Persistence:** Dev: SQLite (`backend/frames.db`). Prod: Postgres with JSONB for flexible payloads and indexed query fields.
 - **Audit & Backups:** `AuditLog` model (actor, action, entity_type, entity_id, payload_before, payload_after, meta, timestamp). Backup CLI `backend/backup_db.py` for timestamped compressed backups.
-- **CI / Deployment:** Dockerfiles, GitHub Actions for lint/test/build, and optional Heroku/GCP/Azure deployment steps.
+- **CI / Deployment:** Dockerfiles, GitHub Actions for lint/test/build, and optional Heroku/GCP/Render deployment steps.
 
 **Database Design (recommended for Phase‑2 / Prod)**
 - Choice: **Postgres + JSONB**. Rationale: flexible schema via JSONB for entity payloads, strong transactional semantics, easy replication, and mature toolchain.
@@ -116,7 +116,7 @@
 - Dockerize the app (single Dockerfile for Flask app). Provide `docker-compose.yml` for local dev with Postgres, Redis (if websockets scale needed), and the app.
 - GitHub Actions pipelines:
   - `lint` (flake8/black), `test` (unit/integration), `build` (docker build), `deploy` (manual trigger for staging/production).
-- Deploy options: container registry → Kubernetes or managed service (Elastic Beanstalk, App Engine, Azure, Render). For early stages, deploy to a single small instance with backups and scheduled tasks for DB dumps.
+- Deploy options: container registry → Kubernetes or managed service (Elastic Beanstalk, App Engine, Render). For early stages, deploy to a single small instance with backups and scheduled tasks for DB dumps.
 
 **Security Considerations:**
 - Protect management endpoints and migration CLI behind auth and/or require local execution only.

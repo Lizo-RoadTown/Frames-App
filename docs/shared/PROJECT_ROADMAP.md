@@ -22,7 +22,7 @@
 - Database running on local SQLite
 
 ### What's Changing 🔄
-- **Database:** Moving from local SQLite to Azure PostgreSQL (FREE tier)
+- **Database:** Moving from local SQLite to Neon PostgreSQL (free tier)
 - **Frontend:** Transitioning from vanilla JS to React
 - **Primary Feature:** Adding student onboarding module system
 - **Documentation:** Complete cleanup and reorganization
@@ -32,17 +32,17 @@
 
 ## Phase 1: Foundation Setup (Week 1-2)
 
-### Database Migration to Azure
+### Database Migration to Neon
 **Priority:** CRITICAL - Must complete first
 
 **Tasks:**
-- [ ] Create Azure Database for PostgreSQL
-  - Use Azure for Students free tier (750 hours/month)
-  - B1MS instance with 32GB storage
-  - Setup guide: [AZURE_DATABASE_SETUP.md](AZURE_DATABASE_SETUP.md)
+- [ ] Create Neon project + primary branch
+  - Use the Neon free tier (1 project, up to 3 branches)
+  - Start with the default compute size; upgrade only if needed
+  - Setup guide: [NEON_DATABASE_SETUP.md](NEON_DATABASE_SETUP.md)
 
 - [ ] Configure connection
-  - Update `.env` with Azure connection string
+  - Update `.env` with the Neon connection string
   - Test connection from local machine
   - Configure firewall rules
 
@@ -52,7 +52,7 @@
   - Test all existing functionality
 
 **Deliverables:**
-- ✅ Database running on Azure
+- â Database running on Neon
 - ✅ All team members can connect
 - ✅ Existing features still work
 - ✅ Backup strategy documented
@@ -109,7 +109,7 @@
   - `backend/models/module_analytics.py`
 
 - [ ] Run migration
-  - Apply to Azure database
+  - Apply to Neon database
   - Verify all tables created
   - Test foreign key constraints
 
@@ -122,7 +122,7 @@
 6. `module_feedback` - Student feedback (optional)
 
 **Deliverables:**
-- ✅ All tables created in Azure database
+- â All tables created in Neon database
 - ✅ SQLAlchemy models working
 - ✅ Can CRUD modules via Python
 
@@ -478,8 +478,8 @@
 - **Students:** 10-20 (pilot testing)
 
 ### Budget
-- **Database:** $0/month (Azure for Students free tier)
-- **Hosting:** $0/month (Azure App Service free tier for MVP)
+- **Database:** $0/month (Neon free tier)
+- **Hosting:** ~$0/month (Render or Cloud Run free tier for MVP)
 - **Domain:** $12/year (optional, frames.edu or similar)
 - **Total:** ~$0-15/year for MVP
 
@@ -517,7 +517,7 @@
 **Mitigation:** Anonymize data in aggregate reports, comply with FERPA, clear privacy policy
 
 **Risk:** Database failure/data loss
-**Mitigation:** Azure automatic backups (7 days), export critical data weekly
+**Mitigation:** Neon point-in-time restore (7 days), export critical data weekly
 
 ---
 
@@ -525,8 +525,8 @@
 
 ### January 23, 2025
 
-**Decision:** Use Azure Database for PostgreSQL
-**Rationale:** Free tier available through Azure for Students, enterprise-grade, easy collaboration
+**Decision:** Use Neon Database for PostgreSQL
+**Rationale:** Free tier, branching workflow, easy SSL connections
 
 **Decision:** React for frontend (replacing vanilla JS)
 **Rationale:** Better component architecture, easier mobile optimization, modern tooling
@@ -565,13 +565,13 @@
 
 ### You (Project Lead)
 1. ✅ Review all documentation created today:
-   - AZURE_DATABASE_SETUP.md
+   - NEON_DATABASE_SETUP.md
    - GITHUB_COLLABORATION_GUIDE.md
    - STUDENT_ONBOARDING_SYSTEM_DESIGN.md
    - PROJECT_ROADMAP_2025.md
 
-2. [ ] Set up Azure Database
-   - Follow AZURE_DATABASE_SETUP.md step-by-step
+2. [ ] Set up Neon Database
+   - Follow NEON_DATABASE_SETUP.md step-by-step
    - Save connection string securely
    - Test connection
 
@@ -614,8 +614,8 @@
 ## Questions to Answer This Week
 
 ### Database
-- [x] Azure or Google Cloud? → **Azure (you have free tier)**
-- [ ] What's the actual connection string? → (get from Azure Portal)
+- [x] Cloud provider? â **Neon (purpose-built Postgres)**
+- [ ] What's the actual connection string? → (copy from the Neon dashboard)
 - [ ] Can team leads connect remotely? → (add their IPs to firewall)
 
 ### GitHub
@@ -686,10 +686,10 @@ FRAMES Python/
 │   └── old_guides/
 │
 ├── .env                                 # LOCAL: Your configuration (gitignored)
-├── .env.example                         # UPDATED: Template with Azure
+├── .env.example                         # UPDATED: Template with Neon
 ├── README.md                            # REWRITTEN: Current state only
 ├── CONTRIBUTING.md                      # NEW: How to contribute
-├── AZURE_DATABASE_SETUP.md              # NEW: Azure setup guide
+├── NEON_DATABASE_SETUP.md              # NEW: Neon setup guide
 ├── GITHUB_COLLABORATION_GUIDE.md        # NEW: Team lead guide
 ├── STUDENT_ONBOARDING_SYSTEM_DESIGN.md  # NEW: Technical design
 └── PROJECT_ROADMAP_2025.md              # NEW: This file
@@ -697,7 +697,7 @@ FRAMES Python/
 
 ---
 
-**Ready to begin?** Start with Azure database setup, then we'll tackle the database schema and API development.
+**Ready to begin?** Start with Neon database setup, then we'll tackle the database schema and API development.
 
 ---
 

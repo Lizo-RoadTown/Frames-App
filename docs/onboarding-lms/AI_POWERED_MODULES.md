@@ -617,7 +617,7 @@ Analytics confirm improvement → Loop continues
 ## Implementation Roadmap
 
 ### Week 1-2: Foundation
-- ✅ Azure database setup
+- ✅ Neon database setup
 - ✅ Database schema (existing + module tables)
 - ✅ Basic API endpoints
 
@@ -658,8 +658,8 @@ Analytics confirm improvement → Loop continues
 ## Cost Breakdown
 
 ### Infrastructure
-- **Database:** $0/month (Azure free tier)
-- **Hosting:** $0/month (Azure App Service free tier)
+- **Database:** $0/month (Neon free tier)
+- **Hosting:** TBD (Render/Cloud Run free tier)
 - **Domain:** $12/year (optional)
 
 ### AI API Costs
@@ -784,7 +784,7 @@ Should I add this after the 'Equipment Safety' section? Also, should I create a 
 ## Next Actions
 
 ### This Week (You):
-1. **Set up Azure database** (foundation for everything)
+1. **Set up Neon database** (foundation for everything)
 2. **Collect all training documents** into organized folder structure
 3. **Identify 10-15 critical modules** needed for next cohort
 
